@@ -4,7 +4,6 @@ import { Button, Icon } from 'react-native-elements'
 
 import AppConstants from '../Constants'
 
-
 export default class Home extends React.Component {
 
     static navigationOptions = {

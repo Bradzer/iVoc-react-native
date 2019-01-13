@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "581952951522",
+    "firebase_url": "https://ivoc-react-native.firebaseio.com",
+    "project_id": "ivoc-react-native",
+    "storage_bucket": "ivoc-react-native.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:581952951522:android:e8b6fbf27a29bdc5",
+        "android_client_info": {
+          "package_name": "com.bradzerdev.ivoc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "581952951522-a780bk38jh9phpt8lcpmfklr59k14mou.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcBDHa_M8qfPahYvO8f8DcAzhudq3Opcs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -10,10 +10,14 @@ buildscript {
     }
     repositories {
         google()
+        maven {
+            url 'https://maven.google.com'
+        }
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.google.gms:google-services:4.0.1' //firebase purpose
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -24,6 +28,9 @@ allprojects {
     repositories {
         mavenLocal()
         google()
+        maven {
+            url 'https://maven.google.com'
+        }
         jcenter()
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
