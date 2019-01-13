@@ -1,26 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, } from 'react-native';
 import { Button, Icon } from 'react-native-elements'
-import { firestore } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
-
-// const firebaseConfig = {
-//     apiKey: "AIzaSyBMSmMRgE9K0Cw9fF2ZZCbfLX07FA-2wYM",
-//     authDomain: "ivoc-react-native.firebaseapp.com",
-//     databaseURL: "https://ivoc-react-native.firebaseio.com/",
-//     storageBucket: "gs://ivoc-react-native.appspot.com"
-//   };
-
-// firebase.config(firebaseConfig)
-
-wordsCollection = firestore().collection('words')
-
-wordsCollection.add({
-    label: 'chat',
-    definition: 'cat'
-})
-
 
 export default class Home extends React.Component {
 
