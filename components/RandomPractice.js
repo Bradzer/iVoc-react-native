@@ -9,6 +9,7 @@ import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition } from '../actions'
   
 const wordsDetailsCollection = firestore().collection('wordsDetails')
+const wordsCollection = firestore().collection('words')
 
 const axios = require('axios');
 
@@ -154,9 +155,8 @@ function addKnownWordToCloud(word){
     wordsDetailsCollection.add(word)
     .then((docRef) => {
         docRef.update({id: docRef.id})
+        wordsCollection.add({originalId: docRef.id, label: word.word})
     })
-    console.log('new document added');
-    
 }
 
 function showWordDefinition() {
