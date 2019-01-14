@@ -8,7 +8,7 @@ import { firestore } from 'react-native-firebase'
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition } from '../actions'
   
-const wordsCollection = firestore().collection('words')
+const wordsDetailsCollection = firestore().collection('wordsDetails')
 
 const axios = require('axios');
 
@@ -151,7 +151,12 @@ function gotItBtnClicked() {
 }
 
 function addKnownWordToCloud(word){
-    wordsCollection.add(word)
+    wordsDetailsCollection.add(word)
+    .then((docRef) => {
+        docRef.update({id: docRef.id})
+    })
+    console.log('new document added');
+    
 }
 
 function showWordDefinition() {
