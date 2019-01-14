@@ -3,10 +3,13 @@ import { StyleSheet, ScrollView, View, Text } from 'react-native';
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
+import { firestore } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition } from '../actions'
   
+const wordsCollection = firestore().collection('words')
+
 const axios = require('axios');
 
 const apiRequest = axios.create({
@@ -18,6 +21,8 @@ const apiRequest = axios.create({
         'Content-Type': 'application/json'
     }
 })
+
+let dataGoingToStore = {}
 
 let apiResponse = {};
 let numberOfDefinitions = 0;
@@ -55,13 +60,13 @@ class RandomPractice extends React.Component {
                     icon={{name: this.props.buttonLeftIconName, type: this.props.buttonLeftIconType}}
                     title= {this.props.buttonLeftTitle}
                     containerStyle={{marginHorizontal: 16}}
-                    onPress={((this.props.buttonLeftTitle !== 'Not interested') ? goToNextRandomWord : goToNextRandomWord)}
+                    onPress={((this.props.buttonLeftTitle !== 'Not interested') ? iKnowBtnClicked : goToNextRandomWord)}
                     />
                     <Button
                     icon={{name: this.props.buttonRightIconName, type: this.props.buttonRightIconType}}
                     title= {this.props.buttonRightTitle}
                     containerStyle={{marginHorizontal: 16}}
-                    onPress={(this.props.buttonRightTitle !== 'Got it') ? showWordDefinition : goToNextRandomWord}
+                    onPress={(this.props.buttonRightTitle !== 'Got it') ? showWordDefinition : gotItBtnClicked}
                     />
                 </View>
             </View>
@@ -122,7 +127,7 @@ function goToNextRandomWord(){
         apiResponse = response.data        
         numberOfDefinitions = apiResponse.results.length
         
-        let data = {
+        dataGoingToStore = {
             word: apiResponse.word,
             partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
             pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
@@ -130,9 +135,23 @@ function goToNextRandomWord(){
             definition: apiResponse.results[0].definition,
         }
         
-        store.dispatch(addResponseData(data))
+        store.dispatch(addResponseData(dataGoingToStore))
     })
     .catch((error) => console.error(error))
+}
+
+function iKnowBtnClicked() {
+    addKnownWordToCloud(dataGoingToStore)
+    goToNextRandomWord()
+}
+
+function gotItBtnClicked() {
+    addKnownWordToCloud(dataGoingToStore)
+    goToNextRandomWord()
+}
+
+function addKnownWordToCloud(word){
+    wordsCollection.add(word)
 }
 
 function showWordDefinition() {
