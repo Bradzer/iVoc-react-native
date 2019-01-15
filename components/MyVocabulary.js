@@ -8,34 +8,41 @@ import AppConstants from '../Constants'
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
 
-const listofWords = []
-
 export default class MyVocabulary extends React.Component {
-
+    
     static navigationOptions = {
       headerTitle: AppConstants.APP_NAME,
       tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
       tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>
     }
 
-    render() {
+    listOfWords = []
+
+    render() {   
 
         return(
             <View style={styles.container}>
                 <FlatList
                     keyExtractor={keyExtractor}
-                    data={listofWords} 
+                    data={this.listOfWords} 
                     renderItem={renderItem}
                 />
             </View>
         )
     }
 
-    UNSAFE_componentWillMount() {
-        wordsCollection.get()
-        .then((queryResult) => {
-            queryResult.forEach((doc) => listofWords.push(doc.data()))
-        })
+
+    componentDidMount() {
+        this.focusListener = this.props.navigation.addListener("didFocus", () => {
+            this.listOfWords = []
+            wordsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    this.listOfWords.push(doc.data())
+                })
+            this.forceUpdate()
+            })
+          });
     }
 }
 
