@@ -3,13 +3,13 @@ import { StyleSheet, ScrollView, View, Text } from 'react-native';
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
-import { firestore } from 'react-native-firebase'
+import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition } from '../actions'
   
-const wordsDetailsCollection = firestore().collection('wordsDetails')
-const wordsCollection = firestore().collection('words')
+const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
+const wordsCollection = firebase.firestore().collection('words')
 
 const axios = require('axios');
 

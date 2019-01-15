@@ -1,9 +1,14 @@
 import React from 'react';
 import { StyleSheet, FlatList, View } from 'react-native';
 import { Icon, ListItem } from 'react-native-elements'
+import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 
+const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
+const wordsCollection = firebase.firestore().collection('words')
+
+const listofWords = []
 
 export default class MyVocabulary extends React.Component {
 
@@ -19,11 +24,18 @@ export default class MyVocabulary extends React.Component {
             <View style={styles.container}>
                 <FlatList
                     keyExtractor={keyExtractor}
-                    data={list} 
+                    data={listofWords} 
                     renderItem={renderItem}
                 />
             </View>
         )
+    }
+
+    UNSAFE_componentWillMount() {
+        wordsCollection.get()
+        .then((queryResult) => {
+            queryResult.forEach((doc) => listofWords.push(doc.data()))
+        })
     }
 }
 
@@ -40,68 +52,9 @@ const styles = StyleSheet.create({
 
   const renderItem = ({item}) => (
     <ListItem
-        title={item.name}
-        subtitle={item.subtitle}
+        title={item.label}
+        // subtitle={item.subtitle}
         rightIcon= {<Icon name= 'keyboard-arrow-right' />}
     />
   )
-
-  const list = [
-    {
-      name: 'Amy Farha',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-      subtitle: 'Vice President'
-    },
-    {
-      name: 'Chris Jackson',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      subtitle: 'Vice Chairman'
-    },
-    {
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },{
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },{
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },{
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },{
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },
-  ]
   
