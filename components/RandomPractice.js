@@ -4,6 +4,7 @@ import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
 import firebase, { } from 'react-native-firebase'
+import SyncStorage from 'sync-storage';
 
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition } from '../actions'
@@ -13,9 +14,11 @@ const wordsCollection = firebase.firestore().collection('words')
 
 const axios = require('axios');
 
+SyncStorage.set('practiceMode', 'example')
+
 const apiRequest = axios.create({
     // baseURL: 'https://wordsapiv1.p.mashape.com/words/?random=true',
-    baseURL: 'https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true',
+    baseURL: getBaseUrl(),
     headers: {
         'X-Mashape-Key': AppConstants.WORDS_API_KEY,
         'Accept': 'application/json',
@@ -29,6 +32,8 @@ let apiResponse = {};
 let numberOfDefinitions = 0;
 
 let displayFrequency = 'none';
+
+// console.log(SyncStorage.get('practiceMode'));
 
 
 class RandomPractice extends React.Component {
@@ -161,4 +166,18 @@ function addKnownWordToCloud(word){
 
 function showWordDefinition() {
     store.dispatch(displayWordDefinition())
+}
+
+function getPracticeMode() {
+    return (SyncStorage.get('practiceMode') ? SyncStorage.get('practiceMode') : 'null')
+}
+
+function getBaseUrl() {
+    switch(getPracticeMode()) {
+        case 'example':
+            return 'https://wordsapiv1.p.mashape.com/words/example'
+
+        default:
+            return 'https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'
+    }
 }
