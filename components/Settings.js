@@ -1,10 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
-
+import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 
+const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
+const wordsCollection = firebase.firestore().collection('words')
+const vexedRef = firebase.firestore().doc('wordsDetails/IK6CJvbLDkMJ2PPlDLmZ')
 
 export default class Settings extends React.Component {
 
@@ -62,7 +65,8 @@ export default class Settings extends React.Component {
                 />
                 <Button 
                     title='Clear vocabulary'
-                    icon={<Icon name='playlist-remove' type='material-community' color='red'/>}/>
+                    icon={<Icon name='playlist-remove' type='material-community' color='red'/>}
+                    onPress={clearVocabulary}/>
             </View>
         )
     }
@@ -88,4 +92,12 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-start',
       padding: 8
     },
-  });  
+  });
+  
+  function clearVocabulary() {
+      wordsDetailsCollection.get()
+      .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
+
+      wordsCollection.get()
+      .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
+  }
