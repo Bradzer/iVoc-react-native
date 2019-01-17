@@ -247,7 +247,7 @@ function getBaseUrl() {
             return 'https://wordsapiv1.p.mashape.com/words/example'
 
         case 'letterPattern':
-            return 'https://wordsapiv1.p.mashape.com/words/?letterPattern=^.{5}$&?hasDetails=definitions'
+            return 'https://wordsapiv1.p.mashape.com/words/?letterPattern=^.{5}$&hasDetails=definitions'
 
         default:
             return 'https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'
