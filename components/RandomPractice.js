@@ -14,10 +14,9 @@ const wordsCollection = firebase.firestore().collection('words')
 
 const axios = require('axios');
 
-SyncStorage.set('practiceMode', 'example')
+SyncStorage.set('practiceMode', 'letterPattern')
 
 const apiRequest = axios.create({
-    // baseURL: 'https://wordsapiv1.p.mashape.com/words/?random=true',
     baseURL: getBaseUrl(),
     headers: {
         'X-Mashape-Key': AppConstants.WORDS_API_KEY,
@@ -132,16 +131,16 @@ function goToNextRandomWord(){
 
         apiResponse = response.data        
         numberOfDefinitions = apiResponse.results.length
+        dataGoingToStore = {}
         
         dataGoingToStore = {
-            word: apiResponse.word,
-            partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-            pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-            definition: apiResponse.results[0].definition,
+        word: apiResponse.word,
+        partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+        pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+        frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+        definition: apiResponse.results[0].definition,
         }
-        
-        store.dispatch(addResponseData(dataGoingToStore))
+        store.dispatch(addResponseData(dataGoingToStore)) 
     })
     .catch((error) => console.error(error))
 }
@@ -176,6 +175,9 @@ function getBaseUrl() {
     switch(getPracticeMode()) {
         case 'example':
             return 'https://wordsapiv1.p.mashape.com/words/example'
+
+        case 'letterPattern':
+            return 'https://wordsapiv1.p.mashape.com/words/?letterPattern=^.{5}$&hasDetails=definitions&random=true'
 
         default:
             return 'https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'
