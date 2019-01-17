@@ -9,7 +9,9 @@ import AppConstants from '../Constants'
 export default class Settings extends React.Component {
 
     state = {
-        selectedIndex: 0
+        selectedIndex: 0,
+        startingLettersChecked: false,
+        endingLettersChecked: false
     }
 
     static navigationOptions = {
@@ -35,8 +37,8 @@ export default class Settings extends React.Component {
             <View style={styles.container}>
                 <CheckBox
                     title= 'Words starting with'
-                    checked= {false}
-                    right= {true}
+                    checked= {this.state.startingLettersChecked}
+                    onPress= {this.startingLettersPressed}
                 />
                 <Input
                     placeholder= 'Enter starting letters'
@@ -44,7 +46,8 @@ export default class Settings extends React.Component {
                 />
                 <CheckBox
                     title= 'Words ending with'
-                    checked= {false}
+                    checked= {this.state.endingLettersChecked}
+                    onPress= {this.endingLettersPressed}
                 />
                 <Input
                     placeholder= 'Enter ending letters'
@@ -63,6 +66,18 @@ export default class Settings extends React.Component {
             </View>
         )
     }
+
+    startingLettersPressed = () => {
+        this.setState({startingLettersChecked: !this.state.startingLettersChecked})
+        console.log(this.state.startingLettersChecked);
+        
+    }
+
+    endingLettersPressed = () => {
+        this.setState({endingLettersChecked: !this.state.endingLettersChecked})
+        console.log(this.state.endingLettersChecked);
+        
+    }
 }
 
 const styles = StyleSheet.create({
@@ -73,5 +88,4 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-start',
       padding: 8
     },
-  });
-  
+  });  
