@@ -45,7 +45,7 @@ export default class Settings extends React.Component {
                 />
                 <Input
                     placeholder= 'Enter starting letters'
-                    containerStyle={{marginBottom: 16}}
+                    containerStyle={{marginBottom: 16, display: this.inputDisplay('startingLetters')}}
                 />
                 <CheckBox
                     title= 'Words ending with'
@@ -54,7 +54,7 @@ export default class Settings extends React.Component {
                 />
                 <Input
                     placeholder= 'Enter ending letters'
-                    containerStyle={{marginBottom: 16}}
+                    containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
                 />
                 <Text style={{marginBottom: 8}}>Part of speech</Text>
                 <ButtonGroup
@@ -81,6 +81,19 @@ export default class Settings extends React.Component {
         this.setState({endingLettersChecked: !this.state.endingLettersChecked})
         console.log(this.state.endingLettersChecked);
         
+    }
+
+    inputDisplay = (checkBoxType) => {
+        switch(checkBoxType) {
+            case 'startingLetters':
+                return (this.state.startingLettersChecked ? 'flex' : 'none')
+            
+            case 'endingLetters':
+                return (this.state.endingLettersChecked ? 'flex' : 'none')
+
+            default:
+                return 'none'
+        }
     }
 }
 
