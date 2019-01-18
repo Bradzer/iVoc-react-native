@@ -1,21 +1,17 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { connect } from 'react-redux'
+import store from '../reducers'
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
+import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox } from '../actions'
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
-const vexedRef = firebase.firestore().doc('wordsDetails/IK6CJvbLDkMJ2PPlDLmZ')
 
-export default class Settings extends React.Component {
-
-    state = {
-        selectedIndex: 0,
-        startingLettersChecked: false,
-        endingLettersChecked: false
-    }
+class Settings extends React.Component {
 
     static navigationOptions = {
         tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
@@ -23,7 +19,7 @@ export default class Settings extends React.Component {
     }
 
     updateIndex = (selectedIndex) => {
-        this.setState({selectedIndex})
+        store.dispatch(updateIndex(selectedIndex))
     }
 
     partOfSpeechAll = () => <Text>All</Text>
@@ -32,15 +28,14 @@ export default class Settings extends React.Component {
     partOfSpeechAdjective = () => <Text>Adjective</Text>
 
     render() {
-
         const buttons = [{ element: this.partOfSpeechAll }, { element: this.partOfSpeechVerb }, { element: this.partOfSpeechNoun }, { element: this.partOfSpeechAdjective }]
-        const { selectedIndex } = this.state
+        const { selectedIndex } = this.props
 
         return(
             <View style={styles.container}>
                 <CheckBox
                     title= 'Words starting with'
-                    checked= {this.state.startingLettersChecked}
+                    checked= {this.props.startingLettersChecked}
                     onPress= {this.startingLettersPressed}
                 />
                 <Input
@@ -49,7 +44,7 @@ export default class Settings extends React.Component {
                 />
                 <CheckBox
                     title= 'Words ending with'
-                    checked= {this.state.endingLettersChecked}
+                    checked= {this.props.endingLettersChecked}
                     onPress= {this.endingLettersPressed}
                 />
                 <Input
@@ -71,31 +66,33 @@ export default class Settings extends React.Component {
         )
     }
 
+    componentDidMount() {
+
+    }
+
     startingLettersPressed = () => {
-        this.setState({startingLettersChecked: !this.state.startingLettersChecked})
-        console.log(this.state.startingLettersChecked);
-        
+        store.dispatch(updateStartingLettersCheckBox())
     }
 
     endingLettersPressed = () => {
-        this.setState({endingLettersChecked: !this.state.endingLettersChecked})
-        console.log(this.state.endingLettersChecked);
-        
+        store.dispatch(updateEndingLettersCheckBox())
     }
 
     inputDisplay = (checkBoxType) => {
         switch(checkBoxType) {
             case 'startingLetters':
-                return (this.state.startingLettersChecked ? 'flex' : 'none')
+                return (this.props.startingLettersChecked ? 'flex' : 'none')
             
             case 'endingLetters':
-                return (this.state.endingLettersChecked ? 'flex' : 'none')
+                return (this.props.endingLettersChecked ? 'flex' : 'none')
 
             default:
                 return 'none'
         }
     }
 }
+
+export default connect(mapStateToProps)(Settings)
 
 const styles = StyleSheet.create({
     container: {
@@ -107,6 +104,14 @@ const styles = StyleSheet.create({
     },
   });
   
+  function mapStateToProps(state) {
+      return {
+        selectedIndex: state.selectedIndex,
+        startingLettersChecked: state.startingLettersChecked,
+        endingLettersChecked: state.endingLettersChecked
+    
+      }
+  }
   function clearVocabulary() {
       wordsDetailsCollection.get()
       .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))

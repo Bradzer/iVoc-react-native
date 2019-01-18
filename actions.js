@@ -5,6 +5,9 @@ export const CHANGE_LIST_ITEM = 'CHANGE_LIST_ITEM'
 export const ADD_RESPONSE_DATA = 'ADD_RESPONSE_DATA'
 export const RESET_RESPONSE_DATA = 'RESET_RESPONSE_DATA'
 export const DISPLAY_WORD_DEFINITION = 'DISPLAY_WORD_DEFINITION'
+export const UPDATE_INDEX = 'UPDATE_INDEX'
+export const UPDATE_STARTING_LETTERS_CHKBOX = 'UPDATE_STARTING_LETTERS_CHKBOX'
+export const UPDATE_ENDING_LETTERS_CHKBOX = 'UPDATE_ENDING_LETTERS_CHKBOX'
 
 export function changeTitle(title) {
     return {
@@ -50,5 +53,24 @@ export function resetResponseData() {
 export function displayWordDefinition() {
     return {
         type: DISPLAY_WORD_DEFINITION
+    }
+}
+
+export function updateIndex(selectedIndex){
+    return {
+        type: UPDATE_INDEX,
+        data: selectedIndex
+    }
+}
+
+export function updateStartingLettersCheckBox() {
+    return {
+        type: UPDATE_STARTING_LETTERS_CHKBOX
+    }
+}
+
+export function updateEndingLettersCheckBox() {
+    return {
+        type: UPDATE_ENDING_LETTERS_CHKBOX
     }
 }

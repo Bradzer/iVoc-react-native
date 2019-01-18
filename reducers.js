@@ -1,6 +1,6 @@
 import { createStore } from 'redux'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, displayWordDefinition } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -19,6 +19,9 @@ const initialState = {
     buttonLeftIconName: 'checkbox-marked-circle',
     buttonLeftIconType:'material-community',
     buttonLeftTitle:"I know this",
+    selectedIndex: 0,
+    startingLettersChecked: false,
+    endingLettersChecked: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -91,6 +94,21 @@ const reducer = (state = initialState, action) => {
                     buttonLeftTitle:"Not interested",
                 
                 }))
+
+            case UPDATE_INDEX:
+                return(Object.assign({}, state, {
+                    selectedIndex: action.data
+                }))
+
+            case UPDATE_STARTING_LETTERS_CHKBOX:
+                return(Object.assign({}, state, {
+                    startingLettersChecked: !(state.startingLettersChecked)
+                }))
+
+            case UPDATE_ENDING_LETTERS_CHKBOX:
+            return(Object.assign({}, state, {
+                endingLettersChecked: !(state.endingLettersChecked)
+            }))
         default:
             return state
     }

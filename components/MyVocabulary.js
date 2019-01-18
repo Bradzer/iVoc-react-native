@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, FlatList, View } from 'react-native';
 import { Icon, ListItem } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
+import SyncStorage from 'sync-storage';
 
 import AppConstants from '../Constants'
 
@@ -34,6 +35,9 @@ export default class MyVocabulary extends React.Component {
 
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
+            console.log(SyncStorage.get('selectedIndex'));
+            console.log(SyncStorage.get('startingLettersChecked'));
+            console.log(SyncStorage.get('endingLettersChecked'));
             this.listOfWords = []
             wordsCollection.get()
             .then((queryResult) => {
