@@ -1,6 +1,7 @@
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import persistDataLocally from './persistDataLocally'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -21,7 +22,8 @@ const initialState = {
     buttonLeftTitle:"I know this",
     selectedIndex: 0,
     startingLettersChecked: false,
-    endingLettersChecked: false
+    endingLettersChecked: false,
+    realm: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -106,14 +108,19 @@ const reducer = (state = initialState, action) => {
                 }))
 
             case UPDATE_ENDING_LETTERS_CHKBOX:
-            return(Object.assign({}, state, {
-                endingLettersChecked: !(state.endingLettersChecked)
-            }))
+                return(Object.assign({}, state, {
+                    endingLettersChecked: !(state.endingLettersChecked)
+                }))
+
+            case UPDATE_REALM: 
+                return(Object.assign({}, state, {
+                    realm: action.data
+                }))
         default:
             return state
     }
 }
 
-const store = createStore(reducer)
+const store = createStore(reducer, applyMiddleware(persistDataLocally))
 
 export default store

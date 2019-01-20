@@ -4,12 +4,15 @@ import { connect } from 'react-redux'
 import store from '../reducers'
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
+import SyncStorage from 'sync-storage';
 
 import AppConstants from '../Constants'
-import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox } from '../actions'
+import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateReal } from '../actions'
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
+
+const Realm = require('realm');
 
 class Settings extends React.Component {
 
@@ -26,6 +29,17 @@ class Settings extends React.Component {
     partOfSpeechVerb = () => <Text>Verb</Text>
     partOfSpeechNoun = () => <Text>Noun</Text>
     partOfSpeechAdjective = () => <Text>Adjective</Text>
+
+    selectedIndexLocal = () => {
+        if(SyncStorage.get('updateIndex')) {
+            store.dispatch(updateIndex(SyncStorage.get('updateIndex')))
+        }
+    }
+
+    navigationListener = this.props.navigation.addListener('didFocus', () => {
+        Realm.open({})
+        .then((realm) => console.log('SETTINGS SCREEN OBJECTS : ', realm.objects('settingsScreen')))
+    })
 
     render() {
         const buttons = [{ element: this.partOfSpeechAll }, { element: this.partOfSpeechVerb }, { element: this.partOfSpeechNoun }, { element: this.partOfSpeechAdjective }]
@@ -64,6 +78,10 @@ class Settings extends React.Component {
                     onPress={clearVocabulary}/>
             </View>
         )
+    }
+
+    UNSAFE_componentWillMount() {
+
     }
 
     componentDidMount() {

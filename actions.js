@@ -8,6 +8,7 @@ export const DISPLAY_WORD_DEFINITION = 'DISPLAY_WORD_DEFINITION'
 export const UPDATE_INDEX = 'UPDATE_INDEX'
 export const UPDATE_STARTING_LETTERS_CHKBOX = 'UPDATE_STARTING_LETTERS_CHKBOX'
 export const UPDATE_ENDING_LETTERS_CHKBOX = 'UPDATE_ENDING_LETTERS_CHKBOX'
+export const UPDATE_REALM = 'UPDATE_REALM'
 
 export function changeTitle(title) {
     return {
@@ -74,3 +75,10 @@ export function updateEndingLettersCheckBox() {
         type: UPDATE_ENDING_LETTERS_CHKBOX
     }
 }
+
+export function updateReal(realmObject) {
+    return {
+        type: UPDATE_REALM,
+        data: realmObject
+    }
+} 
