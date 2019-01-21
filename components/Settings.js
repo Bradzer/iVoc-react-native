@@ -51,11 +51,11 @@ class Settings extends React.Component {
     }
 
     navigationListener = this.props.navigation.addListener('didFocus', () => {
-        Realm.open({})
-        .then((realm) => {
-            let foo = realm.objects('settingsScreen')
-            console.log('SETTINGS SCREEN OBJECTS : ', (_.valuesIn(foo))[0].updatedIndex)
-        })
+        // Realm.open({})
+        // .then((realm) => {
+        //     let foo = realm.objects('settingsScreen')
+        //     console.log('SETTINGS SCREEN OBJECTS : ', (_.valuesIn(foo))[0].updatedIndex)
+        // })
     })
 
     render() {
@@ -105,24 +105,23 @@ class Settings extends React.Component {
 
         Realm.open({schema: [settingsScreenSchema]})
         .then((realm) => {
-            if(realm.objects('settingsScreen').isValid()) {
-                console.log('SETTINGS SCREEN SCHEMA IS VALID')
-                if(!(realm.objects('settingsScreen').isEmpty())) {
-                    console.log('COLLECTION NOT EMPTY')
-                    let settingsScreen = realm.objects('settingsScreen')
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    store.dispatch(updateIndex(updatedIndex))
+            realm.write(() => {
+                if(realm.objects('settingsScreen').isValid()) {
+                    if(!(realm.objects('settingsScreen').isEmpty())) {
+                        let settingsScreen = realm.objects('settingsScreen')
+                        let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                        store.dispatch(updateIndex(updatedIndex))
+                    }
+                    else{
+                        realm.create('settingsScreen', { pk: 0 })
+                    }
                 }
-                else{
-                    console.log('COLLECTION EMPTY')
+                else {
                     realm.create('settingsScreen', { pk: 0 })
-                }
-            }
-            else {
-                console.log('SETTINGS SCREEN SCHEMA NOT FOUND')
-                realm.create('settingsScreen', { pk: 0 })
-            } 
+                }     
+            })
         })
+        .catch((error) => console.log(error))
     }
 
     componentDidMount() {
