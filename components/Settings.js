@@ -4,10 +4,9 @@ import { connect } from 'react-redux'
 import store from '../reducers'
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
-import SyncStorage from 'sync-storage';
 
 import AppConstants from '../Constants'
-import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateRealm } from '../actions'
+import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateSettingsPreferences } from '../actions'
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
@@ -35,27 +34,13 @@ class Settings extends React.Component {
         tabBarIcon: <Icon name= 'settings' />
     }
 
-    updateIndex = (selectedIndex) => {
-        store.dispatch(updateIndex(selectedIndex))
-    }
 
     partOfSpeechAll = () => <Text>All</Text>
     partOfSpeechVerb = () => <Text>Verb</Text>
     partOfSpeechNoun = () => <Text>Noun</Text>
     partOfSpeechAdjective = () => <Text>Adjective</Text>
 
-    selectedIndexLocal = () => {
-        if(SyncStorage.get('updateIndex')) {
-            store.dispatch(updateIndex(SyncStorage.get('updateIndex')))
-        }
-    }
-
     navigationListener = this.props.navigation.addListener('didFocus', () => {
-        // Realm.open({})
-        // .then((realm) => {
-        //     let foo = realm.objects('settingsScreen')
-        //     console.log('SETTINGS SCREEN OBJECTS : ', (_.valuesIn(foo))[0].updatedIndex)
-        // })
     })
 
     render() {
@@ -67,7 +52,7 @@ class Settings extends React.Component {
                 <CheckBox
                     title= 'Words starting with'
                     checked= {this.props.startingLettersChecked}
-                    onPress= {this.startingLettersPressed}
+                    onPress= {() => startingLettersPressed(this.props.startingLettersChecked)}
                 />
                 <Input
                     placeholder= 'Enter starting letters'
@@ -76,7 +61,7 @@ class Settings extends React.Component {
                 <CheckBox
                     title= 'Words ending with'
                     checked= {this.props.endingLettersChecked}
-                    onPress= {this.endingLettersPressed}
+                    onPress= {() => endingLettersPressed(this.props.endingLettersChecked)}
                 />
                 <Input
                     placeholder= 'Enter ending letters'
@@ -84,7 +69,7 @@ class Settings extends React.Component {
                 />
                 <Text style={{marginBottom: 8}}>Part of speech</Text>
                 <ButtonGroup
-                    onPress={this.updateIndex}
+                    onPress={changeIndex}
                     buttons={buttons}
                     selectedIndex={selectedIndex}
                     containerStyle={{marginBottom: 16}}
@@ -110,7 +95,9 @@ class Settings extends React.Component {
                     if(!(realm.objects('settingsScreen').isEmpty())) {
                         let settingsScreen = realm.objects('settingsScreen')
                         let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                        store.dispatch(updateIndex(updatedIndex))
+                        let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                        let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                        store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, updatedIndex))
                     }
                     else{
                         realm.create('settingsScreen', { pk: 0 })
@@ -126,14 +113,6 @@ class Settings extends React.Component {
 
     componentDidMount() {
 
-    }
-
-    startingLettersPressed = () => {
-        store.dispatch(updateStartingLettersCheckBox())
-    }
-
-    endingLettersPressed = () => {
-        store.dispatch(updateEndingLettersCheckBox())
     }
 
     inputDisplay = (checkBoxType) => {
@@ -171,6 +150,7 @@ const styles = StyleSheet.create({
     
       }
   }
+
   function clearVocabulary() {
       wordsDetailsCollection.get()
       .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
@@ -178,3 +158,15 @@ const styles = StyleSheet.create({
       wordsCollection.get()
       .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
   }
+
+const changeIndex = (selectedIndex) => {
+    store.dispatch(updateIndex(selectedIndex))
+}
+
+const startingLettersPressed = (currentStatus) => {
+    store.dispatch(updateStartingLettersCheckBox(currentStatus))
+}
+
+const endingLettersPressed = (currentStatus) => {
+    store.dispatch(updateEndingLettersCheckBox(currentStatus))
+}

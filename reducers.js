@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import persistDataLocally from './persistDataLocally'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_SETTINGS_PREFENRENCES } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -104,17 +104,24 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_STARTING_LETTERS_CHKBOX:
                 return(Object.assign({}, state, {
-                    startingLettersChecked: !(state.startingLettersChecked)
+                    startingLettersChecked: !(action.data)
                 }))
 
             case UPDATE_ENDING_LETTERS_CHKBOX:
                 return(Object.assign({}, state, {
-                    endingLettersChecked: !(state.endingLettersChecked)
+                    endingLettersChecked: !(action.data)
                 }))
 
             case UPDATE_REALM: 
                 return(Object.assign({}, state, {
                     realm: action.data
+                }))
+
+            case UPDATE_SETTINGS_PREFENRENCES:
+                return(Object.assign({}, state, {
+                    selectedIndex: action.data.partOfSpeechIndex,
+                    startingLettersChecked: action.data.startingLettersCheckBoxStatus,
+                    endingLettersChecked: action.data.endingLettersCheckBoxStatus,                
                 }))
         default:
             return state
@@ -124,3 +131,4 @@ const reducer = (state = initialState, action) => {
 const store = createStore(reducer, applyMiddleware(persistDataLocally))
 
 export default store
+
