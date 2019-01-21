@@ -2,28 +2,28 @@ import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPON
 
 const Realm = require('realm');
 
-const settingsScreenSchema = {
-    name: 'settingsScreen',
-    primaryKey: 'pk',
-    properties: {
-        pk: 'int',
-        startingLettersChecked: 'bool?',
-        endingLettersChecked: 'bool?',
-        updatedIndex: 'int?'
-    }
-}
+// const settingsScreenSchema = {
+//     name: 'settingsScreen',
+//     primaryKey: 'pk',
+//     properties: {
+//         pk: 'int',
+//         startingLettersChecked: 'bool?',
+//         endingLettersChecked: 'bool?',
+//         updatedIndex: 'int?'
+//     }
+// }
 
 const persistDataLocally = store => next => action => {
 
-const realm = new Realm()
+// const realm = new Realm()
 
-realm.close() 
+// realm.close() 
 
     switch(action.type) {
         
         case UPDATE_INDEX:
             console.log('CASE : UPDATE INDEX')
-            Realm.open({schema: [settingsScreenSchema]})
+            Realm.open({})
             .then((realm) => {
                 realm.write(() => {
                     console.log('PREPARING TO WRITE...')

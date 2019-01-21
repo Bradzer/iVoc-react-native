@@ -7,12 +7,26 @@ import firebase, { } from 'react-native-firebase'
 import SyncStorage from 'sync-storage';
 
 import AppConstants from '../Constants'
-import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateReal } from '../actions'
+import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateRealm } from '../actions'
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
 
 const Realm = require('realm');
+
+const _ = require('lodash')
+
+const settingsScreenSchema = {
+    name: 'settingsScreen',
+    primaryKey: 'pk',
+    properties: {
+        pk: 'int',
+        startingLettersChecked: 'bool?',
+        endingLettersChecked: 'bool?',
+        updatedIndex: 'int?'
+    }
+}
+
 
 class Settings extends React.Component {
 
@@ -38,7 +52,10 @@ class Settings extends React.Component {
 
     navigationListener = this.props.navigation.addListener('didFocus', () => {
         Realm.open({})
-        .then((realm) => console.log('SETTINGS SCREEN OBJECTS : ', realm.objects('settingsScreen')))
+        .then((realm) => {
+            let foo = realm.objects('settingsScreen')
+            console.log('SETTINGS SCREEN OBJECTS : ', (_.valuesIn(foo))[0].updatedIndex)
+        })
     })
 
     render() {
@@ -82,6 +99,30 @@ class Settings extends React.Component {
 
     UNSAFE_componentWillMount() {
 
+        const realm = new Realm()
+
+        realm.close() 
+
+        Realm.open({schema: [settingsScreenSchema]})
+        .then((realm) => {
+            if(realm.objects('settingsScreen').isValid()) {
+                console.log('SETTINGS SCREEN SCHEMA IS VALID')
+                if(!(realm.objects('settingsScreen').isEmpty())) {
+                    console.log('COLLECTION NOT EMPTY')
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    store.dispatch(updateIndex(updatedIndex))
+                }
+                else{
+                    console.log('COLLECTION EMPTY')
+                    realm.create('settingsScreen', { pk: 0 })
+                }
+            }
+            else {
+                console.log('SETTINGS SCREEN SCHEMA NOT FOUND')
+                realm.create('settingsScreen', { pk: 0 })
+            } 
+        })
     }
 
     componentDidMount() {
@@ -126,7 +167,8 @@ const styles = StyleSheet.create({
       return {
         selectedIndex: state.selectedIndex,
         startingLettersChecked: state.startingLettersChecked,
-        endingLettersChecked: state.endingLettersChecked
+        endingLettersChecked: state.endingLettersChecked,
+        realm: state.realm
     
       }
   }

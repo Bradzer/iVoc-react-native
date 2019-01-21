@@ -76,7 +76,7 @@ export function updateEndingLettersCheckBox() {
     }
 }
 
-export function updateReal(realmObject) {
+export function updateRealm(realmObject) {
     return {
         type: UPDATE_REALM,
         data: realmObject
