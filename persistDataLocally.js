@@ -1,4 +1,4 @@
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT } from './actions'
 
 const Realm = require('realm');
 
@@ -60,6 +60,46 @@ const persistDataLocally = store => next => action => {
                         }
                         else {
                             realm.create('settingsScreen', { pk: 0, endingLettersChecked: !(action.data) })
+                        } 
+                    })
+                })
+                .catch((error) => console.log(error))
+                break;
+
+            case UPDATE_STARTING_LETTERS_TEXT:
+                Realm.open({})
+                .then((realm) => {
+                    realm.write(() => {
+                        if(realm.objects('settingsScreen').isValid()) {
+                            if(!(realm.objects('settingsScreen').isEmpty())) {
+                                realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersText', action.data)
+                            }
+                            else{
+                                realm.create('settingsScreen', { pk: 0, startingLettersText: action.data })
+                            }
+                        }
+                        else {
+                            realm.create('settingsScreen', { pk: 0, startingLettersText: action.data })
+                        } 
+                    })
+                })
+                .catch((error) => console.log(error))
+                break;
+
+            case UPDATE_ENDING_LETTERS_TEXT:
+                Realm.open({})
+                .then((realm) => {
+                    realm.write(() => {
+                        if(realm.objects('settingsScreen').isValid()) {
+                            if(!(realm.objects('settingsScreen').isEmpty())) {
+                                realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', action.data)
+                            }
+                            else{
+                                realm.create('settingsScreen', { pk: 0, endingLettersText: action.data })
+                            }
+                        }
+                        else {
+                            realm.create('settingsScreen', { pk: 0, endingLettersText: action.data })
                         } 
                     })
                 })

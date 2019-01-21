@@ -32,9 +32,6 @@ let numberOfDefinitions = 0;
 
 let displayFrequency = 'none';
 
-// console.log(SyncStorage.get('practiceMode'));
-
-
 class RandomPractice extends React.Component {
 
     displayFrequency = 'none';

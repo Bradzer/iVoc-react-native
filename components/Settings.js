@@ -6,7 +6,7 @@ import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-element
 import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
-import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateSettingsPreferences } from '../actions'
+import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateStartingLettersText, updateEndingLettersText, updateSettingsPreferences } from '../actions'
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
@@ -22,7 +22,9 @@ const settingsScreenSchema = {
         pk: 'int',
         startingLettersChecked: 'bool?',
         endingLettersChecked: 'bool?',
-        updatedIndex: 'int?'
+        updatedIndex: 'int?',
+        startingLettersText: 'string?',
+        endingLettersText: 'string?'
     }
 }
 
@@ -56,6 +58,8 @@ class Settings extends React.Component {
                 />
                 <Input
                     placeholder= 'Enter starting letters'
+                    onChangeText= {onStartingLettersTextChanged}
+                    value={this.props.startingLettersText}
                     containerStyle={{marginBottom: 16, display: this.inputDisplay('startingLetters')}}
                 />
                 <CheckBox
@@ -65,6 +69,8 @@ class Settings extends React.Component {
                 />
                 <Input
                     placeholder= 'Enter ending letters'
+                    onChangeText={onEndingLettersTextChanged}
+                    value={this.props.endingLettersText}
                     containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
                 />
                 <Text style={{marginBottom: 8}}>Part of speech</Text>
@@ -97,7 +103,9 @@ class Settings extends React.Component {
                         let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                         let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                         let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                        store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, updatedIndex))
+                        let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                        let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                        store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, updatedIndex, startingLettersText, endingLettersText))
                     }
                     else{
                         realm.create('settingsScreen', { pk: 0 })
@@ -146,8 +154,9 @@ const styles = StyleSheet.create({
         selectedIndex: state.selectedIndex,
         startingLettersChecked: state.startingLettersChecked,
         endingLettersChecked: state.endingLettersChecked,
-        realm: state.realm
-    
+        realm: state.realm,
+        startingLettersText: state.startingLettersText,
+        endingLettersText: state.endingLettersText
       }
   }
 
@@ -169,4 +178,12 @@ const startingLettersPressed = (currentStatus) => {
 
 const endingLettersPressed = (currentStatus) => {
     store.dispatch(updateEndingLettersCheckBox(currentStatus))
+}
+
+const onStartingLettersTextChanged = (changedText) => {
+    store.dispatch(updateStartingLettersText(changedText))
+}
+
+const onEndingLettersTextChanged = (changedText) => {
+    store.dispatch(updateEndingLettersText(changedText))
 }

@@ -10,6 +10,8 @@ export const UPDATE_STARTING_LETTERS_CHKBOX = 'UPDATE_STARTING_LETTERS_CHKBOX'
 export const UPDATE_ENDING_LETTERS_CHKBOX = 'UPDATE_ENDING_LETTERS_CHKBOX'
 export const UPDATE_REALM = 'UPDATE_REALM'
 export const UPDATE_SETTINGS_PREFENRENCES = 'UPDATE_SETTINGS_PREFERENCES'
+export const UPDATE_STARTING_LETTERS_TEXT = 'UPDATE_STARTING_LETTERS_TEXT'
+export const UPDATE_ENDING_LETTERS_TEXT = 'UPDATE_ENDING_LETTERS_TEXT'
 
 export function changeTitle(title) {
     return {
@@ -86,13 +88,29 @@ export function updateRealm(realmObject) {
     }
 } 
 
-export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingLettersCheckBoxStatus, partOfSpeechIndex) {
+export function updateStartingLettersText(changedText) {
+    return {
+        type: UPDATE_STARTING_LETTERS_TEXT,
+        data: changedText
+    }
+}
+
+export function updateEndingLettersText(changedText) {
+    return {
+        type: UPDATE_ENDING_LETTERS_TEXT,
+        data: changedText
+    }
+}
+
+export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingLettersCheckBoxStatus, partOfSpeechIndex, startingLettersText, endingLettersText) {
     return {
         type: UPDATE_SETTINGS_PREFENRENCES,
         data: {
             startingLettersCheckBoxStatus: startingLettersCheckBoxStatus,
             endingLettersCheckBoxStatus: endingLettersCheckBoxStatus,
-            partOfSpeechIndex: partOfSpeechIndex
+            partOfSpeechIndex: partOfSpeechIndex,
+            startingLettersText: startingLettersText,
+            endingLettersText: endingLettersText
         }
     }
 }

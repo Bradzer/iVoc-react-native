@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import persistDataLocally from './persistDataLocally'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_SETTINGS_PREFENRENCES } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_SETTINGS_PREFENRENCES } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -23,7 +23,9 @@ const initialState = {
     selectedIndex: 0,
     startingLettersChecked: false,
     endingLettersChecked: false,
-    realm: null
+    realm: null,
+    startingLettersText: '',
+    endingLettersText: '',
 }
 
 const reducer = (state = initialState, action) => {
@@ -117,11 +119,23 @@ const reducer = (state = initialState, action) => {
                     realm: action.data
                 }))
 
+            case UPDATE_STARTING_LETTERS_TEXT:
+                return(Object.assign({}, state, {
+                    startingLettersText: action.data
+                }))
+
+                case UPDATE_ENDING_LETTERS_TEXT:
+                return(Object.assign({}, state, {
+                    endingLettersText: action.data
+                }))
+
             case UPDATE_SETTINGS_PREFENRENCES:
                 return(Object.assign({}, state, {
                     selectedIndex: action.data.partOfSpeechIndex,
                     startingLettersChecked: action.data.startingLettersCheckBoxStatus,
-                    endingLettersChecked: action.data.endingLettersCheckBoxStatus,                
+                    endingLettersChecked: action.data.endingLettersCheckBoxStatus,
+                    startingLettersText: action.data.startingLettersText,
+                    endingLettersText: action.data.startingLettersText              
                 }))
         default:
             return state
