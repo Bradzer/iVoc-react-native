@@ -14,6 +14,10 @@ export const UPDATE_STARTING_LETTERS_TEXT = 'UPDATE_STARTING_LETTERS_TEXT'
 export const UPDATE_ENDING_LETTERS_TEXT = 'UPDATE_ENDING_LETTERS_TEXT'
 export const UPDATE_API_URL = 'UPDATE_API_URL'
 export const DISPLAY_CHANGE_PREFS_BTN = 'DISPLAY_CHANGE_PREFS_BTN'
+export const DISPLAY_VOCABULARY_OVERLAY = 'DISPLAY_VOCABULARY_OVERLAY'
+export const HIDE_VOCABULARY_OVERLAY = 'HIDE_VOCABULARY_OVERLAY'
+export const UPDATE_VOCABULARY_LABEL = 'UPDATE_VOCABULARY_LABEL'
+
 
 export function changeTitle(title) {
     return {
@@ -129,5 +133,24 @@ export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingL
             endingLettersText: endingLettersText,
             apiUrl: apiUrl
         }
+    }
+}
+
+export function displayVocabularyOverlay(){
+    return {
+        type: DISPLAY_VOCABULARY_OVERLAY
+    }
+}
+
+export function hideVocabularyOverlay() {
+    return {
+        type: HIDE_VOCABULARY_OVERLAY
+    }
+}
+
+export function updateVocabularyLabel(label) {
+    return {
+        type: UPDATE_VOCABULARY_LABEL,
+        data: label
     }
 }

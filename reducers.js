@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import persistDataLocally from './persistDataLocally'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES, DISPLAY_CHANGE_PREFS_BTN } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES, DISPLAY_CHANGE_PREFS_BTN, DISPLAY_VOCABULARY_OVERLAY, HIDE_VOCABULARY_OVERLAY, UPDATE_VOCABULARY_LABEL } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -29,6 +29,8 @@ const initialState = {
     startingLettersText: '',
     endingLettersText: '',
     apiUrl: '',
+    vocabularyOverlayDisplay: 'false',
+    vocabularyLabel: ''
 }
 
 const reducer = (state = initialState, action) => {
@@ -155,6 +157,21 @@ const reducer = (state = initialState, action) => {
                     displayButtons: 'none',
                     displayScrollView: 'none',
                 
+                }))
+
+            case DISPLAY_VOCABULARY_OVERLAY:
+                return(Object.assign({}, state, {
+                    vocabularyOverlayDisplay: true
+                }))
+
+            case HIDE_VOCABULARY_OVERLAY:
+                return(Object.assign({}, state, {
+                    vocabularyOverlayDisplay: false
+                }))
+
+            case UPDATE_VOCABULARY_LABEL:
+                return(Object.assign({}, state, {
+                    vocabularyLabel: action.data
                 }))
 
         default:
