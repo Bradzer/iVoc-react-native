@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import persistDataLocally from './persistDataLocally'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES, DISPLAY_CHANGE_PREFS_BTN } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -13,6 +13,7 @@ const initialState = {
     itemFrequency: '',
     displayRandomWord: 'none',
     displayButtons: 'none',
+    displayScrollView: 'none',
     displayWordDefinition: 'none',
     buttonRightIconName: 'x-circle',
     buttonRightIconType: 'foundation',
@@ -20,13 +21,14 @@ const initialState = {
     buttonLeftIconName: 'checkbox-marked-circle',
     buttonLeftIconType:'material-community',
     buttonLeftTitle:"I know this",
+    displayChangePrefsBtn: 'none',
     selectedIndex: 0,
     startingLettersChecked: false,
     endingLettersChecked: false,
     realm: null,
     startingLettersText: '',
     endingLettersText: '',
-    apiUrl: ''
+    apiUrl: '',
 }
 
 const reducer = (state = initialState, action) => {
@@ -69,7 +71,9 @@ const reducer = (state = initialState, action) => {
                 buttonLeftIconName: 'checkbox-marked-circle',
                 buttonLeftIconType:'material-community',
                 buttonLeftTitle:"I know this",            
-                displayWordDefinition: 'none'
+                displayWordDefinition: 'none',
+                displayScrollView: 'flex',
+                displayChangePrefsBtn: 'none'
             }))
 
         case RESET_RESPONSE_DATA:
@@ -144,6 +148,15 @@ const reducer = (state = initialState, action) => {
                     endingLettersText: action.data.endingLettersText,
                     apiUrl: action.data.apiUrl              
                 }))
+
+            case DISPLAY_CHANGE_PREFS_BTN:
+                return (Object.assign({}, state, {
+                    displayChangePrefsBtn: 'flex',
+                    displayButtons: 'none',
+                    displayScrollView: 'none',
+                
+                }))
+
         default:
             return state
     }
