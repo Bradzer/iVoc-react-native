@@ -1,6 +1,7 @@
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import persistDataLocally from './persistDataLocally'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, displayWordDefinition } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -19,6 +20,13 @@ const initialState = {
     buttonLeftIconName: 'checkbox-marked-circle',
     buttonLeftIconType:'material-community',
     buttonLeftTitle:"I know this",
+    selectedIndex: 0,
+    startingLettersChecked: false,
+    endingLettersChecked: false,
+    realm: null,
+    startingLettersText: '',
+    endingLettersText: '',
+    apiUrl: ''
 }
 
 const reducer = (state = initialState, action) => {
@@ -91,11 +99,57 @@ const reducer = (state = initialState, action) => {
                     buttonLeftTitle:"Not interested",
                 
                 }))
+
+            case UPDATE_INDEX:
+                return(Object.assign({}, state, {
+                    selectedIndex: action.data
+                }))
+
+            case UPDATE_STARTING_LETTERS_CHKBOX:
+                return(Object.assign({}, state, {
+                    startingLettersChecked: !(action.data)
+                }))
+
+            case UPDATE_ENDING_LETTERS_CHKBOX:
+                return(Object.assign({}, state, {
+                    endingLettersChecked: !(action.data)
+                }))
+
+            case UPDATE_REALM: 
+                return(Object.assign({}, state, {
+                    realm: action.data
+                }))
+
+            case UPDATE_STARTING_LETTERS_TEXT:
+                return(Object.assign({}, state, {
+                    startingLettersText: action.data
+                }))
+
+            case UPDATE_ENDING_LETTERS_TEXT:
+                return(Object.assign({}, state, {
+                    endingLettersText: action.data
+                }))
+
+            case UPDATE_API_URL:
+                return(Object.assign({}, state, {
+                    apiUrl: action.data
+                }))
+
+            case UPDATE_SETTINGS_PREFENRENCES:
+                return(Object.assign({}, state, {
+                    selectedIndex: action.data.partOfSpeechIndex,
+                    startingLettersChecked: action.data.startingLettersCheckBoxStatus,
+                    endingLettersChecked: action.data.endingLettersCheckBoxStatus,
+                    startingLettersText: action.data.startingLettersText,
+                    endingLettersText: action.data.endingLettersText,
+                    apiUrl: action.data.apiUrl              
+                }))
         default:
             return state
     }
 }
 
-const store = createStore(reducer)
+const store = createStore(reducer, applyMiddleware(persistDataLocally))
 
 export default store
+

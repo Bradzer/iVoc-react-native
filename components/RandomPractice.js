@@ -4,26 +4,44 @@ import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
 import firebase, { } from 'react-native-firebase'
-import SyncStorage from 'sync-storage';
 
 import AppConstants from '../Constants'
-import { addResponseData, resetResponseData, displayWordDefinition } from '../actions'
+import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl } from '../actions'
   
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
 
 const axios = require('axios');
 
-SyncStorage.set('practiceMode', 'letterPattern')
 
-const apiRequest = axios.create({
-    baseURL: getBaseUrl(),
-    headers: {
-        'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+// const apiRequest = axios.create({
+//     baseURL: getBaseUrl,
+//     headers: {
+//         'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+//         'Accept': 'application/json',
+//         'Content-Type': 'application/json'
+//     }
+// })
+
+let apiRequest = null
+
+const Realm = require('realm');
+
+const settingsScreenSchema = {
+    name: 'settingsScreen',
+    primaryKey: 'pk',
+    properties: {
+        pk: 'int',
+        startingLettersChecked: 'bool?',
+        endingLettersChecked: 'bool?',
+        updatedIndex: 'int?',
+        startingLettersText: 'string?',
+        endingLettersText: 'string?',
+        apiUrl: 'string?'
     }
-})
+}
+
+const _ = require('lodash')
 
 let dataGoingToStore = {}
 
@@ -32,12 +50,35 @@ let numberOfDefinitions = 0;
 
 let displayFrequency = 'none';
 
-// console.log(SyncStorage.get('practiceMode'));
-
-
 class RandomPractice extends React.Component {
 
+    url = ''
+
     displayFrequency = 'none';
+
+    screenDidFocusListener = this.props.navigation.addListener('didFocus', () => {
+        Realm.open({schema: [settingsScreenSchema]})
+        .then((realm) => {
+            realm.write(() => {
+                let settingsScreen = realm.objects('settingsScreen')
+                let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                if(apiUrl && apiUrl !== '') {
+                    if(this.props.apiUrl !== apiUrl) {
+                        store.dispatch(updateApiUrl(apiUrl))
+                        apiRequest = axios.create({
+                            baseURL: this.props.apiUrl,
+                            headers: {
+                                'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                    }
+                }
+                })
+            })
+        .catch((error) => console.log(error))
+        })
 
     render() {
 
@@ -78,9 +119,69 @@ class RandomPractice extends React.Component {
         )
     }
 
-    componentDidMount() {
-        goToNextRandomWord();
+    UNSAFE_componentWillMount() {
 
+        const realm = new Realm()
+        realm.close()
+        Realm.open({schema: [settingsScreenSchema]})
+        .then((realm) => {
+            realm.write(() => {
+                if(realm.objects('settingsScreen').isValid()) {
+                    if(!(realm.objects('settingsScreen').isEmpty())) {
+                        let settingsScreen = realm.objects('settingsScreen')
+                        let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                        if(apiUrl && apiUrl !== '') {
+                            store.dispatch(updateApiUrl(apiUrl))
+                            apiRequest = axios.create({
+                                baseURL: this.props.apiUrl,
+                                headers: {
+                                    'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                        }
+                        else {
+                            store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
+                            apiRequest = axios.create({
+                                baseURL: this.props.apiUrl,
+                                headers: {
+                                    'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                }
+                            })  
+                        }
+                    }
+                    else{
+                        store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
+                        apiRequest = axios.create({
+                            baseURL: this.props.apiUrl,
+                            headers: {
+                                'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        })  
+                    }
+                }
+                else {
+                    store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
+                    apiRequest = axios.create({
+                        baseURL: this.props.apiUrl,
+                        headers: {
+                            'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    }) 
+                }     
+            })
+            goToNextRandomWord();
+        })
+        .catch((error) => console.log(error))
+    }
+    componentDidMount() {
     }
 
     componentWillUnmount() {
@@ -120,7 +221,8 @@ function mapStateToProps(state) {
         buttonRightTitle: state.buttonRightTitle,
         buttonLeftIconName: state.buttonLeftIconName,
         buttonLeftIconType: state.buttonLeftIconType,
-        buttonLeftTitle: state.buttonLeftTitle
+        buttonLeftTitle: state.buttonLeftTitle,
+        apiUrl: state.apiUrl
 
     }
 }
@@ -165,21 +267,4 @@ function addKnownWordToCloud(word){
 
 function showWordDefinition() {
     store.dispatch(displayWordDefinition())
-}
-
-function getPracticeMode() {
-    return (SyncStorage.get('practiceMode') ? SyncStorage.get('practiceMode') : 'null')
-}
-
-function getBaseUrl() {
-    switch(getPracticeMode()) {
-        case 'example':
-            return 'https://wordsapiv1.p.mashape.com/words/example'
-
-        case 'letterPattern':
-            return 'https://wordsapiv1.p.mashape.com/words/?letterPattern=^.{5}$&hasDetails=definitions&random=true'
-
-        default:
-            return 'https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'
-    }
 }
