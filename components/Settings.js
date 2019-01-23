@@ -24,7 +24,8 @@ const settingsScreenSchema = {
         endingLettersChecked: 'bool?',
         updatedIndex: 'int?',
         startingLettersText: 'string?',
-        endingLettersText: 'string?'
+        endingLettersText: 'string?',
+        apiUrl: 'string?'
     }
 }
 
@@ -105,7 +106,8 @@ class Settings extends React.Component {
                         let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
                         let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                         let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                        store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, updatedIndex, startingLettersText, endingLettersText))
+                        let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                        store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, updatedIndex, startingLettersText, endingLettersText, apiUrl))
                     }
                     else{
                         realm.create('settingsScreen', { pk: 0 })

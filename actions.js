@@ -12,6 +12,7 @@ export const UPDATE_REALM = 'UPDATE_REALM'
 export const UPDATE_SETTINGS_PREFENRENCES = 'UPDATE_SETTINGS_PREFERENCES'
 export const UPDATE_STARTING_LETTERS_TEXT = 'UPDATE_STARTING_LETTERS_TEXT'
 export const UPDATE_ENDING_LETTERS_TEXT = 'UPDATE_ENDING_LETTERS_TEXT'
+export const UPDATE_API_URL = 'UPDATE_API_URL'
 
 export function changeTitle(title) {
     return {
@@ -102,7 +103,14 @@ export function updateEndingLettersText(changedText) {
     }
 }
 
-export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingLettersCheckBoxStatus, partOfSpeechIndex, startingLettersText, endingLettersText) {
+export function updateApiUrl(url) {
+    return {
+        type: UPDATE_API_URL,
+        data: url
+    }
+}
+
+export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingLettersCheckBoxStatus, partOfSpeechIndex, startingLettersText, endingLettersText, apiUrl) {
     return {
         type: UPDATE_SETTINGS_PREFENRENCES,
         data: {
@@ -110,7 +118,8 @@ export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingL
             endingLettersCheckBoxStatus: endingLettersCheckBoxStatus,
             partOfSpeechIndex: partOfSpeechIndex,
             startingLettersText: startingLettersText,
-            endingLettersText: endingLettersText
+            endingLettersText: endingLettersText,
+            apiUrl: apiUrl
         }
     }
 }
