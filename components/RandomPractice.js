@@ -6,7 +6,7 @@ import store from '../reducers'
 import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
-import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl } from '../actions'
+import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
   
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
@@ -56,6 +56,8 @@ class RandomPractice extends React.Component {
 
     displayFrequency = 'none';
 
+    goToPreferences = () => this.props.navigation.navigate('Settings')
+
     screenDidFocusListener = this.props.navigation.addListener('didFocus', () => {
         Realm.open({schema: [settingsScreenSchema]})
         .then((realm) => {
@@ -75,6 +77,9 @@ class RandomPractice extends React.Component {
                         })
                     }
                 }
+                if(this.props.displayChangePrefsBtn === 'flex'){
+                    goToNextRandomWord()
+                }
                 })
             })
         .catch((error) => console.log(error))
@@ -84,7 +89,7 @@ class RandomPractice extends React.Component {
 
         return(
             <View style={styles.container}>
-            <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1}}>
+            <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1, display: this.props.displayScrollView}}>
                 <View style={{display: this.props.displayWordDefinition}}>
                     <Text>Definition</Text>
                     <Text>{this.props.itemDef}</Text>
@@ -113,6 +118,12 @@ class RandomPractice extends React.Component {
                     title= {this.props.buttonRightTitle}
                     containerStyle={{marginHorizontal: 16}}
                     onPress={(this.props.buttonRightTitle !== 'Got it') ? showWordDefinition : gotItBtnClicked}
+                    />
+                </View>
+                <View style={[styles.buttonGroup, {display: this.props.displayChangePrefsBtn}]}>
+                <Button
+                    title= 'CHANGE RANDOM PRACTICE PREFERENCES'
+                    onPress={this.goToPreferences}
                     />
                 </View>
             </View>
@@ -222,7 +233,9 @@ function mapStateToProps(state) {
         buttonLeftIconName: state.buttonLeftIconName,
         buttonLeftIconType: state.buttonLeftIconType,
         buttonLeftTitle: state.buttonLeftTitle,
-        apiUrl: state.apiUrl
+        apiUrl: state.apiUrl,
+        displayScrollView: state.displayScrollView,
+        displayChangePrefsBtn: state.displayChangePrefsBtn
 
     }
 }
@@ -234,15 +247,20 @@ function goToNextRandomWord(){
         apiResponse = response.data        
         numberOfDefinitions = apiResponse.results.length
         dataGoingToStore = {}
+        if(apiResponse.results[0]){
+            dataGoingToStore = {
+                word: apiResponse.word,
+                partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+                pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+                frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+                definition: apiResponse.results[0].definition,
+                }
+            store.dispatch(addResponseData(dataGoingToStore)) 
         
-        dataGoingToStore = {
-        word: apiResponse.word,
-        partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-        pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
-        frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-        definition: apiResponse.results[0].definition,
         }
-        store.dispatch(addResponseData(dataGoingToStore)) 
+        else {
+            store.dispatch(displayUpdateChangePrefsBtn())
+        }
     })
     .catch((error) => console.error(error))
 }

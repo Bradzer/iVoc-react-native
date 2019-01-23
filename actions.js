@@ -13,6 +13,7 @@ export const UPDATE_SETTINGS_PREFENRENCES = 'UPDATE_SETTINGS_PREFERENCES'
 export const UPDATE_STARTING_LETTERS_TEXT = 'UPDATE_STARTING_LETTERS_TEXT'
 export const UPDATE_ENDING_LETTERS_TEXT = 'UPDATE_ENDING_LETTERS_TEXT'
 export const UPDATE_API_URL = 'UPDATE_API_URL'
+export const DISPLAY_CHANGE_PREFS_BTN = 'DISPLAY_CHANGE_PREFS_BTN'
 
 export function changeTitle(title) {
     return {
@@ -108,6 +109,13 @@ export function updateApiUrl(url) {
         type: UPDATE_API_URL,
         data: url
     }
+}
+
+export function displayUpdateChangePrefsBtn() {
+    return {
+        type: DISPLAY_CHANGE_PREFS_BTN,
+    }
+
 }
 
 export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingLettersCheckBoxStatus, partOfSpeechIndex, startingLettersText, endingLettersText, apiUrl) {
