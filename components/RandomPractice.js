@@ -50,6 +50,8 @@ let numberOfDefinitions = 0;
 
 let displayFrequency = 'none';
 
+let randomDefinitions = []
+
 class RandomPractice extends React.Component {
 
     url = ''
@@ -90,19 +92,18 @@ class RandomPractice extends React.Component {
         return(
             <View style={styles.container}>
             <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1, display: this.props.displayScrollView}}>
-                <View style={{display: this.props.displayWordDefinition}}>
-                    <Text>Definition</Text>
-                    <Text>{this.props.itemDef}</Text>
-                    {/* <Text>Synonyms</Text>
-                    <Text>{this.props.itemSynonyms}</Text> */}
-                    {/* <Text>Example</Text>
-                    <Text>{this.props.itemExamples}</Text> */}
-                </View>
                 <View style={{display: this.props.displayRandomWord}}>
                     <Text>{this.props.itemWord}</Text>
                     <Text>{this.props.itemPartOfSpeech}</Text>
                     <Text>Pronunciation : {this.props.itemPronunciation}</Text>
                     <Text>Frequency of : {this.props.itemFrequency}</Text>
+                    <Text></Text>
+                    <View style={{display: this.props.displayWordDefinition}}>
+                        <Text>Definitions</Text>
+                        <Text></Text>
+                        <Text>{this.props.itemDef}</Text>
+                    </View>
+
                 </View>
                 {/* <Text>{AppConstants.STRING_LOREM_IPSUM}</Text> */}
             </ScrollView>
@@ -241,6 +242,7 @@ function mapStateToProps(state) {
 }
 
 function goToNextRandomWord(){
+    let definitions = ''
     apiRequest.get()
     .then((response) => {
 
@@ -248,13 +250,30 @@ function goToNextRandomWord(){
         numberOfDefinitions = apiResponse.results.length
         dataGoingToStore = {}
         if(apiResponse.results[0]){
-            dataGoingToStore = {
-                word: apiResponse.word,
-                partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-                pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
-                frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-                definition: apiResponse.results[0].definition,
+            if(apiResponse.results.length > 1) {
+                // definitions += apiResponse.results[0].definition
+                for(let i= 0; i < numberOfDefinitions; i++) {
+                    let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
+                    let definition = apiResponse.results[i].definition
+                    definitions += i+1 + '.\n' + partOfSpeech + '\n' + definition + '\n\n'
                 }
+                dataGoingToStore = {
+                    word: apiResponse.word,
+                    partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+                    pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+                    frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+                    definition: definitions,    
+                }
+            }
+            else {
+                dataGoingToStore = {
+                    word: apiResponse.word,
+                    partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+                    pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+                    frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+                    definition: apiResponse.results[0].definition,
+                }    
+            }
             store.dispatch(addResponseData(dataGoingToStore)) 
         
         }
