@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import persistDataLocally from './persistDataLocally'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES, DISPLAY_CHANGE_PREFS_BTN, DISPLAY_VOCABULARY_OVERLAY, HIDE_VOCABULARY_OVERLAY, UPDATE_VOCABULARY_LABEL } from './actions'
+import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES, DISPLAY_CHANGE_PREFS_BTN, DISPLAY_VOCABULARY_OVERLAY, HIDE_VOCABULARY_OVERLAY, UPDATE_VOCABULARY_WORD, UPDATE_VOCABULARY_PART_OF_SPEECH, UPDATE_VOCABULARY_DEFINITION, UPDATE_VOCABULARY_PRONUNCIATION, UPDATE_VOCABULARY_FREQUENCY, } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -30,7 +30,11 @@ const initialState = {
     endingLettersText: '',
     apiUrl: '',
     vocabularyOverlayDisplay: 'false',
-    vocabularyLabel: ''
+    vocabularyWord: '',
+    vocabularyPartOfSpeech: '',
+    vocabularyDefinition: '',
+    vocabularyPronunciation: '',
+    vocabularyFrequency: '',
 }
 
 const reducer = (state = initialState, action) => {
@@ -161,17 +165,43 @@ const reducer = (state = initialState, action) => {
 
             case DISPLAY_VOCABULARY_OVERLAY:
                 return(Object.assign({}, state, {
-                    vocabularyOverlayDisplay: true
+                    vocabularyOverlayDisplay: true,
+                    vocabularyWord: action.data.word,
+                    vocabularyPartOfSpeech: action.data.partOfSpeech,
+                    vocabularyDefinition: action.data.definition,
+                    vocabularyPronunciation: action.data.pronunciation,
+                    vocabularyFrequency: action.data.frequency,
+                
                 }))
 
             case HIDE_VOCABULARY_OVERLAY:
                 return(Object.assign({}, state, {
-                    vocabularyOverlayDisplay: false
+                    vocabularyOverlayDisplay: false,                
                 }))
 
-            case UPDATE_VOCABULARY_LABEL:
+            case UPDATE_VOCABULARY_WORD:
                 return(Object.assign({}, state, {
-                    vocabularyLabel: action.data
+                    vocabularyWord: action.data
+                }))
+
+            case UPDATE_VOCABULARY_PART_OF_SPEECH:
+                return(Object.assign({}, state, {
+                    vocabularyPartOfSpeech: action.data
+                }))
+
+            case UPDATE_VOCABULARY_DEFINITION:
+                return(Object.assign({}, state, {
+                    vocabularyDefinition: action.data
+                }))
+
+            case UPDATE_VOCABULARY_PRONUNCIATION:
+                return(Object.assign({}, state, {
+                    vocabularyPronunciation: action.data
+                }))
+
+            case UPDATE_VOCABULARY_FREQUENCY:
+                return(Object.assign({}, state, {
+                    vocabularyFrequency: action.data
                 }))
 
         default:

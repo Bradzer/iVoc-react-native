@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import store from '../reducers'
 
 import AppConstants from '../Constants'
-import { displayVocabularyOverlay, hideVocabularyOverlay, updateVocabularyLabel } from '../actions'
+import { displayVocabularyOverlay, hideVocabularyOverlay, updateVocabularyWord, updateVocabularyPartOfSpeech, updateVocabularyDefinition, updateVocabularyPronunciation, updateVocabularyFrequency } from '../actions'
 
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
@@ -32,7 +32,11 @@ class MyVocabulary extends React.Component {
                     renderItem={renderItem}
                 />
                 <Overlay isVisible={this.props.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
-                    <Text>{this.props.vocabularyLabel}</Text>
+                    <Text>{this.props.vocabularyWord}</Text>
+                    <Text>{this.props.vocabularyPartOfSpeech}</Text>
+                    <Text>{this.props.vocabularyDefinition}</Text>
+                    <Text>Pronunciation: {this.props.vocabularyPronunciation}</Text>
+                    <Text>Frequency: {this.props.vocabularyFrequency}</Text>
                 </Overlay>
             </View>
         )
@@ -67,7 +71,11 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     return {
         vocabularyOverlayDisplay: state.vocabularyOverlayDisplay,
-        vocabularyLabel: state.vocabularyLabel
+        vocabularyWord: state.vocabularyWord,
+        vocabularyPartOfSpeech: state.vocabularyPartOfSpeech,
+        vocabularyDefinition: state.vocabularyDefinition,
+        vocabularyPronunciation: state.vocabularyPronunciation,
+        vocabularyFrequency: state.vocabularyFrequency
     }
 }
 
@@ -77,18 +85,21 @@ function mapStateToProps(state) {
   const renderItem = ({item}) => (
     <ListItem
         title={item.label}
-        // subtitle={item.subtitle}
+        subtitle={item.partOfSpeech}
         rightIcon= {<Icon name= 'keyboard-arrow-right' />}
-        onPress= {() => itemPressed(item.label)}
+        onPress= {() => itemPressed(item.originalId)}
     />
   )
 
-  const itemPressed = (label) => {
-      store.dispatch(updateVocabularyLabel(label))
-      store.dispatch(displayVocabularyOverlay())
+  const itemPressed = (originalId) => {
+    
+    wordsDetailsCollection.doc(originalId).get()
+    .then((docSnapshot) => {
+        store.dispatch(displayVocabularyOverlay(docSnapshot.data()))
+    })
   }
 
   const onBackdropPress = () => {
-      store.dispatch(hideVocabularyOverlay())
+    store.dispatch(hideVocabularyOverlay())
   }
   
