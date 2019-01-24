@@ -14,6 +14,13 @@ export const UPDATE_STARTING_LETTERS_TEXT = 'UPDATE_STARTING_LETTERS_TEXT'
 export const UPDATE_ENDING_LETTERS_TEXT = 'UPDATE_ENDING_LETTERS_TEXT'
 export const UPDATE_API_URL = 'UPDATE_API_URL'
 export const DISPLAY_CHANGE_PREFS_BTN = 'DISPLAY_CHANGE_PREFS_BTN'
+export const DISPLAY_VOCABULARY_OVERLAY = 'DISPLAY_VOCABULARY_OVERLAY'
+export const HIDE_VOCABULARY_OVERLAY = 'HIDE_VOCABULARY_OVERLAY'
+export const UPDATE_VOCABULARY_WORD = 'UPDATE_VOCABULARY_WORD'
+export const UPDATE_VOCABULARY_PART_OF_SPEECH = 'UPDATE_VOCABULARY_PART_OF_SPEECH'
+export const UPDATE_VOCABULARY_DEFINITION = 'UPDATE_VOCABULARY_DEFINITION'
+export const UPDATE_VOCABULARY_PRONUNCIATION = 'UPDATE_VOCABULARY_PRONUNCIATION'
+export const UPDATE_VOCABULARY_FREQUENCY = 'UPDATE_VOCABULARY_FREQUENCY'
 
 export function changeTitle(title) {
     return {
@@ -129,5 +136,53 @@ export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingL
             endingLettersText: endingLettersText,
             apiUrl: apiUrl
         }
+    }
+}
+
+export function displayVocabularyOverlay(docSnapshotData){
+    return {
+        type: DISPLAY_VOCABULARY_OVERLAY,
+        data: docSnapshotData
+    }
+}
+
+export function hideVocabularyOverlay() {
+    return {
+        type: HIDE_VOCABULARY_OVERLAY
+    }
+}
+
+export function updateVocabularyWord(word) {
+    return {
+        type: UPDATE_VOCABULARY_WORD,
+        data: word
+    }
+}
+
+export function updateVocabularyPartOfSpeech(partOfSpeech) {
+    return {
+        type: UPDATE_VOCABULARY_PART_OF_SPEECH,
+        data: partOfSpeech
+    }
+}
+
+export function updateVocabularyDefinition(definition) {
+    return {
+        type: UPDATE_VOCABULARY_DEFINITION,
+        data: definition
+    }
+}
+
+export function updateVocabularyPronunciation(pronunciation) {
+    return {
+        type: UPDATE_VOCABULARY_PRONUNCIATION,
+        data: pronunciation
+    }
+}
+
+export function updateVocabularyFrequency(frequency) {
+    return {
+        type: UPDATE_VOCABULARY_FREQUENCY,
+        data: frequency
     }
 }

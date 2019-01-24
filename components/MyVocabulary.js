@@ -1,14 +1,18 @@
 import React from 'react';
-import { StyleSheet, FlatList, View } from 'react-native';
-import { Icon, ListItem } from 'react-native-elements'
+import { StyleSheet, FlatList, View, Text } from 'react-native';
+import { Icon, ListItem, Overlay } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
+import { connect } from 'react-redux'
+import store from '../reducers'
 
 import AppConstants from '../Constants'
+import { displayVocabularyOverlay, hideVocabularyOverlay, updateVocabularyWord, updateVocabularyPartOfSpeech, updateVocabularyDefinition, updateVocabularyPronunciation, updateVocabularyFrequency } from '../actions'
+
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
 
-export default class MyVocabulary extends React.Component {
+class MyVocabulary extends React.Component {
     
     static navigationOptions = {
       headerTitle: AppConstants.APP_NAME,
@@ -27,6 +31,13 @@ export default class MyVocabulary extends React.Component {
                     data={this.listOfWords} 
                     renderItem={renderItem}
                 />
+                <Overlay isVisible={this.props.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
+                    <Text>{this.props.vocabularyWord}</Text>
+                    <Text>{this.props.vocabularyPartOfSpeech}</Text>
+                    <Text>{this.props.vocabularyDefinition}</Text>
+                    <Text>Pronunciation: {this.props.vocabularyPronunciation}</Text>
+                    <Text>Frequency: {this.props.vocabularyFrequency}</Text>
+                </Overlay>
             </View>
         )
     }
@@ -46,6 +57,8 @@ export default class MyVocabulary extends React.Component {
     }
 }
 
+export default connect(mapStateToProps)(MyVocabulary)
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -55,13 +68,38 @@ const styles = StyleSheet.create({
     },
   });
 
+function mapStateToProps(state) {
+    return {
+        vocabularyOverlayDisplay: state.vocabularyOverlayDisplay,
+        vocabularyWord: state.vocabularyWord,
+        vocabularyPartOfSpeech: state.vocabularyPartOfSpeech,
+        vocabularyDefinition: state.vocabularyDefinition,
+        vocabularyPronunciation: state.vocabularyPronunciation,
+        vocabularyFrequency: state.vocabularyFrequency
+    }
+}
+
+
   const keyExtractor = (item, index) => index.toString();
 
   const renderItem = ({item}) => (
     <ListItem
         title={item.label}
-        // subtitle={item.subtitle}
+        subtitle={item.partOfSpeech}
         rightIcon= {<Icon name= 'keyboard-arrow-right' />}
+        onPress= {() => itemPressed(item.originalId)}
     />
   )
+
+  const itemPressed = (originalId) => {
+    
+    wordsDetailsCollection.doc(originalId).get()
+    .then((docSnapshot) => {
+        store.dispatch(displayVocabularyOverlay(docSnapshot.data()))
+    })
+  }
+
+  const onBackdropPress = () => {
+    store.dispatch(hideVocabularyOverlay())
+  }
   

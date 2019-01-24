@@ -279,7 +279,7 @@ function addKnownWordToCloud(word){
     wordsDetailsCollection.add(word)
     .then((docRef) => {
         docRef.update({id: docRef.id})
-        wordsCollection.add({originalId: docRef.id, label: word.word})
+        wordsCollection.add({originalId: docRef.id, label: word.word, partOfSpeech: word.partOfSpeech})
     })
 }
 
