@@ -13,16 +13,6 @@ const wordsCollection = firebase.firestore().collection('words')
 
 const axios = require('axios');
 
-
-// const apiRequest = axios.create({
-//     baseURL: getBaseUrl,
-//     headers: {
-//         'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-//         'Accept': 'application/json',
-//         'Content-Type': 'application/json'
-//     }
-// })
-
 let apiRequest = null
 
 const Realm = require('realm');
@@ -251,7 +241,6 @@ function goToNextRandomWord(){
         dataGoingToStore = {}
         if(apiResponse.results[0]){
             if(apiResponse.results.length > 1) {
-                // definitions += apiResponse.results[0].definition
                 for(let i= 0; i < numberOfDefinitions; i++) {
                     let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
                     let definition = apiResponse.results[i].definition
