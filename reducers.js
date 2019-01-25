@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import persistDataLocally from './persistDataLocally'
+import logger from 'redux-logger'
 
 import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES, DISPLAY_CHANGE_PREFS_BTN, DISPLAY_VOCABULARY_OVERLAY, HIDE_VOCABULARY_OVERLAY, UPDATE_VOCABULARY_WORD, UPDATE_VOCABULARY_PART_OF_SPEECH, UPDATE_VOCABULARY_DEFINITION, UPDATE_VOCABULARY_PRONUNCIATION, UPDATE_VOCABULARY_FREQUENCY, } from './actions'
 
@@ -209,7 +210,7 @@ const reducer = (state = initialState, action) => {
     }
 }
 
-const store = createStore(reducer, applyMiddleware(persistDataLocally))
+const store = createStore(reducer, applyMiddleware(persistDataLocally, logger))
 
 export default store
 
