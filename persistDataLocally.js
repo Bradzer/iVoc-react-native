@@ -1,3 +1,4 @@
+import AppConstants from './Constants'
 import { 
     UPDATE_INDEX, 
     UPDATE_STARTING_LETTERS_CHKBOX, 
@@ -390,12 +391,14 @@ const persistDataLocally = store => next => action => {
                 realm.write(() => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', (!(action.data)))
                     // reactotron.logImportant('UPDATE_SPECIFIC_WORD_CHKBOX AFTER CREATION IN REALM : ', realm.objects('settingsScreen'))
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let specificWordText = ((_.valuesIn(settingsScreen))[0].specificWordText).toLowerCase()
 
-                    if(!(action.data)) {
-                        let settingsScreen = realm.objects('settingsScreen')
-                        let specificWordText = ((_.valuesIn(settingsScreen))[0].specificWordText).toLowerCase()
-
+                    if(!(action.data) && specificWordText) {
                         realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + specificWordText)
+                    }
+                    else {
+                        realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', AppConstants.RANDOM_URL)
                     }
                 })
             })
