@@ -5,7 +5,6 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
 import { Icon } from 'react-native-elements'
 import { Provider } from 'react-redux'
-import Reactotron from 'reactotron-react-native'
 
 import Home from './components/Home'
 import MyVocabulary from './components/MyVocabulary'
@@ -19,7 +18,6 @@ import store from './reducers'
 export default class App extends React.Component {
 
   render() {
-    Reactotron.log('hello rendering world')
     return (
       <Provider store={store}>
         <MenuProvider>
