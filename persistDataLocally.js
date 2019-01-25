@@ -389,7 +389,7 @@ const persistDataLocally = store => next => action => {
             .then((realm) => {
                 realm.write(() => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', (!(action.data)))
-                    reactotron.logImportant('UPDATE_SPECIFIC_WORD_CHKBOX AFTER CREATION IN REALM : ', realm.objects('settingsScreen'))
+                    // reactotron.logImportant('UPDATE_SPECIFIC_WORD_CHKBOX AFTER CREATION IN REALM : ', realm.objects('settingsScreen'))
 
                     if(!(action.data)) {
                         let settingsScreen = realm.objects('settingsScreen')
@@ -668,7 +668,7 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', action.data.endingLettersText)
                     realm.objects('settingsScreen').filtered('pk = 0').update('specificWordText', action.data.specificWordText)
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', action.data.apiUrl)
-                    reactotron.logImportant('NEWLY ADDED VALUES IN REALM : ', realm.objects('settingsScreen').filtered('pk = 0'))
+                    // reactotron.logImportant('NEWLY ADDED VALUES IN REALM : ', realm.objects('settingsScreen').filtered('pk = 0'))
                 })
             })
             .catch((error) => console.log(error))

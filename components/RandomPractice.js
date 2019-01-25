@@ -17,20 +17,6 @@ let apiRequest = null
 
 const Realm = require('realm');
 
-// const settingsScreenSchema = {
-//     name: 'settingsScreen',
-//     primaryKey: 'pk',
-//     properties: {
-//         pk: 'int',
-//         startingLettersChecked: 'bool?',
-//         endingLettersChecked: 'bool?',
-//         updatedIndex: 'int?',
-//         startingLettersText: 'string?',
-//         endingLettersText: 'string?',
-//         apiUrl: 'string?'
-//     }
-// }
-
 const _ = require('lodash')
 
 let dataGoingToStore = {}
@@ -123,8 +109,6 @@ class RandomPractice extends React.Component {
 
     UNSAFE_componentWillMount() {
 
-        // const realm = new Realm()
-        // realm.close()
         Realm.open({})
         .then((realm) => {
             realm.write(() => {

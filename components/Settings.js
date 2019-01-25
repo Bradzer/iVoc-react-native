@@ -117,13 +117,13 @@ class Settings extends React.Component {
                     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
                     let specificWordText = (_.valuesIn(settingsScreen))[0].specificWordText
                     let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-                    reactotron.logImportant('VALUES BEFORE DISPATCH : ', updatedIndex, startingLettersChecked, endingLettersChecked, specificWordChecked, startingLettersText, endingLettersText, specificWordText, apiUrl)
+                    // reactotron.logImportant('VALUES BEFORE DISPATCH : ', updatedIndex, startingLettersChecked, endingLettersChecked, specificWordChecked, startingLettersText, endingLettersText, specificWordText, apiUrl)
                     store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, specificWordText, apiUrl))
                 }
                 else{
-                    reactotron.logImportant('REALM BEFORE CREATION : ', realm.objects('settingsScreen'))
+                    // reactotron.logImportant('REALM BEFORE CREATION : ', realm.objects('settingsScreen'))
                     realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
-                    reactotron.logImportant('REALM AFTER CREATION : ', realm.objects('settingsScreen'))
+                    // reactotron.logImportant('REALM AFTER CREATION : ', realm.objects('settingsScreen'))
                 }
             })
         })
