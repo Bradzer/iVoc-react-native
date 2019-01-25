@@ -7,6 +7,7 @@ import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateSpecificWordCheckBox, updateStartingLettersText, updateEndingLettersText, updateSpecificWordText, updateSettingsPreferences } from '../actions'
+import reactotron from '../ReactotronConfig';
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
@@ -102,33 +103,28 @@ class Settings extends React.Component {
 
     UNSAFE_componentWillMount() {
 
-        // const realm = new Realm()
-
-        // realm.close() 
-
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
-                if(realm.objects('settingsScreen').isValid()) {
-                    if(!(realm.objects('settingsScreen').isEmpty())) {
-                        let settingsScreen = realm.objects('settingsScreen')
-                        let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                        let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                        let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                        let specificWordChecked = (_.valuesIn(settingsScreen))[0].specificWordChecked
-                        let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                        let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                        let specificWordText = (_.valuesIn(settingsScreen))[0].specificWordText
-                        let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-                        store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, specificWordText, apiUrl))
-                    }
-                    else{
-                        realm.create('settingsScreen', { pk: 0 })
-                    }
+                if(!(realm.objects('settingsScreen').isEmpty())) {
+                    let settingsScreen = realm.objects('settingsScreen')
+                    reactotron.logImportant('VALUES UNCHANGED FROM REAL : ', settingsScreen)
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let specificWordChecked = (_.valuesIn(settingsScreen))[0].specificWordChecked
+                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let specificWordText = (_.valuesIn(settingsScreen))[0].specificWordText
+                    let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                    reactotron.logImportant('VALUES BEFORE DISPATCH : ', updatedIndex, startingLettersChecked, endingLettersChecked, specificWordChecked, startingLettersText, endingLettersText, specificWordText, apiUrl)
+                    store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, specificWordText, apiUrl))
                 }
-                else {
-                    realm.create('settingsScreen', { pk: 0 })
-                }     
+                else{
+                    reactotron.logImportant('REALM BEFORE CREATION : ', realm.objects('settingsScreen'))
+                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    reactotron.logImportant('REALM AFTER CREATION : ', realm.objects('settingsScreen'))
+                }
             })
         })
         .catch((error) => console.log(error))

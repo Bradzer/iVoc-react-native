@@ -6,7 +6,7 @@ export const UPDATE_STARTING_LETTERS_CHKBOX = 'UPDATE_STARTING_LETTERS_CHKBOX'
 export const UPDATE_ENDING_LETTERS_CHKBOX = 'UPDATE_ENDING_LETTERS_CHKBOX'
 export const UPDATE_SPECIFIC_WORD_CHKBOX = 'UPDATE_SPECIFIC_WORD_CHKBOX'
 export const UPDATE_REALM = 'UPDATE_REALM'
-export const UPDATE_SETTINGS_PREFENRENCES = 'UPDATE_SETTINGS_PREFERENCES'
+export const UPDATE_SETTINGS_PREFERENCES = 'UPDATE_SETTINGS_PREFERENCES'
 export const UPDATE_STARTING_LETTERS_TEXT = 'UPDATE_STARTING_LETTERS_TEXT'
 export const UPDATE_ENDING_LETTERS_TEXT = 'UPDATE_ENDING_LETTERS_TEXT'
 export const UPDATE_SPECIFIC_WORD_TEXT = 'UPDATE_SPECIFIC_WORD_TEXT'
@@ -111,7 +111,7 @@ export function displayUpdateChangePrefsBtn() {
 
 export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingLettersCheckBoxStatus, specificWordCheckBoxStatus, partOfSpeechIndex, startingLettersText, endingLettersText, specificWordText, apiUrl) {
     return {
-        type: UPDATE_SETTINGS_PREFENRENCES,
+        type: UPDATE_SETTINGS_PREFERENCES,
         data: {
             startingLettersCheckBoxStatus,
             endingLettersCheckBoxStatus,

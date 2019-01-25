@@ -14,7 +14,7 @@ import {
     UPDATE_ENDING_LETTERS_TEXT, 
     UPDATE_SPECIFIC_WORD_TEXT, 
     UPDATE_API_URL, 
-    UPDATE_SETTINGS_PREFENRENCES, 
+    UPDATE_SETTINGS_PREFERENCES, 
     DISPLAY_CHANGE_PREFS_BTN, 
     DISPLAY_VOCABULARY_OVERLAY, 
     HIDE_VOCABULARY_OVERLAY, 
@@ -159,7 +159,7 @@ const reducer = (state = initialState, action) => {
                     apiUrl: action.data
                 })
 
-            case UPDATE_SETTINGS_PREFENRENCES:
+            case UPDATE_SETTINGS_PREFERENCES:
                 return updateState(state, {
                     selectedIndex: action.data.partOfSpeechIndex,
                     startingLettersChecked: action.data.startingLettersCheckBoxStatus,
