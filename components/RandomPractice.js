@@ -17,19 +17,19 @@ let apiRequest = null
 
 const Realm = require('realm');
 
-const settingsScreenSchema = {
-    name: 'settingsScreen',
-    primaryKey: 'pk',
-    properties: {
-        pk: 'int',
-        startingLettersChecked: 'bool?',
-        endingLettersChecked: 'bool?',
-        updatedIndex: 'int?',
-        startingLettersText: 'string?',
-        endingLettersText: 'string?',
-        apiUrl: 'string?'
-    }
-}
+// const settingsScreenSchema = {
+//     name: 'settingsScreen',
+//     primaryKey: 'pk',
+//     properties: {
+//         pk: 'int',
+//         startingLettersChecked: 'bool?',
+//         endingLettersChecked: 'bool?',
+//         updatedIndex: 'int?',
+//         startingLettersText: 'string?',
+//         endingLettersText: 'string?',
+//         apiUrl: 'string?'
+//     }
+// }
 
 const _ = require('lodash')
 
@@ -51,7 +51,7 @@ class RandomPractice extends React.Component {
     goToPreferences = () => this.props.navigation.navigate('Settings')
 
     screenDidFocusListener = this.props.navigation.addListener('didFocus', () => {
-        Realm.open({schema: [settingsScreenSchema]})
+        Realm.open({})
         .then((realm) => {
             realm.write(() => {
                 let settingsScreen = realm.objects('settingsScreen')
@@ -123,9 +123,9 @@ class RandomPractice extends React.Component {
 
     UNSAFE_componentWillMount() {
 
-        const realm = new Realm()
-        realm.close()
-        Realm.open({schema: [settingsScreenSchema]})
+        // const realm = new Realm()
+        // realm.close()
+        Realm.open({})
         .then((realm) => {
             realm.write(() => {
                 if(realm.objects('settingsScreen').isValid()) {

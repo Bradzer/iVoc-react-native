@@ -2,7 +2,27 @@ import { applyMiddleware } from 'redux'
 import Reactotron from './ReactotronConfig'
 import persistDataLocally from './persistDataLocally'
 
-import { ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_REALM, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL, UPDATE_SETTINGS_PREFENRENCES, DISPLAY_CHANGE_PREFS_BTN, DISPLAY_VOCABULARY_OVERLAY, HIDE_VOCABULARY_OVERLAY, UPDATE_VOCABULARY_WORD, UPDATE_VOCABULARY_PART_OF_SPEECH, UPDATE_VOCABULARY_DEFINITION, UPDATE_VOCABULARY_PRONUNCIATION, UPDATE_VOCABULARY_FREQUENCY, } from './actions'
+import { 
+    ADD_RESPONSE_DATA, 
+    RESET_RESPONSE_DATA, 
+    DISPLAY_WORD_DEFINITION, 
+    UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, 
+    UPDATE_ENDING_LETTERS_CHKBOX, 
+    UPDATE_SPECIFIC_WORD_CHKBOX, 
+    UPDATE_REALM, 
+    UPDATE_STARTING_LETTERS_TEXT, 
+    UPDATE_ENDING_LETTERS_TEXT, 
+    UPDATE_SPECIFIC_WORD_TEXT, 
+    UPDATE_API_URL, 
+    UPDATE_SETTINGS_PREFENRENCES, 
+    DISPLAY_CHANGE_PREFS_BTN, 
+    DISPLAY_VOCABULARY_OVERLAY, 
+    HIDE_VOCABULARY_OVERLAY, 
+    UPDATE_VOCABULARY_WORD, 
+    UPDATE_VOCABULARY_PART_OF_SPEECH, 
+    UPDATE_VOCABULARY_DEFINITION, 
+    UPDATE_VOCABULARY_PRONUNCIATION, 
+    UPDATE_VOCABULARY_FREQUENCY, } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -30,12 +50,15 @@ const initialState = {
     startingLettersText: '',
     endingLettersText: '',
     apiUrl: '',
-    vocabularyOverlayDisplay: 'false',
+    vocabularyOverlayDisplay: false,
     vocabularyWord: '',
     vocabularyPartOfSpeech: '',
     vocabularyDefinition: '',
     vocabularyPronunciation: '',
     vocabularyFrequency: '',
+    specificWordChecked: false,
+    specificWordText: '',
+    randomWordPrefDisplay: 'flex'
 }
 
 const reducer = (state = initialState, action) => {
@@ -104,6 +127,13 @@ const reducer = (state = initialState, action) => {
                     endingLettersChecked: !(action.data)
                 })
 
+            case UPDATE_SPECIFIC_WORD_CHKBOX:
+                return updateState(state, {
+                    specificWordChecked: !(action.data),
+                    randomWordPrefDisplay: ((action.data) ? 'flex' : 'none')
+
+                })
+
             case UPDATE_REALM: 
                 return updateState(state, {
                     realm: action.data
@@ -119,6 +149,11 @@ const reducer = (state = initialState, action) => {
                     endingLettersText: action.data
                 })
 
+            case UPDATE_SPECIFIC_WORD_TEXT:
+                return updateState(state, {
+                    specificWordText: action.data
+                })
+
             case UPDATE_API_URL:
                 return updateState(state, {
                     apiUrl: action.data
@@ -131,7 +166,10 @@ const reducer = (state = initialState, action) => {
                     endingLettersChecked: action.data.endingLettersCheckBoxStatus,
                     startingLettersText: action.data.startingLettersText,
                     endingLettersText: action.data.endingLettersText,
-                    apiUrl: action.data.apiUrl              
+                    apiUrl: action.data.apiUrl,
+                    specificWordChecked: action.data.specificWordCheckBoxStatus,
+                    specificWordText: action.data.specificWordText,
+                              
                 })
 
             case DISPLAY_CHANGE_PREFS_BTN:

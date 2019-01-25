@@ -6,7 +6,7 @@ import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-element
 import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
-import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateStartingLettersText, updateEndingLettersText, updateSettingsPreferences } from '../actions'
+import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateSpecificWordCheckBox, updateStartingLettersText, updateEndingLettersText, updateSpecificWordText, updateSettingsPreferences } from '../actions'
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
@@ -15,20 +15,19 @@ const Realm = require('realm');
 
 const _ = require('lodash')
 
-const settingsScreenSchema = {
-    name: 'settingsScreen',
-    primaryKey: 'pk',
-    properties: {
-        pk: 'int',
-        startingLettersChecked: 'bool?',
-        endingLettersChecked: 'bool?',
-        updatedIndex: 'int?',
-        startingLettersText: 'string?',
-        endingLettersText: 'string?',
-        apiUrl: 'string?'
-    }
-}
-
+// const settingsScreenSchema = {
+//     name: 'settingsScreen',
+//     primaryKey: 'pk',
+//     properties: {
+//         pk: 'int',
+//         startingLettersChecked: 'bool?',
+//         endingLettersChecked: 'bool?',
+//         updatedIndex: 'int?',
+//         startingLettersText: 'string?',
+//         endingLettersText: 'string?',
+//         apiUrl: 'string?'
+//     }
+// }
 
 class Settings extends React.Component {
 
@@ -36,7 +35,6 @@ class Settings extends React.Component {
         tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
         tabBarIcon: <Icon name= 'settings' />
     }
-
 
     partOfSpeechAll = () => <Text>All</Text>
     partOfSpeechVerb = () => <Text>Verb</Text>
@@ -52,35 +50,48 @@ class Settings extends React.Component {
 
         return(
             <View style={styles.container}>
+                <View style={{alignSelf: 'stretch', display: this.props.randomWordPrefDisplay}}>
+                    <CheckBox
+                        title= 'Words starting with'
+                        checked= {this.props.startingLettersChecked}
+                        onPress= {() => startingLettersPressed(this.props.startingLettersChecked)}
+                    />
+                    <Input
+                        placeholder= 'Enter starting letters'
+                        onChangeText= {onStartingLettersTextChanged}
+                        value={this.props.startingLettersText}
+                        containerStyle={{marginBottom: 16, display: this.inputDisplay('startingLetters')}}
+                    />
+                    <CheckBox
+                        title= 'Words ending with'
+                        checked= {this.props.endingLettersChecked}
+                        onPress= {() => endingLettersPressed(this.props.endingLettersChecked)}
+                    />
+                    <Input
+                        placeholder= 'Enter ending letters'
+                        onChangeText={onEndingLettersTextChanged}
+                        value={this.props.endingLettersText}
+                        containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
+                    />
+                    <Text style={{marginBottom: 8}}>Part of speech</Text>
+                    <ButtonGroup
+                        onPress={changeIndex}
+                        buttons={buttons}
+                        selectedIndex={selectedIndex}
+                        containerStyle={{marginBottom: 16}}
+                    />
+                </View>
                 <CheckBox
-                    title= 'Words starting with'
-                    checked= {this.props.startingLettersChecked}
-                    onPress= {() => startingLettersPressed(this.props.startingLettersChecked)}
-                />
-                <Input
-                    placeholder= 'Enter starting letters'
-                    onChangeText= {onStartingLettersTextChanged}
-                    value={this.props.startingLettersText}
-                    containerStyle={{marginBottom: 16, display: this.inputDisplay('startingLetters')}}
-                />
-                <CheckBox
-                    title= 'Words ending with'
-                    checked= {this.props.endingLettersChecked}
-                    onPress= {() => endingLettersPressed(this.props.endingLettersChecked)}
-                />
-                <Input
-                    placeholder= 'Enter ending letters'
-                    onChangeText={onEndingLettersTextChanged}
-                    value={this.props.endingLettersText}
-                    containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
-                />
-                <Text style={{marginBottom: 8}}>Part of speech</Text>
-                <ButtonGroup
-                    onPress={changeIndex}
-                    buttons={buttons}
-                    selectedIndex={selectedIndex}
-                    containerStyle={{marginBottom: 16}}
-                />
+                        title= 'Search for a specific word/expression'
+                        checked= {this.props.specificWordChecked}
+                        onPress= {() => specificWordPressed(this.props.specificWordChecked)}
+                    />
+                    <Input
+                        placeholder= 'Enter the word/expression'
+                        onChangeText= {onSpecificWordTextChanged}
+                        value={this.props.specificWordText}
+                        containerStyle={{marginBottom: 16, display: this.inputDisplay('specificWord')}}
+                    />
                 <Button 
                     title='Clear vocabulary'
                     icon={<Icon name='playlist-remove' type='material-community' color='red'/>}
@@ -91,11 +102,11 @@ class Settings extends React.Component {
 
     UNSAFE_componentWillMount() {
 
-        const realm = new Realm()
+        // const realm = new Realm()
 
-        realm.close() 
+        // realm.close() 
 
-        Realm.open({schema: [settingsScreenSchema]})
+        Realm.open({})
         .then((realm) => {
             realm.write(() => {
                 if(realm.objects('settingsScreen').isValid()) {
@@ -104,10 +115,12 @@ class Settings extends React.Component {
                         let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                         let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                         let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                        let specificWordChecked = (_.valuesIn(settingsScreen))[0].specificWordChecked
                         let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                         let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                        let specificWordText = (_.valuesIn(settingsScreen))[0].specificWordText
                         let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-                        store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, updatedIndex, startingLettersText, endingLettersText, apiUrl))
+                        store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, specificWordText, apiUrl))
                     }
                     else{
                         realm.create('settingsScreen', { pk: 0 })
@@ -132,6 +145,9 @@ class Settings extends React.Component {
             
             case 'endingLetters':
                 return (this.props.endingLettersChecked ? 'flex' : 'none')
+
+            case 'specificWord':
+                return (this.props.specificWordChecked ? 'flex' : 'none')
 
             default:
                 return 'none'
@@ -158,7 +174,10 @@ const styles = StyleSheet.create({
         endingLettersChecked: state.endingLettersChecked,
         realm: state.realm,
         startingLettersText: state.startingLettersText,
-        endingLettersText: state.endingLettersText
+        endingLettersText: state.endingLettersText,
+        specificWordChecked: state.specificWordChecked,
+        specificWordText: state.specificWordText,
+        randomWordPrefDisplay: state.randomWordPrefDisplay
       }
   }
 
@@ -182,10 +201,18 @@ const endingLettersPressed = (currentStatus) => {
     store.dispatch(updateEndingLettersCheckBox(currentStatus))
 }
 
+const specificWordPressed = (currentStatus) => {
+    store.dispatch(updateSpecificWordCheckBox(currentStatus))
+}
+
 const onStartingLettersTextChanged = (changedText) => {
     store.dispatch(updateStartingLettersText(changedText))
 }
 
 const onEndingLettersTextChanged = (changedText) => {
     store.dispatch(updateEndingLettersText(changedText))
+}
+
+const onSpecificWordTextChanged = (changedText) => {
+    store.dispatch(updateSpecificWordText(changedText))
 }

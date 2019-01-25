@@ -1,4 +1,13 @@
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL } from './actions'
+import { 
+    UPDATE_INDEX, 
+    UPDATE_STARTING_LETTERS_CHKBOX, 
+    UPDATE_ENDING_LETTERS_CHKBOX, 
+    UPDATE_SPECIFIC_WORD_CHKBOX,
+    UPDATE_STARTING_LETTERS_TEXT, 
+    UPDATE_ENDING_LETTERS_TEXT, 
+    UPDATE_SPECIFIC_WORD_TEXT,
+    UPDATE_API_URL 
+} from './actions'
 
 const Realm = require('realm');
 
@@ -6,7 +15,7 @@ const _ = require('lodash')
 
 const persistDataLocally = store => next => action => {
 
-    let commonUrlpart = 'https://wordsapiv1.p.mashape.com/words/?'
+    let commonUrlpart = 'https://wordsapiv1.p.mashape.com/words/'
     let customUrlpart = ''
 
     switch(action.type) {
@@ -23,8 +32,10 @@ const persistDataLocally = store => next => action => {
                             let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                             let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                             let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                            let specificWordChecked = (_.valuesIn(settingsScreen))[0].specificWordChecked
                             let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                             let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                            let specificWordText = (_.valuesIn(settingsScreen))[0].specificWordText
                             
                             if(startingLettersChecked && startingLettersText ) {
                                 if (endingLettersChecked && endingLettersText) {
@@ -32,18 +43,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }
         
@@ -57,18 +69,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }
         
@@ -82,18 +95,19 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
                     
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
+                                        customUrlpart += '?partOfSpeech=verb&'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
+                                        customUrlpart += '?partOfSpeech=noun&'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&'
+                                        customUrlpart += '?partOfSpeech=adjective&'
                                         break;
                                     
                                     default:
+                                        customUrlpart += '?'
                                         break
                                 }
     
@@ -104,23 +118,23 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
         
                                     case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
         
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
                                         break;
                                     
                                     default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
                                 }
                             }
@@ -159,18 +173,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }        
 
@@ -184,18 +199,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }
         
@@ -209,18 +225,19 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
                     
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
+                                        customUrlpart += '?partOfSpeech=verb&'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
+                                        customUrlpart += '?partOfSpeech=noun&'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&'
+                                        customUrlpart += '?partOfSpeech=adjective&'
                                         break;
                                     
                                     default:
+                                        customUrlpart += '?'
                                         break
                                 }
     
@@ -231,23 +248,23 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
         
                                     case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
         
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
                                         break;
                                     
                                     default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
                                 }
                             }
@@ -287,18 +304,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }
         
@@ -312,18 +330,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'    
                                             break
                                     }
         
@@ -337,18 +356,19 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
                     
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
+                                        customUrlpart += '?partOfSpeech=verb&'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
+                                        customUrlpart += '?partOfSpeech=noun&'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&'
+                                        customUrlpart += '?partOfSpeech=adjective&'
                                         break;
                                     
                                     default:
+                                        customUrlpart += '?'
                                         break
                                 }
     
@@ -359,23 +379,23 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
         
                                     case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
         
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
                                         break;
                                     
                                     default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
                                 }
                             }
@@ -389,6 +409,32 @@ const persistDataLocally = store => next => action => {
                     else {
                         realm.create('settingsScreen', { pk: 0, endingLettersChecked: !(action.data) })
                     } 
+                })
+            })
+            .catch((error) => console.log(error))
+            break;
+        
+        case UPDATE_SPECIFIC_WORD_CHKBOX:
+            Realm.open({})
+            .then((realm) => {
+                realm.write(() => {
+                    if(realm.objects('settingsScreen').isValid()) {
+                        if(!(realm.objects('settingsScreen').isEmpty())) {
+                            realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', !(action.data))
+
+                            if(!(action.data)) {
+                                let specificWordText = ((_.valuesIn(settingsScreen))[0].specificWordText).toLowerCase()
+
+                                realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + specificWordText)
+                            }
+                        }
+                        else {
+                            realm.create('settingsScreen', { pk: 0, specificWordChecked: !(action.data) })
+                        }
+                    }
+                    else {
+                        realm.create('settingsScreen', { pk: 0, specificWordChecked: !(action.data) })
+                    }
                 })
             })
             .catch((error) => console.log(error))
@@ -415,18 +461,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }
         
@@ -440,18 +487,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }
         
@@ -465,18 +513,19 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
                     
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
+                                        customUrlpart += '?partOfSpeech=verb&'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
+                                        customUrlpart += '?partOfSpeech=noun&'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&'
+                                        customUrlpart += '?partOfSpeech=adjective&'
                                         break;
                                     
                                     default:
+                                        customUrlpart += '?'
                                         break
                                 }
     
@@ -487,23 +536,23 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
         
                                     case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
         
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
                                         break;
                                     
                                     default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
                                 }
                             }
@@ -543,18 +592,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }
         
@@ -568,18 +618,19 @@ const persistDataLocally = store => next => action => {
                                     switch(updatedIndex) {
                     
                                         case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
+                                            customUrlpart += '?partOfSpeech=verb&'
                                             break
             
                                         case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
+                                            customUrlpart += '?partOfSpeech=noun&'
                                             break
                                         case 3:
             
-                                            customUrlpart += 'partOfSpeech=adjective&'
+                                            customUrlpart += '?partOfSpeech=adjective&'
                                             break;
                                         
                                         default:
+                                            customUrlpart += '?'
                                             break
                                     }
         
@@ -593,18 +644,19 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
                     
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
+                                        customUrlpart += '?partOfSpeech=verb&'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
+                                        customUrlpart += '?partOfSpeech=noun&'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&'
+                                        customUrlpart += '?partOfSpeech=adjective&'
                                         break;
                                     
                                     default:
+                                        customUrlpart += '?'
                                         break
                                 }
     
@@ -615,23 +667,23 @@ const persistDataLocally = store => next => action => {
                                 switch(updatedIndex) {
         
                                     case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
         
                                     case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
                                         break
         
                                     case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
                                         break
                                     case 3:
         
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                        customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
                                         break;
                                     
                                     default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
+                                        customUrlpart += '?hasDetails=definitions&random=true'
                                         break
                                 }
                             }
@@ -649,6 +701,28 @@ const persistDataLocally = store => next => action => {
             })
             .catch((error) => console.log(error))
             break;
+
+        case UPDATE_SPECIFIC_WORD_TEXT:
+            Realm.open({})
+            .then((realm) => {
+                realm.write(() => {
+                    if(realm.objects('settingsScreen').isValid()) {
+                        if(!(realm.objects('settingsScreen').isEmpty())) {
+                            realm.objects('settingsScreen').filtered('pk = 0').update('specificWordText', action.data)
+                            realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + action.data)
+                        }
+                        else {
+                            realm.create('settingsScreen', { pk: 0, specificWordText: action.data , apiUrl: commonUrlpart + action.data})
+                        }
+                    }
+                    else {
+                        realm.create('settingsScreen', { pk: 0, specificWordText: action.data, apiUrl: commonUrlpart + action.data })
+                    }
+                })
+            })
+            .catch((error) => console.log(error))
+            break;
+
 
         case UPDATE_API_URL:
             break

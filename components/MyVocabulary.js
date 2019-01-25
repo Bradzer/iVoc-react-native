@@ -32,6 +32,7 @@ class MyVocabulary extends React.Component {
                     renderItem={renderItem}
                 />
                 <Overlay isVisible={this.props.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
+                    <View>
                     <Text>{this.props.vocabularyWord}</Text>
                     <Text>Pronunciation: {this.props.vocabularyPronunciation}</Text>
                     <Text>Frequency: {this.props.vocabularyFrequency}</Text>
@@ -39,6 +40,7 @@ class MyVocabulary extends React.Component {
                     <Text>Definitions</Text>
                     <Text></Text>
                     <Text>{this.props.vocabularyDefinition}</Text>
+                    </View>
                 </Overlay>
             </View>
         )
