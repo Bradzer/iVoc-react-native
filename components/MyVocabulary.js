@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import store from '../reducers'
 
 import AppConstants from '../Constants'
-import { displayVocabularyOverlay, hideVocabularyOverlay, updateVocabularyWord, updateVocabularyPartOfSpeech, updateVocabularyDefinition, updateVocabularyPronunciation, updateVocabularyFrequency } from '../actions'
+import { displayVocabularyOverlay, hideVocabularyOverlay, } from '../actions'
 
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
