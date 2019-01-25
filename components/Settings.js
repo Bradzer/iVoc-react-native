@@ -16,20 +16,6 @@ const Realm = require('realm');
 
 const _ = require('lodash')
 
-// const settingsScreenSchema = {
-//     name: 'settingsScreen',
-//     primaryKey: 'pk',
-//     properties: {
-//         pk: 'int',
-//         startingLettersChecked: 'bool?',
-//         endingLettersChecked: 'bool?',
-//         updatedIndex: 'int?',
-//         startingLettersText: 'string?',
-//         endingLettersText: 'string?',
-//         apiUrl: 'string?'
-//     }
-// }
-
 class Settings extends React.Component {
 
     static navigationOptions = {

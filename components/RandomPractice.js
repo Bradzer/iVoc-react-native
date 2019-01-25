@@ -24,10 +24,6 @@ let dataGoingToStore = {}
 let apiResponse = {};
 let numberOfDefinitions = 0;
 
-let displayFrequency = 'none';
-
-let randomDefinitions = []
-
 class RandomPractice extends React.Component {
 
     url = ''
