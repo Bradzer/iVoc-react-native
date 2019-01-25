@@ -42,7 +42,7 @@ const reducer = (state = initialState, action) => {
     switch(action.type) {
 
         case ADD_RESPONSE_DATA:
-            return(Object.assign({}, state, {
+            return updateState(state, {
                 itemWord: action.data.word,
                 itemPartOfSpeech: action.data.partOfSpeech,
                 itemPronunciation: action.data.pronunciation,
@@ -59,10 +59,10 @@ const reducer = (state = initialState, action) => {
                 displayWordDefinition: 'none',
                 displayScrollView: 'flex',
                 displayChangePrefsBtn: 'none'
-            }))
+            })
 
         case RESET_RESPONSE_DATA:
-            return(Object.assign({}, state, {
+            return updateState(state, {
                 itemWord: '',
                 itemPartOfSpeech: '',
                 itemPronuncitation: '',
@@ -75,10 +75,10 @@ const reducer = (state = initialState, action) => {
                 buttonRightIconType: 'foundation',
                 buttonRightTitle: "I don't know this",
 
-            }))
+            })
 
             case DISPLAY_WORD_DEFINITION:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     displayWordDefinition: 'flex',
                     buttonRightIconName: 'checkbox-marked-circle',
                     buttonRightIconType: 'material-community',
@@ -87,63 +87,63 @@ const reducer = (state = initialState, action) => {
                     buttonLeftIconType:'foundation',
                     buttonLeftTitle:"Not interested",
                 
-                }))
+                })
 
             case UPDATE_INDEX:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     selectedIndex: action.data
-                }))
+                })
 
             case UPDATE_STARTING_LETTERS_CHKBOX:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     startingLettersChecked: !(action.data)
-                }))
+                })
 
             case UPDATE_ENDING_LETTERS_CHKBOX:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     endingLettersChecked: !(action.data)
-                }))
+                })
 
             case UPDATE_REALM: 
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     realm: action.data
-                }))
+                })
 
             case UPDATE_STARTING_LETTERS_TEXT:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     startingLettersText: action.data
-                }))
+                })
 
             case UPDATE_ENDING_LETTERS_TEXT:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     endingLettersText: action.data
-                }))
+                })
 
             case UPDATE_API_URL:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     apiUrl: action.data
-                }))
+                })
 
             case UPDATE_SETTINGS_PREFENRENCES:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     selectedIndex: action.data.partOfSpeechIndex,
                     startingLettersChecked: action.data.startingLettersCheckBoxStatus,
                     endingLettersChecked: action.data.endingLettersCheckBoxStatus,
                     startingLettersText: action.data.startingLettersText,
                     endingLettersText: action.data.endingLettersText,
                     apiUrl: action.data.apiUrl              
-                }))
+                })
 
             case DISPLAY_CHANGE_PREFS_BTN:
-                return (Object.assign({}, state, {
+                return updateState(state, {
                     displayChangePrefsBtn: 'flex',
                     displayButtons: 'none',
                     displayScrollView: 'none',
                 
-                }))
+                })
 
             case DISPLAY_VOCABULARY_OVERLAY:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     vocabularyOverlayDisplay: true,
                     vocabularyWord: action.data.word,
                     vocabularyPartOfSpeech: action.data.partOfSpeech,
@@ -151,37 +151,37 @@ const reducer = (state = initialState, action) => {
                     vocabularyPronunciation: action.data.pronunciation,
                     vocabularyFrequency: action.data.frequency,
                 
-                }))
+                })
 
             case HIDE_VOCABULARY_OVERLAY:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     vocabularyOverlayDisplay: false,                
-                }))
+                })
 
             case UPDATE_VOCABULARY_WORD:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     vocabularyWord: action.data
-                }))
+                })
 
             case UPDATE_VOCABULARY_PART_OF_SPEECH:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     vocabularyPartOfSpeech: action.data
-                }))
+                })
 
             case UPDATE_VOCABULARY_DEFINITION:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     vocabularyDefinition: action.data
-                }))
+                })
 
             case UPDATE_VOCABULARY_PRONUNCIATION:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     vocabularyPronunciation: action.data
-                }))
+                })
 
             case UPDATE_VOCABULARY_FREQUENCY:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     vocabularyFrequency: action.data
-                }))
+                })
 
         default:
             return state
@@ -192,3 +192,6 @@ const store = Reactotron.createStore(reducer, applyMiddleware(persistDataLocally
 
 export default store
 
+function updateState(state, updatedValues) {
+    return (Object.assign({}, state, updatedValues))
+}
