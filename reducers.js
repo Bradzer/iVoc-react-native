@@ -38,7 +38,7 @@ const initialState = {
     displayWordDefinition: 'none',
     buttonRightIconName: 'controller-next',
     buttonRightIconType: 'entypo',
-    buttonRightTitle: "Next",
+    buttonRightTitle: "Skip",
     buttonLeftIconName: 'documents',
     buttonLeftIconType:'entypo',
     buttonLeftTitle:"Show definitions",
