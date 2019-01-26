@@ -78,13 +78,13 @@ class RandomPractice extends React.Component {
                     icon={{name: this.props.buttonLeftIconName, type: this.props.buttonLeftIconType}}
                     title= {this.props.buttonLeftTitle}
                     containerStyle={{marginHorizontal: 16}}
-                    onPress={((this.props.buttonLeftTitle !== 'Not interested') ? iKnowBtnClicked : goToNextRandomWord)}
+                    onPress={((this.props.buttonLeftTitle !== 'Show definitions') ? addToVocabularyBtnClicked : showWordDefinition)}
                     />
                     <Button
                     icon={{name: this.props.buttonRightIconName, type: this.props.buttonRightIconType}}
                     title= {this.props.buttonRightTitle}
                     containerStyle={{marginHorizontal: 16}}
-                    onPress={(this.props.buttonRightTitle !== 'Got it') ? showWordDefinition : gotItBtnClicked}
+                    onPress={nextBtnClicked}
                     />
                 </View>
                 <View style={[styles.buttonGroup, {display: this.props.displayChangePrefsBtn}]}>
@@ -191,12 +191,11 @@ function goToNextRandomWord(){
     .catch((error) => console.error(error))
 }
 
-function iKnowBtnClicked() {
-    addKnownWordToCloud(dataGoingToStore)
+function nextBtnClicked() {
     goToNextRandomWord()
 }
 
-function gotItBtnClicked() {
+function addToVocabularyBtnClicked() {
     addKnownWordToCloud(dataGoingToStore)
     goToNextRandomWord()
 }
