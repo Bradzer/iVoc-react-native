@@ -178,11 +178,7 @@ function goToNextRandomWord(){
         dataGoingToStore = {}
         if(apiResponse.results[0]){
             if(apiResponse.results.length > 1) {
-                for(let i= 0; i < numberOfDefinitions; i++) {
-                    let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
-                    let definition = apiResponse.results[i].definition
-                    definitions += i+1 + '.\n' + partOfSpeech + '\n' + definition + '\n\n'
-                }
+                definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
                 dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
             }
             else {
@@ -248,4 +244,14 @@ function createDataGoingToStore(apiResponse, definitions= null) {
         frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
         definition: apiResponse.results[0].definition,
     }
+}
+
+function getAllDefinitions(apiResponse, numberOfDefinitions) {
+    let definitions = ''
+    for(let i= 0; i < numberOfDefinitions; i++) {
+        let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
+        let definition = apiResponse.results[i].definition
+        definitions += i+1 + '.\n' + partOfSpeech + '\n' + definition + '\n\n'
+    }
+    return definitions
 }
