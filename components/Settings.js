@@ -87,8 +87,7 @@ class Settings extends React.Component {
         )
     }
 
-    UNSAFE_componentWillMount() {
-
+    componentDidMount() {
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
@@ -107,10 +106,6 @@ class Settings extends React.Component {
             })
         })
         .catch((error) => console.log(error))
-    }
-
-    componentDidMount() {
-
     }
 
     inputDisplay = (checkBoxType) => {

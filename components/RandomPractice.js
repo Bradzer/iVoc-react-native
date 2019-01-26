@@ -97,8 +97,7 @@ class RandomPractice extends React.Component {
         )
     }
 
-    UNSAFE_componentWillMount() {
-
+    componentDidMount() {
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
@@ -119,8 +118,6 @@ class RandomPractice extends React.Component {
             goToNextRandomWord();
         })
         .catch((error) => console.log(error))
-    }
-    componentDidMount() {
     }
 
     componentWillUnmount() {
