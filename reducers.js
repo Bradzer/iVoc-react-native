@@ -36,12 +36,12 @@ const initialState = {
     displayButtons: 'none',
     displayScrollView: 'none',
     displayWordDefinition: 'none',
-    buttonRightIconName: 'x-circle',
-    buttonRightIconType: 'foundation',
-    buttonRightTitle: "I don't know this",
-    buttonLeftIconName: 'checkbox-marked-circle',
-    buttonLeftIconType:'material-community',
-    buttonLeftTitle:"I know this",
+    buttonRightIconName: 'controller-next',
+    buttonRightIconType: 'entypo',
+    buttonRightTitle: "Next",
+    buttonLeftIconName: 'documents',
+    buttonLeftIconType:'entypo',
+    buttonLeftTitle:"Show definitions",
     displayChangePrefsBtn: 'none',
     selectedIndex: 0,
     startingLettersChecked: false,
@@ -73,15 +73,13 @@ const reducer = (state = initialState, action) => {
                 itemDef: action.data.definition,
                 displayRandomWord: 'flex',
                 displayButtons: 'flex',
-                buttonRightIconName: 'x-circle',
-                buttonRightIconType: 'foundation',
-                buttonRightTitle: "I don't know this",
-                buttonLeftIconName: 'checkbox-marked-circle',
-                buttonLeftIconType:'material-community',
-                buttonLeftTitle:"I know this",            
                 displayWordDefinition: 'none',
                 displayScrollView: 'flex',
-                displayChangePrefsBtn: 'none'
+                displayChangePrefsBtn: 'none',
+                buttonLeftIconName: 'documents',
+                buttonLeftIconType:'entypo',
+                buttonLeftTitle:"Show definitions",
+            
             })
 
         case RESET_RESPONSE_DATA:
@@ -103,12 +101,8 @@ const reducer = (state = initialState, action) => {
             case DISPLAY_WORD_DEFINITION:
                 return updateState(state, {
                     displayWordDefinition: 'flex',
-                    buttonRightIconName: 'checkbox-marked-circle',
-                    buttonRightIconType: 'material-community',
-                    buttonRightTitle: 'Got it',
-                    buttonLeftIconName: 'x-circle',
-                    buttonLeftIconType:'foundation',
-                    buttonLeftTitle:"Not interested",
+                    buttonLeftIconName: 'add-to-list',
+                    buttonLeftTitle:"Add to vocabulary",
                 
                 })
 
