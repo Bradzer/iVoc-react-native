@@ -109,19 +109,10 @@ export function displayUpdateChangePrefsBtn() {
 
 }
 
-export function updateSettingsPreferences(startingLettersCheckBoxStatus, endingLettersCheckBoxStatus, specificWordCheckBoxStatus, partOfSpeechIndex, startingLettersText, endingLettersText, specificWordText, apiUrl) {
+export function updateSettingsPreferences(settingsPreferencesRealmData) {
     return {
         type: UPDATE_SETTINGS_PREFERENCES,
-        data: {
-            startingLettersCheckBoxStatus,
-            endingLettersCheckBoxStatus,
-            specificWordCheckBoxStatus,
-            partOfSpeechIndex,
-            startingLettersText,
-            endingLettersText,
-            specificWordText,
-            apiUrl,
-        }
+        data: settingsPreferencesRealmData
     }
 }
 

@@ -95,16 +95,9 @@ class Settings extends React.Component {
                 if(!(realm.objects('settingsScreen').isEmpty())) {
                     let settingsScreen = realm.objects('settingsScreen')
                     reactotron.logImportant('VALUES UNCHANGED FROM REAL : ', settingsScreen)
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let specificWordChecked = (_.valuesIn(settingsScreen))[0].specificWordChecked
-                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let specificWordText = (_.valuesIn(settingsScreen))[0].specificWordText
-                    let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                    let settingsPreferencesInRealm = getSettingsPreferencesInRealm(settingsScreen)
                     // reactotron.logImportant('VALUES BEFORE DISPATCH : ', updatedIndex, startingLettersChecked, endingLettersChecked, specificWordChecked, startingLettersText, endingLettersText, specificWordText, apiUrl)
-                    store.dispatch(updateSettingsPreferences(startingLettersChecked, endingLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, specificWordText, apiUrl))
+                    store.dispatch(updateSettingsPreferences(settingsPreferencesInRealm))
                 }
                 else{
                     // reactotron.logImportant('REALM BEFORE CREATION : ', realm.objects('settingsScreen'))
@@ -197,4 +190,17 @@ const onEndingLettersTextChanged = (changedText) => {
 
 const onSpecificWordTextChanged = (changedText) => {
     store.dispatch(updateSpecificWordText(changedText))
+}
+
+const getSettingsPreferencesInRealm = (settingsScreenRealmData) => {
+    let updatedIndex = (_.valuesIn(settingsScreenRealmData))[0].updatedIndex
+    let startingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].startingLettersChecked
+    let endingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].endingLettersChecked
+    let specificWordChecked = (_.valuesIn(settingsScreenRealmData))[0].specificWordChecked
+    let startingLettersText = (_.valuesIn(settingsScreenRealmData))[0].startingLettersText
+    let endingLettersText = (_.valuesIn(settingsScreenRealmData))[0].endingLettersText
+    let specificWordText = (_.valuesIn(settingsScreenRealmData))[0].specificWordText
+    let apiUrl = (_.valuesIn(settingsScreenRealmData))[0].apiUrl
+
+    return { startingLettersChecked, endingLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, specificWordText, apiUrl }
 }

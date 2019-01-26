@@ -161,13 +161,13 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_SETTINGS_PREFERENCES:
                 return updateState(state, {
-                    selectedIndex: action.data.partOfSpeechIndex,
-                    startingLettersChecked: action.data.startingLettersCheckBoxStatus,
-                    endingLettersChecked: action.data.endingLettersCheckBoxStatus,
+                    selectedIndex: action.data.updatedIndex,
+                    startingLettersChecked: action.data.startingLettersChecked,
+                    endingLettersChecked: action.data.endingLettersChecked,
                     startingLettersText: action.data.startingLettersText,
                     endingLettersText: action.data.endingLettersText,
                     apiUrl: action.data.apiUrl,
-                    specificWordChecked: action.data.specificWordCheckBoxStatus,
+                    specificWordChecked: action.data.specificWordChecked,
                     specificWordText: action.data.specificWordText,
                               
                 })
