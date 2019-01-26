@@ -183,22 +183,10 @@ function goToNextRandomWord(){
                     let definition = apiResponse.results[i].definition
                     definitions += i+1 + '.\n' + partOfSpeech + '\n' + definition + '\n\n'
                 }
-                dataGoingToStore = {
-                    word: apiResponse.word,
-                    partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-                    pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
-                    frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-                    definition: definitions,    
-                }
+                dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
             }
             else {
-                dataGoingToStore = {
-                    word: apiResponse.word,
-                    partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-                    pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
-                    frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-                    definition: apiResponse.results[0].definition,
-                }    
+                dataGoingToStore = createDataGoingToStore(apiResponse)
             }
             store.dispatch(addResponseData(dataGoingToStore)) 
         
@@ -241,4 +229,23 @@ function updateApiRequest(baseURL) {
             'Content-Type': 'application/json'
         }
     })
+}
+
+function createDataGoingToStore(apiResponse, definitions= null) {
+    if(definitions) {
+        return {
+            word: apiResponse.word,
+            partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+            pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+            definition: definitions,    
+        }
+    }
+    return {
+        word: apiResponse.word,
+        partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+        pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+        frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+        definition: apiResponse.results[0].definition,
+    }
 }
