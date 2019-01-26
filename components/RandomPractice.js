@@ -7,39 +7,16 @@ import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
+import reactotron from '../ReactotronConfig';
   
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
 
 const axios = require('axios');
 
-
-// const apiRequest = axios.create({
-//     baseURL: getBaseUrl,
-//     headers: {
-//         'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-//         'Accept': 'application/json',
-//         'Content-Type': 'application/json'
-//     }
-// })
-
 let apiRequest = null
 
 const Realm = require('realm');
-
-const settingsScreenSchema = {
-    name: 'settingsScreen',
-    primaryKey: 'pk',
-    properties: {
-        pk: 'int',
-        startingLettersChecked: 'bool?',
-        endingLettersChecked: 'bool?',
-        updatedIndex: 'int?',
-        startingLettersText: 'string?',
-        endingLettersText: 'string?',
-        apiUrl: 'string?'
-    }
-}
 
 const _ = require('lodash')
 
@@ -47,10 +24,6 @@ let dataGoingToStore = {}
 
 let apiResponse = {};
 let numberOfDefinitions = 0;
-
-let displayFrequency = 'none';
-
-let randomDefinitions = []
 
 class RandomPractice extends React.Component {
 
@@ -61,7 +34,7 @@ class RandomPractice extends React.Component {
     goToPreferences = () => this.props.navigation.navigate('Settings')
 
     screenDidFocusListener = this.props.navigation.addListener('didFocus', () => {
-        Realm.open({schema: [settingsScreenSchema]})
+        Realm.open({})
         .then((realm) => {
             realm.write(() => {
                 let settingsScreen = realm.objects('settingsScreen')
@@ -69,14 +42,7 @@ class RandomPractice extends React.Component {
                 if(apiUrl && apiUrl !== '') {
                     if(this.props.apiUrl !== apiUrl) {
                         store.dispatch(updateApiUrl(apiUrl))
-                        apiRequest = axios.create({
-                            baseURL: this.props.apiUrl,
-                            headers: {
-                                'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            }
-                        })
+                        updateApiRequest(this.props.apiUrl)
                     }
                 }
                 if(this.props.displayChangePrefsBtn === 'flex'){
@@ -131,69 +97,27 @@ class RandomPractice extends React.Component {
         )
     }
 
-    UNSAFE_componentWillMount() {
-
-        const realm = new Realm()
-        realm.close()
-        Realm.open({schema: [settingsScreenSchema]})
+    componentDidMount() {
+        Realm.open({})
         .then((realm) => {
             realm.write(() => {
-                if(realm.objects('settingsScreen').isValid()) {
-                    if(!(realm.objects('settingsScreen').isEmpty())) {
-                        let settingsScreen = realm.objects('settingsScreen')
-                        let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-                        if(apiUrl && apiUrl !== '') {
-                            store.dispatch(updateApiUrl(apiUrl))
-                            apiRequest = axios.create({
-                                baseURL: this.props.apiUrl,
-                                headers: {
-                                    'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                        }
-                        else {
-                            store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
-                            apiRequest = axios.create({
-                                baseURL: this.props.apiUrl,
-                                headers: {
-                                    'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                }
-                            })  
-                        }
-                    }
-                    else{
-                        store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
-                        apiRequest = axios.create({
-                            baseURL: this.props.apiUrl,
-                            headers: {
-                                'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            }
-                        })  
-                    }
+                if(!(realm.objects('settingsScreen').isEmpty())) {
+                    // reactotron.logImportant('REALM OBJECT NOT EMPTY')
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                        store.dispatch(updateApiUrl(apiUrl))
+                        updateApiRequest(this.props.apiUrl)
                 }
-                else {
-                    store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
-                    apiRequest = axios.create({
-                        baseURL: this.props.apiUrl,
-                        headers: {
-                            'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    }) 
-                }     
+                else{
+                    // reactotron.logImportant('REALM OBJECT EMPTY')
+                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    store.dispatch(updateApiUrl(AppConstants.RANDOM_URL))
+                    updateApiRequest(this.props.apiUrl)
+                }
             })
             goToNextRandomWord();
         })
         .catch((error) => console.log(error))
-    }
-    componentDidMount() {
     }
 
     componentWillUnmount() {
@@ -251,28 +175,11 @@ function goToNextRandomWord(){
         dataGoingToStore = {}
         if(apiResponse.results[0]){
             if(apiResponse.results.length > 1) {
-                // definitions += apiResponse.results[0].definition
-                for(let i= 0; i < numberOfDefinitions; i++) {
-                    let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
-                    let definition = apiResponse.results[i].definition
-                    definitions += i+1 + '.\n' + partOfSpeech + '\n' + definition + '\n\n'
-                }
-                dataGoingToStore = {
-                    word: apiResponse.word,
-                    partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-                    pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
-                    frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-                    definition: definitions,    
-                }
+                definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
+                dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
             }
             else {
-                dataGoingToStore = {
-                    word: apiResponse.word,
-                    partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-                    pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
-                    frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-                    definition: apiResponse.results[0].definition,
-                }    
+                dataGoingToStore = createDataGoingToStore(apiResponse)
             }
             store.dispatch(addResponseData(dataGoingToStore)) 
         
@@ -304,4 +211,44 @@ function addKnownWordToCloud(word){
 
 function showWordDefinition() {
     store.dispatch(displayWordDefinition())
+}
+
+function updateApiRequest(baseURL) {
+    apiRequest = axios.create({
+        baseURL: baseURL,
+        headers: {
+            'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
+function createDataGoingToStore(apiResponse, definitions= null) {
+    if(definitions) {
+        return {
+            word: apiResponse.word,
+            partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+            pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+            definition: definitions,    
+        }
+    }
+    return {
+        word: apiResponse.word,
+        partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+        pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+        frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+        definition: apiResponse.results[0].definition,
+    }
+}
+
+function getAllDefinitions(apiResponse, numberOfDefinitions) {
+    let definitions = ''
+    for(let i= 0; i < numberOfDefinitions; i++) {
+        let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
+        let definition = apiResponse.results[i].definition
+        definitions += i+1 + '.\n' + partOfSpeech + '\n' + definition + '\n\n'
+    }
+    return definitions
 }

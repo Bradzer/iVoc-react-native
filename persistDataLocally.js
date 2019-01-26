@@ -1,4 +1,16 @@
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, UPDATE_ENDING_LETTERS_CHKBOX, UPDATE_STARTING_LETTERS_TEXT, UPDATE_ENDING_LETTERS_TEXT, UPDATE_API_URL } from './actions'
+import AppConstants from './Constants'
+import { 
+    UPDATE_INDEX, 
+    UPDATE_STARTING_LETTERS_CHKBOX, 
+    UPDATE_ENDING_LETTERS_CHKBOX, 
+    UPDATE_SPECIFIC_WORD_CHKBOX,
+    UPDATE_STARTING_LETTERS_TEXT, 
+    UPDATE_ENDING_LETTERS_TEXT, 
+    UPDATE_SPECIFIC_WORD_TEXT,
+    UPDATE_API_URL,
+    UPDATE_SETTINGS_PREFERENCES
+} from './actions'
+import reactotron from './ReactotronConfig';
 
 const Realm = require('realm');
 
@@ -6,7 +18,7 @@ const _ = require('lodash')
 
 const persistDataLocally = store => next => action => {
 
-    let commonUrlpart = 'https://wordsapiv1.p.mashape.com/words/?'
+    let commonUrlpart = 'https://wordsapiv1.p.mashape.com/words/'
     let customUrlpart = ''
 
     switch(action.type) {
@@ -15,124 +27,119 @@ const persistDataLocally = store => next => action => {
             Realm.open({})
             .then((realm) => {
                 realm.write(() => {
-                    if(realm.objects('settingsScreen').isValid()) {
-                        if(!(realm.objects('settingsScreen').isEmpty())) {
-                            realm.objects('settingsScreen').filtered('pk = 0').update('updatedIndex', action.data)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('updatedIndex', action.data)
 
-                            let settingsScreen = realm.objects('settingsScreen')
-                            let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                            let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                            let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                            let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                            let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                            
-                            if(startingLettersChecked && startingLettersText ) {
-                                if (endingLettersChecked && endingLettersText) {
-
-                                    switch(updatedIndex) {
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let specificWordChecked = (_.valuesIn(settingsScreen))[0].specificWordChecked
+                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let specificWordText = (_.valuesIn(settingsScreen))[0].specificWordText
                     
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
-            
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    endingLettersText = endingLettersText.toLowerCase()
+                    if(startingLettersChecked && startingLettersText ) {
+                        if (endingLettersChecked && endingLettersText) {
 
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
-                                }
-                                else {
-
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
+                            switch(updatedIndex) {
             
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
-                                }
-                                
-                            }
-                            else if (endingLettersChecked && endingLettersText) {
-
-                                switch(updatedIndex) {
-                    
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&'
-                                        break;
-                                    
-                                    default:
-                                        break
-                                }
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
     
-                                endingLettersText = endingLettersText.toLowerCase()
-                                customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'
+                                    break
                             }
-                            else {
-                                switch(updatedIndex) {
-        
-                                    case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
-                                        break;
-                                    
-                                    default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-                                }
+
+                            startingLettersText = startingLettersText.toLowerCase()
+                            endingLettersText = endingLettersText.toLowerCase()
+
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
+                        }
+                        else {
+
+                            switch(updatedIndex) {
+            
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
+    
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'
+                                    break
                             }
-                            realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
+
+                            startingLettersText = startingLettersText.toLowerCase()
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
                         }
-                        else{
-                            realm.create('settingsScreen', { pk: 0, updatedIndex: action.data })
+                        
+                    }
+                    else if (endingLettersChecked && endingLettersText) {
+
+                        switch(updatedIndex) {
+            
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?'
+                                break
                         }
+
+                        endingLettersText = endingLettersText.toLowerCase()
+                        customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
                     }
                     else {
-                        realm.create('settingsScreen', { pk: 0, updatedIndex: action.data })
-                    } 
+                        switch(updatedIndex) {
+
+                            case 0:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+                        }
+                    }
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
                 })
             })
             .catch((error) => console.log(error))
@@ -142,125 +149,117 @@ const persistDataLocally = store => next => action => {
             Realm.open({})
             .then((realm) => {
                 realm.write(() => {
-                    if(realm.objects('settingsScreen').isValid()) {
-                        if(!(realm.objects('settingsScreen').isEmpty())) {
-                            realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersChecked', !(action.data))
+                    realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersChecked', !(action.data))
 
-                            let settingsScreen = realm.objects('settingsScreen')
-                            let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                            let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                            let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                            let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                            let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
 
-                            if(startingLettersChecked && startingLettersText ) {
-                                if (endingLettersChecked && endingLettersText) {
+                    if(startingLettersChecked && startingLettersText ) {
+                        if (endingLettersChecked && endingLettersText) {
 
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
+                            switch(updatedIndex) {
             
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }        
-
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    endingLettersText = endingLettersText.toLowerCase()
-
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
-                                }
-                                else {
-
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
-            
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
-                                }
-                                
-                            }
-                            else if (endingLettersChecked && endingLettersText) {
-
-                                switch(updatedIndex) {
-                    
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&'
-                                        break;
-                                    
-                                    default:
-                                        break
-                                }
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
     
-                                endingLettersText = endingLettersText.toLowerCase()
-                                customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
-                            }
-                            else {
-                                switch(updatedIndex) {
-        
-                                    case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
-                                        break;
-                                    
-                                    default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-                                }
-                            }
-                            realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'
+                                    break
+                            }        
 
+                            startingLettersText = startingLettersText.toLowerCase()
+                            endingLettersText = endingLettersText.toLowerCase()
+
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
                         }
-                        else{
-                            realm.create('settingsScreen', { pk: 0, startingLettersCheckeded: !(action.data) })
+                        else {
+
+                            switch(updatedIndex) {
+            
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
+    
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'
+                                    break
+                            }
+
+                            startingLettersText = startingLettersText.toLowerCase()
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
                         }
+                        
+                    }
+                    else if (endingLettersChecked && endingLettersText) {
+
+                        switch(updatedIndex) {
+            
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?'
+                                break
+                        }
+
+                        endingLettersText = endingLettersText.toLowerCase()
+                        customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
                     }
                     else {
-                        realm.create('settingsScreen', { pk: 0, startingLettersCheckeded: !(action.data) })
-                    } 
+                        switch(updatedIndex) {
+
+                            case 0:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+                        }
+                    }
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
                 })
             })
             .catch((error) => console.log(error))
@@ -270,125 +269,137 @@ const persistDataLocally = store => next => action => {
             Realm.open({})
             .then((realm) => {
                 realm.write(() => {
-                    if(realm.objects('settingsScreen').isValid()) {
-                        if(!(realm.objects('settingsScreen').isEmpty())) {
-                            realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersChecked', !(action.data))
+                    realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersChecked', !(action.data))
 
-                            let settingsScreen = realm.objects('settingsScreen')
-                            let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                            let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                            let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                            let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                            let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
 
-                            if(startingLettersChecked && startingLettersText ) {
-                                if (endingLettersChecked && endingLettersText) {
+                    if(startingLettersChecked && startingLettersText ) {
+                        if (endingLettersChecked && endingLettersText) {
 
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
+                            switch(updatedIndex) {
             
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    endingLettersText = endingLettersText.toLowerCase()
-
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
-                                }
-                                else {
-
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
-            
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
-                                }
-                                
-                            }
-                            else if (endingLettersChecked && endingLettersText) {
-
-                                switch(updatedIndex) {
-                    
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&'
-                                        break;
-                                    
-                                    default:
-                                        break
-                                }
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
     
-                                endingLettersText = endingLettersText.toLowerCase()
-                                customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'
+                                    break
                             }
-                            else {
-                                switch(updatedIndex) {
-        
-                                    case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
-                                        break;
-                                    
-                                    default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-                                }
-                            }
-                            realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
 
+                            startingLettersText = startingLettersText.toLowerCase()
+                            endingLettersText = endingLettersText.toLowerCase()
+
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
                         }
-                        else{
-                            realm.create('settingsScreen', { pk: 0, endingLettersChecked: !(action.data) })
+                        else {
+
+                            switch(updatedIndex) {
+            
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
+    
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'    
+                                    break
+                            }
+
+                            startingLettersText = startingLettersText.toLowerCase()
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
                         }
+                        
+                    }
+                    else if (endingLettersChecked && endingLettersText) {
+
+                        switch(updatedIndex) {
+            
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?'
+                                break
+                        }
+
+                        endingLettersText = endingLettersText.toLowerCase()
+                        customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
                     }
                     else {
-                        realm.create('settingsScreen', { pk: 0, endingLettersChecked: !(action.data) })
-                    } 
+                        switch(updatedIndex) {
+
+                            case 0:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+                        }
+                    }
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
+                })
+            })
+            .catch((error) => console.log(error))
+            break;
+        
+        case UPDATE_SPECIFIC_WORD_CHKBOX:
+            Realm.open({})
+            .then((realm) => {
+                realm.write(() => {
+                    realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', (!(action.data)))
+                    // reactotron.logImportant('UPDATE_SPECIFIC_WORD_CHKBOX AFTER CREATION IN REALM : ', realm.objects('settingsScreen'))
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let specificWordText = ((_.valuesIn(settingsScreen))[0].specificWordText).toLowerCase()
+
+                    if(!(action.data) && specificWordText) {
+                        realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + specificWordText)
+                    }
+                    else {
+                        realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', AppConstants.RANDOM_URL)
+                    }
                 })
             })
             .catch((error) => console.log(error))
@@ -398,125 +409,117 @@ const persistDataLocally = store => next => action => {
             Realm.open({})
             .then((realm) => {
                 realm.write(() => {
-                    if(realm.objects('settingsScreen').isValid()) {
-                        if(!(realm.objects('settingsScreen').isEmpty())) {
-                            realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersText', action.data)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersText', action.data)
 
-                            let settingsScreen = realm.objects('settingsScreen')
-                            let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                            let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                            let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                            let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                            let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
 
-                            if(startingLettersChecked && startingLettersText ) {
-                                if (endingLettersChecked && endingLettersText) {
+                    if(startingLettersChecked && startingLettersText ) {
+                        if (endingLettersChecked && endingLettersText) {
 
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
+                            switch(updatedIndex) {
             
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    endingLettersText = endingLettersText.toLowerCase()
-
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
-                                }
-                                else {
-
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
-            
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
-                                }
-                                
-                            }
-                            else if (endingLettersChecked && endingLettersText) {
-
-                                switch(updatedIndex) {
-                    
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&'
-                                        break;
-                                    
-                                    default:
-                                        break
-                                }
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
     
-                                endingLettersText = endingLettersText.toLowerCase()
-                                customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'
+                                    break
                             }
-                            else {
-                                switch(updatedIndex) {
-        
-                                    case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
-                                        break;
-                                    
-                                    default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-                                }
-                            }
-                            realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
 
+                            startingLettersText = startingLettersText.toLowerCase()
+                            endingLettersText = endingLettersText.toLowerCase()
+
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
                         }
-                        else{
-                            realm.create('settingsScreen', { pk: 0, startingLettersText: action.data })
+                        else {
+
+                            switch(updatedIndex) {
+            
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
+    
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'
+                                    break
+                            }
+
+                            startingLettersText = startingLettersText.toLowerCase()
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
                         }
+                        
+                    }
+                    else if (endingLettersChecked && endingLettersText) {
+
+                        switch(updatedIndex) {
+            
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?'
+                                break
+                        }
+
+                        endingLettersText = endingLettersText.toLowerCase()
+                        customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
                     }
                     else {
-                        realm.create('settingsScreen', { pk: 0, startingLettersText: action.data })
-                    } 
+                        switch(updatedIndex) {
+
+                            case 0:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+                        }
+                    }
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
                 })
             })
             .catch((error) => console.log(error))
@@ -526,125 +529,128 @@ const persistDataLocally = store => next => action => {
             Realm.open({})
             .then((realm) => {
                 realm.write(() => {
-                    if(realm.objects('settingsScreen').isValid()) {
-                        if(!(realm.objects('settingsScreen').isEmpty())) {
-                            realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', action.data)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', action.data)
 
-                            let settingsScreen = realm.objects('settingsScreen')
-                            let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                            let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                            let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                            let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                            let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
 
-                            if(startingLettersChecked && startingLettersText ) {
-                                if (endingLettersChecked && endingLettersText) {
+                    if(startingLettersChecked && startingLettersText ) {
+                        if (endingLettersChecked && endingLettersText) {
+
+                            switch(updatedIndex) {
+            
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
     
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
-            
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    endingLettersText = endingLettersText.toLowerCase()
-
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
-                                }
-                                else {
-
-                                    switch(updatedIndex) {
-                    
-                                        case 1:
-                                            customUrlpart += 'partOfSpeech=verb&'
-                                            break
-            
-                                        case 2:
-                                            customUrlpart += 'partOfSpeech=noun&'
-                                            break
-                                        case 3:
-            
-                                            customUrlpart += 'partOfSpeech=adjective&'
-                                            break;
-                                        
-                                        default:
-                                            break
-                                    }
-        
-                                    startingLettersText = startingLettersText.toLowerCase()
-                                    customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
-                                }
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
                                 
+                                default:
+                                    customUrlpart += '?'
+                                    break
                             }
-                            else if (endingLettersChecked && endingLettersText) {
 
-                                switch(updatedIndex) {
-                    
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&'
-                                        break;
-                                    
-                                    default:
-                                        break
-                                }
+                            startingLettersText = startingLettersText.toLowerCase()
+                            endingLettersText = endingLettersText.toLowerCase()
+
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*' + endingLettersText + '$&hasDetails=definitions&random=true'
+                        }
+                        else {
+
+                            switch(updatedIndex) {
+            
+                                case 1:
+                                    customUrlpart += '?partOfSpeech=verb&'
+                                    break
     
-                                endingLettersText = endingLettersText.toLowerCase()
-                                customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
+                                case 2:
+                                    customUrlpart += '?partOfSpeech=noun&'
+                                    break
+                                case 3:
+    
+                                    customUrlpart += '?partOfSpeech=adjective&'
+                                    break;
+                                
+                                default:
+                                    customUrlpart += '?'
+                                    break
                             }
-                            else {
-                                switch(updatedIndex) {
-        
-                                    case 0:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 1:
-                                        customUrlpart += 'partOfSpeech=verb&hasDetails=definitions&random=true'
-                                        break
-        
-                                    case 2:
-                                        customUrlpart += 'partOfSpeech=noun&hasDetails=definitions&random=true'
-                                        break
-                                    case 3:
-        
-                                        customUrlpart += 'partOfSpeech=adjective&hasDetails=definitions&random=true'
-                                        break;
-                                    
-                                    default:
-                                        customUrlpart += 'hasDetails=definitions&random=true'
-                                        break
-                                }
-                            }
-                            realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
 
+                            startingLettersText = startingLettersText.toLowerCase()
+                            customUrlpart += 'letterPattern=^' + startingLettersText + '.*$&hasDetails=definitions&random=true'
                         }
-                        else{
-                            realm.create('settingsScreen', { pk: 0, endingLettersText: action.data })
+                        
+                    }
+                    else if (endingLettersChecked && endingLettersText) {
+
+                        switch(updatedIndex) {
+            
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?'
+                                break
                         }
+
+                        endingLettersText = endingLettersText.toLowerCase()
+                        customUrlpart += 'letterPattern=^.*' + endingLettersText + '$&hasDetails=definitions&random=true'
                     }
                     else {
-                        realm.create('settingsScreen', { pk: 0, endingLettersText: action.data })
-                    } 
+                        switch(updatedIndex) {
+
+                            case 0:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+
+                            case 1:
+                                customUrlpart += '?partOfSpeech=verb&hasDetails=definitions&random=true'
+                                break
+
+                            case 2:
+                                customUrlpart += '?partOfSpeech=noun&hasDetails=definitions&random=true'
+                                break
+                            case 3:
+
+                                customUrlpart += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
+                                break;
+                            
+                            default:
+                                customUrlpart += '?hasDetails=definitions&random=true'
+                                break
+                        }
+                    }
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrlpart)
+                })
+            })
+            .catch((error) => console.log(error))
+            break;
+
+        case UPDATE_SPECIFIC_WORD_TEXT:
+            Realm.open({})
+            .then((realm) => {
+                realm.write(() => {
+                    realm.objects('settingsScreen').filtered('pk = 0').update('specificWordText', action.data)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + action.data)
                 })
             })
             .catch((error) => console.log(error))
@@ -653,6 +659,24 @@ const persistDataLocally = store => next => action => {
         case UPDATE_API_URL:
             break
                 
+        case UPDATE_SETTINGS_PREFERENCES:
+            Realm.open({})
+            .then((realm) => {
+                realm.write(() => {
+                    realm.objects('settingsScreen').filtered('pk = 0').update('updatedIndex', action.data.partOfSpeechIndex)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersChecked', action.data.startingLettersCheckBoxStatus)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersChecked', action.data.endingLettersCheckBoxStatus)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', action.data.specificWordCheckBoxStatus)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersText', action.data.startingLettersText)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', action.data.endingLettersText)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('specificWordText', action.data.specificWordText)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', action.data.apiUrl)
+                    // reactotron.logImportant('NEWLY ADDED VALUES IN REALM : ', realm.objects('settingsScreen').filtered('pk = 0'))
+                })
+            })
+            .catch((error) => console.log(error))
+            break;
+
         default:
             break;
     }

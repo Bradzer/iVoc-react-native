@@ -6,7 +6,6 @@ import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react
 import { Icon } from 'react-native-elements'
 import { Provider } from 'react-redux'
 
-
 import Home from './components/Home'
 import MyVocabulary from './components/MyVocabulary'
 import Settings from './components/Settings'
@@ -15,6 +14,27 @@ import Startup from './components/Startup'
 import AppConstants from './Constants'
 import store from './reducers'
 
+const Realm = require('realm');
+const realm = new Realm()
+realm.close()
+
+const settingsScreenSchema = {
+  name: 'settingsScreen',
+  primaryKey: 'pk',
+  properties: {
+      pk: 'int',
+      startingLettersChecked: 'bool?',
+      endingLettersChecked: 'bool?',
+      specificWordChecked: 'bool?',
+      updatedIndex: 'int?',
+      startingLettersText: 'string?',
+      endingLettersText: 'string?',
+      specificWordText: 'string?',
+      apiUrl: 'string?'
+  }
+}
+
+Realm.open({schema: [settingsScreenSchema]})
 
 export default class App extends React.Component {
 
