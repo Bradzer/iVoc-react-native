@@ -42,14 +42,7 @@ class RandomPractice extends React.Component {
                 if(apiUrl && apiUrl !== '') {
                     if(this.props.apiUrl !== apiUrl) {
                         store.dispatch(updateApiUrl(apiUrl))
-                        apiRequest = axios.create({
-                            baseURL: this.props.apiUrl,
-                            headers: {
-                                'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            }
-                        })
+                        updateApiRequest(this.props.apiUrl)
                     }
                 }
                 if(this.props.displayChangePrefsBtn === 'flex'){
@@ -114,27 +107,13 @@ class RandomPractice extends React.Component {
                     let settingsScreen = realm.objects('settingsScreen')
                     let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
                         store.dispatch(updateApiUrl(apiUrl))
-                        apiRequest = axios.create({
-                            baseURL: this.props.apiUrl,
-                            headers: {
-                                'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            }
-                        })
+                        updateApiRequest(this.props.apiUrl)
                 }
                 else{
                     // reactotron.logImportant('REALM OBJECT EMPTY')
                     realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                     store.dispatch(updateApiUrl(AppConstants.RANDOM_URL))
-                    apiRequest = axios.create({
-                        baseURL: this.props.apiUrl,
-                        headers: {
-                            'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })  
+                    updateApiRequest(this.props.apiUrl)
                 }
             })
             goToNextRandomWord();
@@ -251,4 +230,15 @@ function addKnownWordToCloud(word){
 
 function showWordDefinition() {
     store.dispatch(displayWordDefinition())
+}
+
+function updateApiRequest(baseURL) {
+    apiRequest = axios.create({
+        baseURL: baseURL,
+        headers: {
+            'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
 }
