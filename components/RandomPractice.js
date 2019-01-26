@@ -7,6 +7,7 @@ import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
+import reactotron from '../ReactotronConfig';
   
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
@@ -108,35 +109,11 @@ class RandomPractice extends React.Component {
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
-                if(realm.objects('settingsScreen').isValid()) {
-                    if(!(realm.objects('settingsScreen').isEmpty())) {
-                        let settingsScreen = realm.objects('settingsScreen')
-                        let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-                        if(apiUrl && apiUrl !== '') {
-                            store.dispatch(updateApiUrl(apiUrl))
-                            apiRequest = axios.create({
-                                baseURL: this.props.apiUrl,
-                                headers: {
-                                    'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                        }
-                        else {
-                            store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
-                            apiRequest = axios.create({
-                                baseURL: this.props.apiUrl,
-                                headers: {
-                                    'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                                    'Accept': 'application/json',
-                                    'Content-Type': 'application/json'
-                                }
-                            })  
-                        }
-                    }
-                    else{
-                        store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
+                if(!(realm.objects('settingsScreen').isEmpty())) {
+                    // reactotron.logImportant('REALM OBJECT NOT EMPTY')
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                        store.dispatch(updateApiUrl(apiUrl))
                         apiRequest = axios.create({
                             baseURL: this.props.apiUrl,
                             headers: {
@@ -144,11 +121,12 @@ class RandomPractice extends React.Component {
                                 'Accept': 'application/json',
                                 'Content-Type': 'application/json'
                             }
-                        })  
-                    }
+                        })
                 }
-                else {
-                    store.dispatch(updateApiUrl('https://wordsapiv1.p.mashape.com/words/?hasDetails=definitions&random=true'))
+                else{
+                    // reactotron.logImportant('REALM OBJECT EMPTY')
+                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    store.dispatch(updateApiUrl(AppConstants.RANDOM_URL))
                     apiRequest = axios.create({
                         baseURL: this.props.apiUrl,
                         headers: {
@@ -156,8 +134,8 @@ class RandomPractice extends React.Component {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json'
                         }
-                    }) 
-                }     
+                    })  
+                }
             })
             goToNextRandomWord();
         })
