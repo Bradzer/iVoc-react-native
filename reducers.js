@@ -109,12 +109,14 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_STARTING_LETTERS_CHKBOX:
                 return updateState(state, {
-                    startingLettersChecked: !(action.data)
+                    startingLettersChecked: !(action.data),
+                    specificWordChecked: false
                 })
 
             case UPDATE_ENDING_LETTERS_CHKBOX:
                 return updateState(state, {
-                    endingLettersChecked: !(action.data)
+                    endingLettersChecked: !(action.data),
+                    specificWordChecked: false
                 })
 
             case UPDATE_SPECIFIC_WORD_CHKBOX:
