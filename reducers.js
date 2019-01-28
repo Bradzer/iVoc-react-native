@@ -18,11 +18,14 @@ import {
     DISPLAY_CHANGE_PREFS_BTN, 
     DISPLAY_VOCABULARY_OVERLAY, 
     HIDE_VOCABULARY_OVERLAY, 
+    UPDATE_LIST_OF_WORDS,
     UPDATE_VOCABULARY_WORD, 
     UPDATE_VOCABULARY_PART_OF_SPEECH, 
     UPDATE_VOCABULARY_DEFINITION, 
     UPDATE_VOCABULARY_PRONUNCIATION, 
-    UPDATE_VOCABULARY_FREQUENCY, } from './actions'
+    UPDATE_VOCABULARY_FREQUENCY, 
+    CLEAR_LIST_OF_WORDS,
+    DELETE_WORD_IN_LIST } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -58,7 +61,8 @@ const initialState = {
     vocabularyFrequency: '',
     specificWordChecked: false,
     specificWordText: '',
-    randomWordPrefDisplay: 'flex'
+    randomWordPrefDisplay: 'flex',
+    listOfWords: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -173,6 +177,11 @@ const reducer = (state = initialState, action) => {
                 
                 })
 
+            case CLEAR_LIST_OF_WORDS:
+                return updateState(state, {
+                    listOfWords: []
+                })
+
             case DISPLAY_VOCABULARY_OVERLAY:
                 return updateState(state, {
                     vocabularyOverlayDisplay: true,
@@ -187,6 +196,16 @@ const reducer = (state = initialState, action) => {
             case HIDE_VOCABULARY_OVERLAY:
                 return updateState(state, {
                     vocabularyOverlayDisplay: false,                
+                })
+
+            case UPDATE_LIST_OF_WORDS:
+                return updateState(state, {
+                    listOfWords: action.data
+                })
+
+            case DELETE_WORD_IN_LIST:
+                return updateState(state, {
+                    listOfWords: state.listOfWords.filter((value, index) => index !== action.data)
                 })
 
             case UPDATE_VOCABULARY_WORD:
