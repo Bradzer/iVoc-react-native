@@ -161,6 +161,7 @@ const reducer = (state = initialState, action) => {
                     apiUrl: action.data.apiUrl,
                     specificWordChecked: action.data.specificWordChecked,
                     specificWordText: action.data.specificWordText,
+                    randomWordPrefDisplay: action.data.specificWordChecked ? 'none' : 'flex'
                               
                 })
 
