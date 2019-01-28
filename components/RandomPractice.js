@@ -85,6 +85,7 @@ class RandomPractice extends React.Component {
                     title= {this.props.buttonRightTitle}
                     containerStyle={{marginHorizontal: 16}}
                     onPress={nextBtnClicked}
+                    onLongPress={addToVocabularyBtnClicked}
                     />
                 </View>
                 <View style={[styles.buttonGroup, {display: this.props.displayChangePrefsBtn}]}>
