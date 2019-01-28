@@ -6,12 +6,21 @@ import { connect } from 'react-redux'
 import store from '../reducers'
 
 import AppConstants from '../Constants'
-import { updateReviewContent, showNoVocabulary, resetReviewLayout, showReviewOver } from '../actions'
+import { 
+    updateReviewContent, 
+    showNoVocabulary, 
+    resetReviewLayout, 
+    showReviewOver, 
+    hideReviewOverlay, 
+    displayReviewOverlayWithData, 
+    displayReviewOverlay, 
+    updateReviewButtons, } from '../actions'
 import reactotron from '../ReactotronConfig';
 
 const Realm = require('realm');
 
 let listOfWords = []
+let randomWordOriginalId = ''
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
@@ -29,7 +38,7 @@ class ReviewVocabulary extends React.Component {
                         icon={{name: this.props.reviewLeftBtnIconName, type: this.props.reviewLeftBtnIconType}}
                         title= {this.props.reviewLeftBtnTitle}
                         containerStyle={{marginHorizontal: 16}}
-                        onPress={((this.props.reviewLeftBtnTitle !== 'No') ? showDefinitionBtnClicked : noBtnClicked)}
+                        onPress={((this.props.reviewLeftBtnTitle !== 'No') ? showDefinitionBtnClicked : ()  => noBtnClicked(randomWordOriginalId))}
                         />
                         <Button
                         icon={{name: this.props.reviewRightBtnIconName, type: this.props.reviewRightBtnIconType}}
@@ -39,6 +48,18 @@ class ReviewVocabulary extends React.Component {
                         />
                     </View>
                 </View>
+                <Overlay isVisible={this.props.reviewOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
+                    <View>
+                        <Text>{this.props.reviewWord}</Text>
+                        <Text>Pronunciation: {this.props.reviewPronunciation}</Text>
+                        <Text>Frequency: {this.props.reviewFrequency}</Text>
+                        <Text></Text>
+                        <Text>Definitions</Text>
+                        <Text></Text>
+                        <Text>{this.props.reviewDefinition}</Text>
+                    </View>
+                </Overlay>
+
             </View>
         )
     }
@@ -57,6 +78,7 @@ class ReviewVocabulary extends React.Component {
                 else {
                     let randomIndex = Math.floor(Math.random() * listOfWords.length)
                     let randomWord = listOfWords[randomIndex]
+                    randomWordOriginalId = randomWord.originalId
                     store.dispatch(updateReviewContent(randomWord.label))
                     listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
                 }
@@ -97,37 +119,58 @@ function mapStateToProps(state) {
         reviewRightBtnIconName: state.reviewRightBtnIconName,
         reviewRightBtnIconType: state.reviewRightBtnIconType,
         reviewIntroText: state.reviewIntroText,
+        reviewOverlayDisplay: state.reviewOverlayDisplay,
+        reviewPronunciation: state.reviewPronunciation,
+        reviewFrequency: state.reviewFrequency,
+        reviewDefinition: state.reviewDefinition,
+        reviewOriginalId: state.reviewOriginalId
 
     }
 }
 
 const showDefinitionBtnClicked = () => {
-
+    store.dispatch(displayReviewOverlay())
 }
 
-const noBtnClicked = () => {
-
+const noBtnClicked = (originalId) => {
+    reactotron.logImportant('original id : ', originalId)
+    wordsDetailsCollection.doc(originalId).get()
+    .then((docSnapshot) => {
+        store.dispatch(displayReviewOverlayWithData(docSnapshot.data()))
+    })
 }
 
 const nextBtnClicked = () => {
-
+    goToNextReviewWord()
+    store.dispatch(updateReviewButtons())
 }
 
 const yesBtnClicked = () => {
+    goToNextReviewWord()
+    store.dispatch(updateReviewButtons())
+}
+
+const onBackdropPress = () => {
+    store.dispatch(hideReviewOverlay())
+}
+
+function goToNextReviewWord() {
     reactotron.logImportant(listOfWords)
     if (listOfWords.length > 0) {
-        reactotron.logImportant('list > 0')
+        // reactotron.logImportant('list > 0')
         if(listOfWords.length === 1) {
-            reactotron.logImportant('list = 1')
+            // reactotron.logImportant('list = 1')
             let randomWord = listOfWords[0]
-            store.dispatch(updateReviewContent(randomWord.label))
+            randomWordOriginalId = randomWord.originalId
+            store.dispatch(updateReviewContent(randomWord.label, randomWord.originalId))
             listOfWords = listOfWords.filter((value, index) => index !== 0)
         }
         else {
-            reactotron.logImportant('list > 1')
+            // reactotron.logImportant('list > 1')
             let randomIndex = Math.floor(Math.random() * listOfWords.length)
             let randomWord = listOfWords[randomIndex]
-            store.dispatch(updateReviewContent(randomWord.label))
+            randomWordOriginalId = randomWord.originalId
+            store.dispatch(updateReviewContent(randomWord.label, randomWord.originalId))
             listOfWords = listOfWords.filter((value, index) => index !== randomIndex)                
         }
     }

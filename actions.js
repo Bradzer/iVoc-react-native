@@ -28,6 +28,10 @@ export const UPDATE_REVIEW_CONTENT = 'UPDATE_REVIEW_CONTENT'
 export const SHOW_NO_VOCABULARY = 'SHOW_NO_VOCABULARY'
 export const RESET_REVIEW_LAYOUT = 'RESET_REVIEW_LAYOUT'
 export const SHOW_REVIEW_OVER = 'SHOW_REVIEW_OVER'
+export const HIDE_REVIEW_OVERLAY = 'HIDE_REVIEW_OVERLAY'
+export const DISPLAY_REVIEW_OVERLAY_WITH_DATA = 'DISPLAY_REVIEW_OVERLAY_WITH_DATA'
+export const DISPLAY_REVIEW_OVERLAY = 'DISPLAY_REVIEW_OVERLAY'
+export const UPDATE_REVIEW_BUTTONS = 'UPDATE_REVIEW_BUTTONS'
 
 export function addResponseData(data) {
     return {
@@ -209,7 +213,7 @@ export function updateVocabularyFrequency(frequency) {
 export function updateReviewContent(wordLabel) {
     return {
         type: UPDATE_REVIEW_CONTENT,
-        data: wordLabel
+        data: wordLabel,
     }
 }
 
@@ -228,5 +232,30 @@ export function resetReviewLayout() {
 export function showReviewOver() {
     return {
         type: SHOW_REVIEW_OVER,
+    }
+}
+
+export function hideReviewOverlay() {
+    return {
+        type: HIDE_REVIEW_OVERLAY
+    }
+}
+
+export function displayReviewOverlayWithData(wordDocument) {
+    return {
+        type: DISPLAY_REVIEW_OVERLAY_WITH_DATA,
+        data: wordDocument
+    }
+}
+
+export function displayReviewOverlay() {
+    return {
+        type: DISPLAY_REVIEW_OVERLAY,
+    }
+}
+
+export function updateReviewButtons() {
+    return {
+        type: UPDATE_REVIEW_BUTTONS
     }
 }
