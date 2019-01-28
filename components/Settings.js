@@ -154,9 +154,6 @@ const styles = StyleSheet.create({
   function clearVocabulary() {
       wordsDetailsCollection.get()
       .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
-
-      wordsCollection.get()
-      .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
   }
 
 const changeIndex = (selectedIndex) => {

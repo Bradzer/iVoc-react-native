@@ -11,6 +11,7 @@ import MyVocabulary from './components/MyVocabulary'
 import Settings from './components/Settings'
 import RandomPractice from './components/RandomPractice'
 import Startup from './components/Startup'
+import ReviewVocabulary from './components/ReviewVocabulary'
 import AppConstants from './Constants'
 import store from './reducers'
 
@@ -55,7 +56,7 @@ const HomeTabStackNavigator = createStackNavigator({
     screen: RandomPractice
   },
   ReviewVocabulary: {
-    screen: Startup
+    screen: ReviewVocabulary
   }
 },
 {

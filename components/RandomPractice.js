@@ -206,11 +206,7 @@ function addToVocabularyBtnClicked() {
 function addKnownWordToCloud(word){
     wordsDetailsCollection.add(word)
     .then((docRef) => {
-        docRef.update({id: docRef.id})
-        wordsCollection.add({originalId: docRef.id, label: word.word, partOfSpeech: word.partOfSpeech})
-        .then(docRef => {
-            docRef.update({id: docRef.id})
-        })
+        docRef.update({id: docRef.id, numberOfRemembrances: 1, numberOfAppearances: 1})
     })
 }
 

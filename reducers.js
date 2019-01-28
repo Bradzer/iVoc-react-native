@@ -27,7 +27,15 @@ import {
     CLEAR_LIST_OF_WORDS,
     DELETE_WORD_IN_LIST,
     UPDATE_SEARCH_VALUE,
-    UPDATE_SEARCH_RESULTS } from './actions'
+    UPDATE_SEARCH_RESULTS,
+    UPDATE_REVIEW_CONTENT, 
+    SHOW_NO_VOCABULARY,
+    RESET_REVIEW_LAYOUT, 
+    SHOW_REVIEW_OVER,
+    HIDE_REVIEW_OVERLAY,
+    DISPLAY_REVIEW_OVERLAY_WITH_DATA,
+    DISPLAY_REVIEW_OVERLAY,
+    UPDATE_REVIEW_BUTTONS } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -65,7 +73,22 @@ const initialState = {
     specificWordText: '',
     randomWordPrefDisplay: 'flex',
     listOfWords: [],
-    searchBarValue: ''
+    searchBarValue: '',
+    reviewIntroTextDisplay: 'none',
+    displayReviewContent: 'none',
+    reviewWord: '',
+    reviewLeftBtnTitle: 'No',
+    reviewLeftBtnIconName: 'times-circle',
+    reviewLeftBtnIconType: 'font-awesome',
+    reviewRightBtnTitle: 'Yes',
+    reviewRightBtnIconName: 'check-circle',
+    reviewRightBtnIconType: 'font-awesome', 
+    reviewIntroText: 'Do your remember this...',
+    reviewOverlayDisplay: false,
+    reviewPronunciation: '',
+    reviewFrequency: '',
+    reviewDefinition: '',
+    reviewOriginalId: '',
 }
 
 const reducer = (state = initialState, action) => {
@@ -213,7 +236,7 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_SEARCH_RESULTS:
                 return updateState(state, {
-                    listOfWords: state.listOfWords.filter((value) => value.label.includes(action.data))
+                    listOfWords: state.listOfWords.filter((value) => value.word.includes(action.data))
                 })
 
             case DELETE_WORD_IN_LIST:
@@ -246,6 +269,73 @@ const reducer = (state = initialState, action) => {
                     vocabularyFrequency: action.data
                 })
 
+            case UPDATE_REVIEW_CONTENT:
+                return updateState(state, {
+                    reviewWord: action.data,
+                    displayReviewContent: 'flex',
+                    reviewIntroTextDisplay: 'flex',
+                })
+
+            case SHOW_NO_VOCABULARY:
+                return updateState(state, {
+                    reviewIntroText: 'Your vocabulary is empty',
+                    reviewIntroTextDisplay: 'flex'
+                })
+
+            case RESET_REVIEW_LAYOUT:
+                return updateState(state, {
+                    reviewLeftBtnTitle: 'No',
+                    reviewLeftBtnIconName: 'times-circle',
+                    reviewLeftBtnIconType: 'font-awesome',
+                    reviewRightBtnTitle: 'Yes',
+                    reviewRightBtnIconName: 'check-circle',
+                    reviewRightBtnIconType: 'font-awesome', 
+                    reviewIntroText: 'Do your remember this...',
+                    reviewIntroTextDisplay: 'none',
+                    displayReviewContent: 'none',
+                    reviewOverlayDisplay: false
+                })
+
+            case SHOW_REVIEW_OVER: 
+                return updateState(state, {
+                    reviewIntroText: 'The review is over',
+                    displayReviewContent: 'none',
+                })
+
+            case HIDE_REVIEW_OVERLAY:
+                return updateState(state, {
+                    reviewOverlayDisplay: false
+                })
+
+            case DISPLAY_REVIEW_OVERLAY_WITH_DATA:
+                return updateState(state, {
+                    reviewPronunciation: action.data.pronunciation,
+                    reviewFrequency: action.data.frequency,
+                    reviewDefinition: action.data.definition,                
+                    reviewOverlayDisplay: true,
+                    reviewRightBtnTitle: 'Next',
+                    reviewRightBtnIconName: 'controller-next',
+                    reviewRightBtnIconType: 'entypo',
+                    reviewLeftBtnTitle: 'Show definitions',
+                    reviewLeftBtnIconName: 'documents',
+                    reviewLeftBtnIconType: 'entypo'
+                })
+
+            case UPDATE_REVIEW_BUTTONS:
+                return updateState(state, {
+                    reviewLeftBtnTitle: 'No',
+                    reviewLeftBtnIconName: 'times-circle',
+                    reviewLeftBtnIconType: 'font-awesome',
+                    reviewRightBtnTitle: 'Yes',
+                    reviewRightBtnIconName: 'check-circle',
+                    reviewRightBtnIconType: 'font-awesome',                 
+                })
+
+            case DISPLAY_REVIEW_OVERLAY:
+                return updateState(state, {
+                    reviewOverlayDisplay: true
+                })
+            
         default:
             return state
     }

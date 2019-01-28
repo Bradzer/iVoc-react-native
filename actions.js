@@ -24,6 +24,14 @@ export const UPDATE_LIST_OF_WORDS = 'UPDATE_LIST_OF_WORDS'
 export const DELETE_WORD_IN_LIST = 'DELETE_WORD_IN_LIST'
 export const UPDATE_SEARCH_VALUE = 'UPDATE_SEARCH_VALUE'
 export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS'
+export const UPDATE_REVIEW_CONTENT = 'UPDATE_REVIEW_CONTENT'
+export const SHOW_NO_VOCABULARY = 'SHOW_NO_VOCABULARY'
+export const RESET_REVIEW_LAYOUT = 'RESET_REVIEW_LAYOUT'
+export const SHOW_REVIEW_OVER = 'SHOW_REVIEW_OVER'
+export const HIDE_REVIEW_OVERLAY = 'HIDE_REVIEW_OVERLAY'
+export const DISPLAY_REVIEW_OVERLAY_WITH_DATA = 'DISPLAY_REVIEW_OVERLAY_WITH_DATA'
+export const DISPLAY_REVIEW_OVERLAY = 'DISPLAY_REVIEW_OVERLAY'
+export const UPDATE_REVIEW_BUTTONS = 'UPDATE_REVIEW_BUTTONS'
 
 export function addResponseData(data) {
     return {
@@ -126,10 +134,10 @@ export function clearListOfWords() {
         type: CLEAR_LIST_OF_WORDS
     }
 }
-export function displayVocabularyOverlay(docSnapshotData){
+export function displayVocabularyOverlay(wordDetails){
     return {
         type: DISPLAY_VOCABULARY_OVERLAY,
-        data: docSnapshotData
+        data: wordDetails
     }
 }
 
@@ -199,5 +207,55 @@ export function updateVocabularyFrequency(frequency) {
     return {
         type: UPDATE_VOCABULARY_FREQUENCY,
         data: frequency
+    }
+}
+
+export function updateReviewContent(wordLabel) {
+    return {
+        type: UPDATE_REVIEW_CONTENT,
+        data: wordLabel,
+    }
+}
+
+export function showNoVocabulary() {
+    return {
+        type: SHOW_NO_VOCABULARY,
+    }
+}
+
+export function resetReviewLayout() {
+    return {
+        type: RESET_REVIEW_LAYOUT,
+    }
+}
+
+export function showReviewOver() {
+    return {
+        type: SHOW_REVIEW_OVER,
+    }
+}
+
+export function hideReviewOverlay() {
+    return {
+        type: HIDE_REVIEW_OVERLAY
+    }
+}
+
+export function displayReviewOverlayWithData(wordDocument) {
+    return {
+        type: DISPLAY_REVIEW_OVERLAY_WITH_DATA,
+        data: wordDocument
+    }
+}
+
+export function displayReviewOverlay() {
+    return {
+        type: DISPLAY_REVIEW_OVERLAY,
+    }
+}
+
+export function updateReviewButtons() {
+    return {
+        type: UPDATE_REVIEW_BUTTONS
     }
 }
