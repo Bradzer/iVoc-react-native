@@ -90,7 +90,7 @@ function mapStateToProps(state) {
     <ListItem
         title={item.label}
         subtitle={item.partOfSpeech}
-        rightIcon= {<Icon name= 'keyboard-arrow-right' />}
+        rightIcon= {<Icon name= 'delete' />}
         onPress= {() => itemPressed(item.originalId)}
     />
   )
