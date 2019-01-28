@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import store from '../reducers'
 
 import AppConstants from '../Constants'
-import { displayVocabularyOverlay, hideVocabularyOverlay, } from '../actions'
+import { clearListOfWords, displayVocabularyOverlay, hideVocabularyOverlay, updateListOfWords, deleteWordInList } from '../actions'
 
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
@@ -28,7 +28,7 @@ class MyVocabulary extends React.Component {
             <View style={styles.container}>
                 <FlatList
                     keyExtractor={keyExtractor}
-                    data={this.listOfWords} 
+                    data={this.props.listOfWords} 
                     renderItem={renderItem}
                 />
                 <Overlay isVisible={this.props.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
@@ -49,13 +49,15 @@ class MyVocabulary extends React.Component {
 
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
-            this.listOfWords = []
+            let listOfWords = []
+            store.dispatch(clearListOfWords())
             wordsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
-                    this.listOfWords.push(doc.data())
+                    listOfWords.push(doc.data())
                 })
-            this.forceUpdate()
+                store.dispatch(updateListOfWords(listOfWords))
+            // this.forceUpdate()
             })
           });
     }
@@ -79,18 +81,19 @@ function mapStateToProps(state) {
         vocabularyPartOfSpeech: state.vocabularyPartOfSpeech,
         vocabularyDefinition: state.vocabularyDefinition,
         vocabularyPronunciation: state.vocabularyPronunciation,
-        vocabularyFrequency: state.vocabularyFrequency
+        vocabularyFrequency: state.vocabularyFrequency,
+        listOfWords: state.listOfWords
     }
 }
 
 
   const keyExtractor = (item, index) => index.toString();
 
-  const renderItem = ({item}) => (
+  const renderItem = ({item, index}) => (
     <ListItem
         title={item.label}
         subtitle={item.partOfSpeech}
-        rightIcon= {<Icon name= 'keyboard-arrow-right' />}
+        rightIcon= {<Icon name= 'delete' onPress={() => deleteWordPressed(item, index)}/>}
         onPress= {() => itemPressed(item.originalId)}
     />
   )
@@ -105,5 +108,11 @@ function mapStateToProps(state) {
 
   const onBackdropPress = () => {
     store.dispatch(hideVocabularyOverlay())
+  }
+
+  const deleteWordPressed = (item, index) => {
+    wordsDetailsCollection.doc(item.originalId).delete()
+    wordsCollection.doc(item.id).delete()
+    store.dispatch(deleteWordInList(index))
   }
   

@@ -19,6 +19,9 @@ export const UPDATE_VOCABULARY_PART_OF_SPEECH = 'UPDATE_VOCABULARY_PART_OF_SPEEC
 export const UPDATE_VOCABULARY_DEFINITION = 'UPDATE_VOCABULARY_DEFINITION'
 export const UPDATE_VOCABULARY_PRONUNCIATION = 'UPDATE_VOCABULARY_PRONUNCIATION'
 export const UPDATE_VOCABULARY_FREQUENCY = 'UPDATE_VOCABULARY_FREQUENCY'
+export const CLEAR_LIST_OF_WORDS = 'CLEAR_LIST_OF_WORDS'
+export const UPDATE_LIST_OF_WORDS = 'UPDATE_LIST_OF_WORDS'
+export const DELETE_WORD_IN_LIST = 'DELETE_WORD_IN_LIST'
 
 export function addResponseData(data) {
     return {
@@ -116,6 +119,11 @@ export function updateSettingsPreferences(settingsPreferencesRealmData) {
     }
 }
 
+export function clearListOfWords() {
+    return {
+        type: CLEAR_LIST_OF_WORDS
+    }
+}
 export function displayVocabularyOverlay(docSnapshotData){
     return {
         type: DISPLAY_VOCABULARY_OVERLAY,
@@ -133,6 +141,20 @@ export function updateVocabularyWord(word) {
     return {
         type: UPDATE_VOCABULARY_WORD,
         data: word
+    }
+}
+
+export function updateListOfWords(listOfWords) {
+    return {
+        type: UPDATE_LIST_OF_WORDS,
+        data: listOfWords
+    }
+}
+
+export function deleteWordInList(index) {
+    return {
+        type: DELETE_WORD_IN_LIST,
+        data: index
     }
 }
 
