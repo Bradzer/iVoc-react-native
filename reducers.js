@@ -27,7 +27,10 @@ import {
     CLEAR_LIST_OF_WORDS,
     DELETE_WORD_IN_LIST,
     UPDATE_SEARCH_VALUE,
-    UPDATE_SEARCH_RESULTS } from './actions'
+    UPDATE_SEARCH_RESULTS,
+    UPDATE_REVIEW_CONTENT, 
+    SHOW_NO_VOCABULARY,
+    RESET_REVIEW_LAYOUT, } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -65,7 +68,18 @@ const initialState = {
     specificWordText: '',
     randomWordPrefDisplay: 'flex',
     listOfWords: [],
-    searchBarValue: ''
+    searchBarValue: '',
+    reviewIntroTextDisplay: 'none',
+    displayReviewContent: 'none',
+    reviewWord: '',
+    reviewLeftBtnTitle: 'No',
+    reviewLeftBtnIconName: 'times-circle',
+    reviewLeftBtnIconType: 'font-awesome',
+    reviewRightBtnTitle: 'Yes',
+    reviewRightBtnIconName: 'check-circle',
+    reviewRightBtnIconType: 'font-awesome', 
+    reviewIntroText: 'Do your remember this...'   
+
 }
 
 const reducer = (state = initialState, action) => {
@@ -244,6 +258,33 @@ const reducer = (state = initialState, action) => {
             case UPDATE_VOCABULARY_FREQUENCY:
                 return updateState(state, {
                     vocabularyFrequency: action.data
+                })
+
+            case UPDATE_REVIEW_CONTENT:
+                return updateState(state, {
+                    reviewWord: action.data,
+                    displayReviewContent: 'flex',
+                    reviewIntroTextDisplay: 'flex'
+                })
+
+            case SHOW_NO_VOCABULARY:
+                return updateState(state, {
+                    reviewIntroText: 'Your vocabulary is empty',
+                    reviewIntroTextDisplay: 'flex'
+                })
+
+            case RESET_REVIEW_LAYOUT:
+                return updateState(state, {
+                    reviewLeftBtnTitle: 'No',
+                    reviewLeftBtnIconName: 'times-circle',
+                    reviewLeftBtnIconType: 'font-awesome',
+                    reviewRightBtnTitle: 'Yes',
+                    reviewRightBtnIconName: 'check-circle',
+                    reviewRightBtnIconType: 'font-awesome', 
+                    reviewIntroText: 'Do your remember this...',
+                    reviewIntroTextDisplay: 'none',
+                    displayReviewContent: 'none',
+                                   
                 })
 
         default:

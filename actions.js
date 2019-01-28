@@ -24,6 +24,9 @@ export const UPDATE_LIST_OF_WORDS = 'UPDATE_LIST_OF_WORDS'
 export const DELETE_WORD_IN_LIST = 'DELETE_WORD_IN_LIST'
 export const UPDATE_SEARCH_VALUE = 'UPDATE_SEARCH_VALUE'
 export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS'
+export const UPDATE_REVIEW_CONTENT = 'UPDATE_REVIEW_CONTENT'
+export const SHOW_NO_VOCABULARY = 'SHOW_NO_VOCABULARY'
+export const RESET_REVIEW_LAYOUT = 'RESET_REVIEW_LAYOUT'
 
 export function addResponseData(data) {
     return {
@@ -199,5 +202,24 @@ export function updateVocabularyFrequency(frequency) {
     return {
         type: UPDATE_VOCABULARY_FREQUENCY,
         data: frequency
+    }
+}
+
+export function updateReviewContent(wordLabel) {
+    return {
+        type: UPDATE_REVIEW_CONTENT,
+        data: wordLabel
+    }
+}
+
+export function showNoVocabulary() {
+    return {
+        type: SHOW_NO_VOCABULARY,
+    }
+}
+
+export function resetReviewLayout() {
+    return {
+        type: RESET_REVIEW_LAYOUT,
     }
 }

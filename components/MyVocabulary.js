@@ -62,7 +62,6 @@ class MyVocabulary extends React.Component {
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
             let listOfWords = []
-            // store.dispatch(clearListOfWords())
             wordsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
