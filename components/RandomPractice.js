@@ -187,6 +187,8 @@ function goToNextRandomWord(){
         else {
             store.dispatch(displayUpdateChangePrefsBtn())
         }
+    }, () => {
+        store.dispatch(displayUpdateChangePrefsBtn())
     })
     .catch((error) => console.error(error))
 }
