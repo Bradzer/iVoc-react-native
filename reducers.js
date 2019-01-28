@@ -30,7 +30,8 @@ import {
     UPDATE_SEARCH_RESULTS,
     UPDATE_REVIEW_CONTENT, 
     SHOW_NO_VOCABULARY,
-    RESET_REVIEW_LAYOUT, } from './actions'
+    RESET_REVIEW_LAYOUT, 
+    SHOW_REVIEW_OVER, } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -284,7 +285,12 @@ const reducer = (state = initialState, action) => {
                     reviewIntroText: 'Do your remember this...',
                     reviewIntroTextDisplay: 'none',
                     displayReviewContent: 'none',
-                                   
+                })
+
+            case SHOW_REVIEW_OVER: 
+                return updateState(state, {
+                    reviewIntroText: 'The review is over',
+                    displayReviewContent: 'none',
                 })
 
         default:

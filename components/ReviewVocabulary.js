@@ -6,10 +6,12 @@ import { connect } from 'react-redux'
 import store from '../reducers'
 
 import AppConstants from '../Constants'
-import { updateReviewContent, showNoVocabulary, resetReviewLayout } from '../actions'
+import { updateReviewContent, showNoVocabulary, resetReviewLayout, showReviewOver } from '../actions'
 import reactotron from '../ReactotronConfig';
 
 const Realm = require('realm');
+
+let listOfWords = []
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const wordsCollection = firebase.firestore().collection('words')
@@ -27,13 +29,13 @@ class ReviewVocabulary extends React.Component {
                         icon={{name: this.props.reviewLeftBtnIconName, type: this.props.reviewLeftBtnIconType}}
                         title= {this.props.reviewLeftBtnTitle}
                         containerStyle={{marginHorizontal: 16}}
-                        onPress={((this.props.buttonLeftTitle !== 'No') ? showDefinitionBtnClicked : noBtnClicked)}
+                        onPress={((this.props.reviewLeftBtnTitle !== 'No') ? showDefinitionBtnClicked : noBtnClicked)}
                         />
                         <Button
                         icon={{name: this.props.reviewRightBtnIconName, type: this.props.reviewRightBtnIconType}}
                         title= {this.props.reviewRightBtnTitle}
                         containerStyle={{marginHorizontal: 16}}
-                        onPress={((this.props.buttonLeftTitle !== 'Yes') ? nextBtnClicked : yesBtnClicked)}
+                        onPress={((this.props.reviewRightBtnTitle !== 'Yes') ? nextBtnClicked : yesBtnClicked)}
                         />
                     </View>
                 </View>
@@ -43,7 +45,7 @@ class ReviewVocabulary extends React.Component {
 
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
-            let listOfWords = []
+            listOfWords = []
             wordsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
@@ -56,6 +58,7 @@ class ReviewVocabulary extends React.Component {
                     let randomIndex = Math.floor(Math.random() * listOfWords.length)
                     let randomWord = listOfWords[randomIndex]
                     store.dispatch(updateReviewContent(randomWord.label))
+                    listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
                 }
             })
           });
@@ -111,5 +114,25 @@ const nextBtnClicked = () => {
 }
 
 const yesBtnClicked = () => {
-
+    reactotron.logImportant(listOfWords)
+    if (listOfWords.length > 0) {
+        reactotron.logImportant('list > 0')
+        if(listOfWords.length === 1) {
+            reactotron.logImportant('list = 1')
+            let randomWord = listOfWords[0]
+            store.dispatch(updateReviewContent(randomWord.label))
+            listOfWords = listOfWords.filter((value, index) => index !== 0)
+        }
+        else {
+            reactotron.logImportant('list > 1')
+            let randomIndex = Math.floor(Math.random() * listOfWords.length)
+            let randomWord = listOfWords[randomIndex]
+            store.dispatch(updateReviewContent(randomWord.label))
+            listOfWords = listOfWords.filter((value, index) => index !== randomIndex)                
+        }
+    }
+    else {
+        reactotron.logImportant('list = 0')
+        store.dispatch(showReviewOver())
+    }
 }

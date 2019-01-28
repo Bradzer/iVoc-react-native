@@ -27,6 +27,7 @@ export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS'
 export const UPDATE_REVIEW_CONTENT = 'UPDATE_REVIEW_CONTENT'
 export const SHOW_NO_VOCABULARY = 'SHOW_NO_VOCABULARY'
 export const RESET_REVIEW_LAYOUT = 'RESET_REVIEW_LAYOUT'
+export const SHOW_REVIEW_OVER = 'SHOW_REVIEW_OVER'
 
 export function addResponseData(data) {
     return {
@@ -221,5 +222,11 @@ export function showNoVocabulary() {
 export function resetReviewLayout() {
     return {
         type: RESET_REVIEW_LAYOUT,
+    }
+}
+
+export function showReviewOver() {
+    return {
+        type: SHOW_REVIEW_OVER,
     }
 }
