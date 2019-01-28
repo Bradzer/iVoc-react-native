@@ -92,10 +92,6 @@ const reducer = (state = initialState, action) => {
                 displayRandomWord: 'none',
                 displayButtons: 'none',
                 displayWordDefinition: 'none',
-                buttonRightIconName: 'x-circle',
-                buttonRightIconType: 'foundation',
-                buttonRightTitle: "I don't know this",
-
             })
 
             case DISPLAY_WORD_DEFINITION:
