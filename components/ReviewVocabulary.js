@@ -80,6 +80,7 @@ class ReviewVocabulary extends React.Component {
                     let randomWord = listOfWords[randomIndex]
                     randomWordOriginalId = randomWord.originalId
                     store.dispatch(updateReviewContent(randomWord.label))
+                    updateNumberOfAppearances(randomWordOriginalId)
                     listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
                 }
             })
@@ -146,6 +147,7 @@ const nextBtnClicked = () => {
 }
 
 const yesBtnClicked = () => {
+    updateNumberOfRemembrances(randomWordOriginalId)
     goToNextReviewWord()
     store.dispatch(updateReviewButtons())
 }
@@ -163,6 +165,7 @@ function goToNextReviewWord() {
             let randomWord = listOfWords[0]
             randomWordOriginalId = randomWord.originalId
             store.dispatch(updateReviewContent(randomWord.label, randomWord.originalId))
+            updateNumberOfAppearances(randomWordOriginalId)
             listOfWords = listOfWords.filter((value, index) => index !== 0)
         }
         else {
@@ -171,6 +174,7 @@ function goToNextReviewWord() {
             let randomWord = listOfWords[randomIndex]
             randomWordOriginalId = randomWord.originalId
             store.dispatch(updateReviewContent(randomWord.label, randomWord.originalId))
+            updateNumberOfAppearances(randomWordOriginalId)
             listOfWords = listOfWords.filter((value, index) => index !== randomIndex)                
         }
     }
@@ -178,4 +182,24 @@ function goToNextReviewWord() {
         reactotron.logImportant('list = 0')
         store.dispatch(showReviewOver())
     }
+}
+
+function updateNumberOfAppearances(originalId) {
+    let numberOfAppearances = 0
+    wordsDetailsCollection.doc(originalId).get()
+    .then((docRef) => {
+        numberOfAppearances = (docRef.get('numberOfAppearances') + 1)
+        wordsDetailsCollection.doc(originalId).update({numberOfAppearances: numberOfAppearances})
+    })
+    // .then(wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfAppearances}))
+}
+
+function updateNumberOfRemembrances(originalId) {
+    let numberOfRemembrances = 0
+    wordsDetailsCollection.doc(originalId).get()
+    .then((docRef) => {
+        numberOfRemembrances = docRef.get('numberOfRemembrances') +1
+        wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
+    })
+    // .then(wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances}))
 }
