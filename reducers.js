@@ -25,7 +25,8 @@ import {
     UPDATE_VOCABULARY_PRONUNCIATION, 
     UPDATE_VOCABULARY_FREQUENCY, 
     CLEAR_LIST_OF_WORDS,
-    DELETE_WORD_IN_LIST } from './actions'
+    DELETE_WORD_IN_LIST,
+    UPDATE_SEARCH_VALUE } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -62,7 +63,8 @@ const initialState = {
     specificWordChecked: false,
     specificWordText: '',
     randomWordPrefDisplay: 'flex',
-    listOfWords: []
+    listOfWords: [],
+    searchBarValue: ''
 }
 
 const reducer = (state = initialState, action) => {
@@ -203,6 +205,11 @@ const reducer = (state = initialState, action) => {
                     listOfWords: action.data
                 })
 
+            case UPDATE_SEARCH_VALUE:
+                return updateState(state, {
+                    searchBarValue: action.data
+                })
+                
             case DELETE_WORD_IN_LIST:
                 return updateState(state, {
                     listOfWords: state.listOfWords.filter((value, index) => index !== action.data)

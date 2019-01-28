@@ -22,6 +22,7 @@ export const UPDATE_VOCABULARY_FREQUENCY = 'UPDATE_VOCABULARY_FREQUENCY'
 export const CLEAR_LIST_OF_WORDS = 'CLEAR_LIST_OF_WORDS'
 export const UPDATE_LIST_OF_WORDS = 'UPDATE_LIST_OF_WORDS'
 export const DELETE_WORD_IN_LIST = 'DELETE_WORD_IN_LIST'
+export const UPDATE_SEARCH_VALUE = 'UPDATE_SEARCH_VALUE'
 
 export function addResponseData(data) {
     return {
@@ -155,6 +156,13 @@ export function deleteWordInList(index) {
     return {
         type: DELETE_WORD_IN_LIST,
         data: index
+    }
+}
+
+export function updateSearchValue(changedText) {
+    return {
+        type: UPDATE_SEARCH_VALUE,
+        data: changedText
     }
 }
 
