@@ -57,7 +57,6 @@ class MyVocabulary extends React.Component {
                     listOfWords.push(doc.data())
                 })
                 store.dispatch(updateListOfWords(listOfWords))
-            // this.forceUpdate()
             })
           });
     }
