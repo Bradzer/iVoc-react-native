@@ -6,7 +6,14 @@ import { connect } from 'react-redux'
 import store from '../reducers'
 
 import AppConstants from '../Constants'
-import { clearListOfWords, displayVocabularyOverlay, hideVocabularyOverlay, updateListOfWords, deleteWordInList, updateSearchValue } from '../actions'
+import { 
+    clearListOfWords, 
+    displayVocabularyOverlay, 
+    hideVocabularyOverlay, 
+    updateListOfWords, 
+    deleteWordInList, 
+    updateSearchValue,
+    updateSearchResults } from '../actions'
 
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
@@ -55,7 +62,7 @@ class MyVocabulary extends React.Component {
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
             let listOfWords = []
-            store.dispatch(clearListOfWords())
+            // store.dispatch(clearListOfWords())
             wordsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
@@ -123,5 +130,20 @@ function mapStateToProps(state) {
 
   const onSearchValueChanged = (changedText) => {
         store.dispatch(updateSearchValue(changedText))
+        if(changedText) {
+            store.dispatch(updateSearchResults(changedText))
+        }
+        else {
+            let listOfWords = []
+            // store.dispatch(clearListOfWords())
+            wordsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                store.dispatch(updateListOfWords(listOfWords))
+            })
+
+        }
   }
   

@@ -26,7 +26,8 @@ import {
     UPDATE_VOCABULARY_FREQUENCY, 
     CLEAR_LIST_OF_WORDS,
     DELETE_WORD_IN_LIST,
-    UPDATE_SEARCH_VALUE } from './actions'
+    UPDATE_SEARCH_VALUE,
+    UPDATE_SEARCH_RESULTS } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -209,7 +210,12 @@ const reducer = (state = initialState, action) => {
                 return updateState(state, {
                     searchBarValue: action.data
                 })
-                
+
+            case UPDATE_SEARCH_RESULTS:
+                return updateState(state, {
+                    listOfWords: state.listOfWords.filter((value) => value.label.includes(action.data))
+                })
+
             case DELETE_WORD_IN_LIST:
                 return updateState(state, {
                     listOfWords: state.listOfWords.filter((value, index) => index !== action.data)

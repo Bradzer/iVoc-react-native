@@ -23,6 +23,7 @@ export const CLEAR_LIST_OF_WORDS = 'CLEAR_LIST_OF_WORDS'
 export const UPDATE_LIST_OF_WORDS = 'UPDATE_LIST_OF_WORDS'
 export const DELETE_WORD_IN_LIST = 'DELETE_WORD_IN_LIST'
 export const UPDATE_SEARCH_VALUE = 'UPDATE_SEARCH_VALUE'
+export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS'
 
 export function addResponseData(data) {
     return {
@@ -162,6 +163,13 @@ export function deleteWordInList(index) {
 export function updateSearchValue(changedText) {
     return {
         type: UPDATE_SEARCH_VALUE,
+        data: changedText
+    }
+}
+
+export function updateSearchResults(changedText) {
+    return {
+        type: UPDATE_SEARCH_RESULTS,
         data: changedText
     }
 }
