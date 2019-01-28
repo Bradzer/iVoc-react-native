@@ -62,7 +62,7 @@ class MyVocabulary extends React.Component {
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
             let listOfWords = []
-            wordsCollection.get()
+            wordsDetailsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
                     listOfWords.push(doc.data())
@@ -100,21 +100,23 @@ function mapStateToProps(state) {
 
   const keyExtractor = (item, index) => index.toString();
 
-  const renderItem = ({item, index}) => (
+  const renderItem = ({item, index}) => {
+    
+    let successPercentage = (item.numberOfRemembrances / item.numberOfAppearances) * 100
+    successPercentage = (successPercentage.toString()).substring(0, 5) + '%'
+    return(
     <ListItem
-        title={item.label}
+        title={item.word}
         subtitle={item.partOfSpeech}
         rightIcon= {<Icon name= 'delete' onPress={() => deleteWordPressed(item, index)}/>}
-        onPress= {() => itemPressed(item.originalId)}
+        onPress= {() => itemPressed(item)}
+        rightTitle= {successPercentage}
     />
-  )
+    )
+  }
 
-  const itemPressed = (originalId) => {
-    
-    wordsDetailsCollection.doc(originalId).get()
-    .then((docSnapshot) => {
-        store.dispatch(displayVocabularyOverlay(docSnapshot.data()))
-    })
+  const itemPressed = (wordDetails) => {
+    store.dispatch(displayVocabularyOverlay(wordDetails))
   }
 
   const onBackdropPress = () => {
@@ -122,8 +124,7 @@ function mapStateToProps(state) {
   }
 
   const deleteWordPressed = (item, index) => {
-    wordsDetailsCollection.doc(item.originalId).delete()
-    wordsCollection.doc(item.id).delete()
+    wordsDetailsCollection.doc(item.id).delete()
     store.dispatch(deleteWordInList(index))
   }
 
@@ -134,15 +135,13 @@ function mapStateToProps(state) {
         }
         else {
             let listOfWords = []
-            // store.dispatch(clearListOfWords())
-            wordsCollection.get()
+            wordsDetailsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
                     listOfWords.push(doc.data())
                 })
                 store.dispatch(updateListOfWords(listOfWords))
             })
-
         }
   }
   

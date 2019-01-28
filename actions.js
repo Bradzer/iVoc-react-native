@@ -134,10 +134,10 @@ export function clearListOfWords() {
         type: CLEAR_LIST_OF_WORDS
     }
 }
-export function displayVocabularyOverlay(docSnapshotData){
+export function displayVocabularyOverlay(wordDetails){
     return {
         type: DISPLAY_VOCABULARY_OVERLAY,
-        data: docSnapshotData
+        data: wordDetails
     }
 }
 

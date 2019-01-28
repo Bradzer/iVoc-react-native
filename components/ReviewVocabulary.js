@@ -23,7 +23,6 @@ let listOfWords = []
 let randomWordOriginalId = ''
 
 const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
-const wordsCollection = firebase.firestore().collection('words')
 
 class ReviewVocabulary extends React.Component {
 
@@ -65,9 +64,8 @@ class ReviewVocabulary extends React.Component {
     }
 
     componentDidMount() {
-        this.focusListener = this.props.navigation.addListener("didFocus", () => {
             listOfWords = []
-            wordsCollection.get()
+            wordsDetailsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
                     listOfWords.push(doc.data())
@@ -78,13 +76,11 @@ class ReviewVocabulary extends React.Component {
                 else {
                     let randomIndex = Math.floor(Math.random() * listOfWords.length)
                     let randomWord = listOfWords[randomIndex]
-                    randomWordOriginalId = randomWord.originalId
-                    store.dispatch(updateReviewContent(randomWord.label))
-                    updateNumberOfAppearances(randomWordOriginalId)
+                    randomWordOriginalId = randomWord.id
+                    store.dispatch(updateReviewContent(randomWord.word))
                     listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
                 }
             })
-          });
     }
 
     componentWillUnmount() {
@@ -134,7 +130,7 @@ const showDefinitionBtnClicked = () => {
 }
 
 const noBtnClicked = (originalId) => {
-    reactotron.logImportant('original id : ', originalId)
+    updateNumberOfAppearances(randomWordOriginalId)
     wordsDetailsCollection.doc(originalId).get()
     .then((docSnapshot) => {
         store.dispatch(displayReviewOverlayWithData(docSnapshot.data()))
@@ -147,6 +143,7 @@ const nextBtnClicked = () => {
 }
 
 const yesBtnClicked = () => {
+    updateNumberOfAppearances(randomWordOriginalId)
     updateNumberOfRemembrances(randomWordOriginalId)
     goToNextReviewWord()
     store.dispatch(updateReviewButtons())
@@ -159,22 +156,17 @@ const onBackdropPress = () => {
 function goToNextReviewWord() {
     reactotron.logImportant(listOfWords)
     if (listOfWords.length > 0) {
-        // reactotron.logImportant('list > 0')
         if(listOfWords.length === 1) {
-            // reactotron.logImportant('list = 1')
             let randomWord = listOfWords[0]
-            randomWordOriginalId = randomWord.originalId
-            store.dispatch(updateReviewContent(randomWord.label, randomWord.originalId))
-            updateNumberOfAppearances(randomWordOriginalId)
+            randomWordOriginalId = randomWord.id
+            store.dispatch(updateReviewContent(randomWord.word))
             listOfWords = listOfWords.filter((value, index) => index !== 0)
         }
         else {
-            // reactotron.logImportant('list > 1')
             let randomIndex = Math.floor(Math.random() * listOfWords.length)
             let randomWord = listOfWords[randomIndex]
-            randomWordOriginalId = randomWord.originalId
-            store.dispatch(updateReviewContent(randomWord.label, randomWord.originalId))
-            updateNumberOfAppearances(randomWordOriginalId)
+            randomWordOriginalId = randomWord.id
+            store.dispatch(updateReviewContent(randomWord.word))
             listOfWords = listOfWords.filter((value, index) => index !== randomIndex)                
         }
     }

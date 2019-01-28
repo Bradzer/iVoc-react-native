@@ -236,7 +236,7 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_SEARCH_RESULTS:
                 return updateState(state, {
-                    listOfWords: state.listOfWords.filter((value) => value.label.includes(action.data))
+                    listOfWords: state.listOfWords.filter((value) => value.word.includes(action.data))
                 })
 
             case DELETE_WORD_IN_LIST:
