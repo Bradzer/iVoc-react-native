@@ -57,8 +57,8 @@ export default class LoginScreen extends Component {
   onLoginPress() {
     firebaseAuth.createUserWithEmailAndPassword(username, password)
     .then((credentials) => {
-      reactotron.logImportant('log in successful', credentials)
-      usersCollection.add({uid: credentials.user.uid, email: credentials.user.email, password: password}).then(docRef => docRef.update({id: docRef.id}))
+      reactotron.logImportant('email log in successful', credentials)
+      usersCollection.add({uid: credentials.user.uid, email: credentials.user.email, password: password, isAnonymous: credentials.user.isAnonymous, providerId: credentials.user.providerId}).then(docRef => docRef.update({id: docRef.id}))
       this.props.navigation.navigate('Home')
     }, 
     (error) => reactotron.logImportant(error))
@@ -83,5 +83,11 @@ const passwordChanged = (passwordText) => {
 }
 
 const anonymousLoginClicked = () => {
-
+  firebaseAuth.signInAnonymously()
+  .then((credentials) => {
+    reactotron.logImportant('anonymous log in successful', credentials)
+    usersCollection.add({uid: credentials.user.uid, email: credentials.user.email, password: null, isAnonymous: credentials.user.isAnonymous, providerId: credentials.user.providerId}).then(docRef => docRef.update({id: docRef.id}))
+    this.props.navigation.navigate('Home')
+  }, 
+  (error) => reactotron.logImportant(error))
 }
