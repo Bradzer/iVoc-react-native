@@ -1,11 +1,10 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { Icon, ListItem, Overlay, Button } from 'react-native-elements'
+import { Overlay, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
 import store from '../reducers'
 
-import AppConstants from '../Constants'
 import { 
     updateReviewContent, 
     showNoVocabulary, 
@@ -16,8 +15,6 @@ import {
     displayReviewOverlay, 
     updateReviewButtons, } from '../actions'
 import reactotron from '../ReactotronConfig';
-
-const Realm = require('realm');
 
 let listOfWords = []
 let randomWordOriginalId = ''

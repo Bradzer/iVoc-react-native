@@ -101,13 +101,10 @@ class Settings extends React.Component {
                     let settingsScreen = realm.objects('settingsScreen')
                     reactotron.logImportant('VALUES UNCHANGED FROM REAL : ', settingsScreen)
                     let settingsPreferencesInRealm = getSettingsPreferencesInRealm(settingsScreen)
-                    // reactotron.logImportant('VALUES BEFORE DISPATCH : ', updatedIndex, startingLettersChecked, endingLettersChecked, specificWordChecked, startingLettersText, endingLettersText, specificWordText, apiUrl)
                     store.dispatch(updateSettingsPreferences(settingsPreferencesInRealm))
                 }
                 else{
-                    // reactotron.logImportant('REALM BEFORE CREATION : ', realm.objects('settingsScreen'))
                     realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
-                    // reactotron.logImportant('REALM AFTER CREATION : ', realm.objects('settingsScreen'))
                 }
             })
         })
