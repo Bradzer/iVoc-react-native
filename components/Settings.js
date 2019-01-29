@@ -9,8 +9,8 @@ import AppConstants from '../Constants'
 import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateSpecificWordCheckBox, updateStartingLettersText, updateEndingLettersText, updateSpecificWordText, updateSettingsPreferences } from '../actions'
 import reactotron from '../ReactotronConfig';
 
-const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
-const wordsCollection = firebase.firestore().collection('words')
+const userId = firebase.auth().currentUser.uid
+const userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
 const Realm = require('realm');
 
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   }
 
   function clearVocabulary() {
-      wordsDetailsCollection.get()
+    userWordsDetailsCollection.get()
       .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
   }
 

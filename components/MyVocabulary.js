@@ -15,10 +15,9 @@ import {
     updateSearchValue,
     updateSearchResults } from '../actions'
 
-
-const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
-const wordsCollection = firebase.firestore().collection('words')
-
+const userId = firebase.auth().currentUser.uid
+const userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+    
 class MyVocabulary extends React.Component {
     
     static navigationOptions = {
@@ -62,7 +61,7 @@ class MyVocabulary extends React.Component {
     componentDidMount() {
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
             let listOfWords = []
-            wordsDetailsCollection.get()
+            userWordsDetailsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
                     listOfWords.push(doc.data())
@@ -124,7 +123,7 @@ function mapStateToProps(state) {
   }
 
   const deleteWordPressed = (item, index) => {
-    wordsDetailsCollection.doc(item.id).delete()
+    userWordsDetailsCollection.doc(item.id).delete()
     store.dispatch(deleteWordInList(index))
   }
 
@@ -135,7 +134,7 @@ function mapStateToProps(state) {
         }
         else {
             let listOfWords = []
-            wordsDetailsCollection.get()
+            userWordsDetailsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
                     listOfWords.push(doc.data())

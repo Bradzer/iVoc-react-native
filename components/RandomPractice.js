@@ -8,9 +8,9 @@ import firebase, { } from 'react-native-firebase'
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
 import reactotron from '../ReactotronConfig';
-  
-const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
-const wordsCollection = firebase.firestore().collection('words')
+
+const userId = firebase.auth().currentUser.uid
+const userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
 const axios = require('axios');
 
@@ -204,7 +204,7 @@ function addToVocabularyBtnClicked() {
 }
 
 function addKnownWordToCloud(word){
-    wordsDetailsCollection.add(word)
+    userWordsDetailsCollection.add(word)
     .then((docRef) => {
         docRef.update({id: docRef.id, numberOfRemembrances: 1, numberOfAppearances: 1})
     })

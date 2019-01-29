@@ -22,7 +22,8 @@ const Realm = require('realm');
 let listOfWords = []
 let randomWordOriginalId = ''
 
-const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
+const userId = firebase.auth().currentUser.uid
+const userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
 class ReviewVocabulary extends React.Component {
 
@@ -65,7 +66,7 @@ class ReviewVocabulary extends React.Component {
 
     componentDidMount() {
             listOfWords = []
-            wordsDetailsCollection.get()
+            userWordsDetailsCollection.get()
             .then((queryResult) => {
                 queryResult.forEach((doc) => {
                     listOfWords.push(doc.data())
@@ -131,7 +132,7 @@ const showDefinitionBtnClicked = () => {
 
 const noBtnClicked = (originalId) => {
     updateNumberOfAppearances(randomWordOriginalId)
-    wordsDetailsCollection.doc(originalId).get()
+    userWordsDetailsCollection.doc(originalId).get()
     .then((docSnapshot) => {
         store.dispatch(displayReviewOverlayWithData(docSnapshot.data()))
     })
@@ -178,20 +179,18 @@ function goToNextReviewWord() {
 
 function updateNumberOfAppearances(originalId) {
     let numberOfAppearances = 0
-    wordsDetailsCollection.doc(originalId).get()
+    userWordsDetailsCollection.doc(originalId).get()
     .then((docRef) => {
         numberOfAppearances = (docRef.get('numberOfAppearances') + 1)
-        wordsDetailsCollection.doc(originalId).update({numberOfAppearances: numberOfAppearances})
+        userWordsDetailsCollection.doc(originalId).update({numberOfAppearances: numberOfAppearances})
     })
-    // .then(wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfAppearances}))
 }
 
 function updateNumberOfRemembrances(originalId) {
     let numberOfRemembrances = 0
-    wordsDetailsCollection.doc(originalId).get()
+    userWordsDetailsCollection.doc(originalId).get()
     .then((docRef) => {
         numberOfRemembrances = docRef.get('numberOfRemembrances') +1
-        wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
+        userWordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
     })
-    // .then(wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances}))
 }
