@@ -7,7 +7,6 @@ import store from '../reducers'
 
 import AppConstants from '../Constants'
 import { 
-    clearListOfWords, 
     displayVocabularyOverlay, 
     hideVocabularyOverlay, 
     updateListOfWords, 

@@ -10,7 +10,6 @@ import {
     UPDATE_API_URL,
     UPDATE_SETTINGS_PREFERENCES
 } from './actions'
-import reactotron from './ReactotronConfig';
 
 const Realm = require('realm');
 
@@ -33,10 +32,8 @@ const persistDataLocally = store => next => action => {
                     let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                     let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                     let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let specificWordChecked = (_.valuesIn(settingsScreen))[0].specificWordChecked
                     let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let specificWordText = (_.valuesIn(settingsScreen))[0].specificWordText
                     
                     if(startingLettersChecked && startingLettersText ) {
                         if (endingLettersChecked && endingLettersText) {
@@ -390,7 +387,7 @@ const persistDataLocally = store => next => action => {
             .then((realm) => {
                 realm.write(() => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', (!(action.data)))
-                    // reactotron.logImportant('UPDATE_SPECIFIC_WORD_CHKBOX AFTER CREATION IN REALM : ', realm.objects('settingsScreen'))
+
                     let settingsScreen = realm.objects('settingsScreen')
                     let specificWordText = ((_.valuesIn(settingsScreen))[0].specificWordText).toLowerCase()
 
@@ -671,7 +668,6 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', action.data.endingLettersText)
                     realm.objects('settingsScreen').filtered('pk = 0').update('specificWordText', action.data.specificWordText)
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', action.data.apiUrl)
-                    // reactotron.logImportant('NEWLY ADDED VALUES IN REALM : ', realm.objects('settingsScreen').filtered('pk = 0'))
                 })
             })
             .catch((error) => console.log(error))

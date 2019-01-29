@@ -72,7 +72,6 @@ class RandomPractice extends React.Component {
                     </View>
 
                 </View>
-                {/* <Text>{AppConstants.STRING_LOREM_IPSUM}</Text> */}
             </ScrollView>
                 <View style={[styles.buttonGroup, {display: this.props.displayButtons}]}>
                     <Button
@@ -109,14 +108,12 @@ class RandomPractice extends React.Component {
         .then((realm) => {
             realm.write(() => {
                 if(!(realm.objects('settingsScreen').isEmpty())) {
-                    // reactotron.logImportant('REALM OBJECT NOT EMPTY')
                     let settingsScreen = realm.objects('settingsScreen')
                     let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
                         store.dispatch(updateApiUrl(apiUrl))
                         updateApiRequest(this.props.apiUrl)
                 }
                 else{
-                    // reactotron.logImportant('REALM OBJECT EMPTY')
                     realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                     store.dispatch(updateApiUrl(AppConstants.RANDOM_URL))
                     updateApiRequest(this.props.apiUrl)
