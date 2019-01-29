@@ -8,9 +8,10 @@ import firebase, { } from 'react-native-firebase'
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
 import reactotron from '../ReactotronConfig';
-  
-const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
-const wordsCollection = firebase.firestore().collection('words')
+
+let firebaseAuth = null
+let userId = null
+let userWordsDetailsCollection = null
 
 const axios = require('axios');
 
@@ -99,6 +100,11 @@ class RandomPractice extends React.Component {
     }
 
     componentDidMount() {
+
+        firebaseAuth = firebase.auth()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
@@ -204,7 +210,7 @@ function addToVocabularyBtnClicked() {
 }
 
 function addKnownWordToCloud(word){
-    wordsDetailsCollection.add(word)
+    userWordsDetailsCollection.add(word)
     .then((docRef) => {
         docRef.update({id: docRef.id, numberOfRemembrances: 1, numberOfAppearances: 1})
     })

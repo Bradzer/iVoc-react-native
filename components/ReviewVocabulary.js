@@ -22,7 +22,9 @@ const Realm = require('realm');
 let listOfWords = []
 let randomWordOriginalId = ''
 
-const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
+let firebaseAuth = null
+let userId = null
+let userWordsDetailsCollection = null
 
 class ReviewVocabulary extends React.Component {
 
@@ -64,23 +66,28 @@ class ReviewVocabulary extends React.Component {
     }
 
     componentDidMount() {
-            listOfWords = []
-            wordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                if(listOfWords.length === 0) {
-                    store.dispatch(showNoVocabulary())
-                }
-                else {
-                    let randomIndex = Math.floor(Math.random() * listOfWords.length)
-                    let randomWord = listOfWords[randomIndex]
-                    randomWordOriginalId = randomWord.id
-                    store.dispatch(updateReviewContent(randomWord.word))
-                    listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
-                }
+        
+        firebaseAuth = firebase.auth()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+
+        listOfWords = []
+        userWordsDetailsCollection.get()
+        .then((queryResult) => {
+            queryResult.forEach((doc) => {
+                listOfWords.push(doc.data())
             })
+            if(listOfWords.length === 0) {
+                store.dispatch(showNoVocabulary())
+            }
+            else {
+                let randomIndex = Math.floor(Math.random() * listOfWords.length)
+                let randomWord = listOfWords[randomIndex]
+                randomWordOriginalId = randomWord.id
+                store.dispatch(updateReviewContent(randomWord.word))
+                listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
+            }
+        })
     }
 
     componentWillUnmount() {
@@ -131,7 +138,7 @@ const showDefinitionBtnClicked = () => {
 
 const noBtnClicked = (originalId) => {
     updateNumberOfAppearances(randomWordOriginalId)
-    wordsDetailsCollection.doc(originalId).get()
+    userWordsDetailsCollection.doc(originalId).get()
     .then((docSnapshot) => {
         store.dispatch(displayReviewOverlayWithData(docSnapshot.data()))
     })
@@ -178,20 +185,18 @@ function goToNextReviewWord() {
 
 function updateNumberOfAppearances(originalId) {
     let numberOfAppearances = 0
-    wordsDetailsCollection.doc(originalId).get()
+    userWordsDetailsCollection.doc(originalId).get()
     .then((docRef) => {
         numberOfAppearances = (docRef.get('numberOfAppearances') + 1)
-        wordsDetailsCollection.doc(originalId).update({numberOfAppearances: numberOfAppearances})
+        userWordsDetailsCollection.doc(originalId).update({numberOfAppearances: numberOfAppearances})
     })
-    // .then(wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfAppearances}))
 }
 
 function updateNumberOfRemembrances(originalId) {
     let numberOfRemembrances = 0
-    wordsDetailsCollection.doc(originalId).get()
+    userWordsDetailsCollection.doc(originalId).get()
     .then((docRef) => {
         numberOfRemembrances = docRef.get('numberOfRemembrances') +1
-        wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
+        userWordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
     })
-    // .then(wordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances}))
 }

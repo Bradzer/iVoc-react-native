@@ -6,12 +6,8 @@ import { Button } from 'react-native-elements';
 import firebase from 'react-native-firebase'
 import reactotron from "../ReactotronConfig";
 
-// const appId = "1047121222092614"
-
 const firebaseAuth = firebase.auth()
-const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
 const usersCollection = firebase.firestore().collection('users')
-
 
 let username = ''
 let password = ''
@@ -39,7 +35,7 @@ export default class LoginScreen extends Component {
               <Button 
               containerStyle= {screenStyles.anonymousLogin}
               title='Login anonymously'
-              onPress={() => anonymousLoginClicked()}
+              onPress={() => this.anonymousLoginClicked()}
               />
             </View>
           </View>
@@ -70,6 +66,23 @@ export default class LoginScreen extends Component {
     }, 
     (error) => reactotron.logImportant(error))
   }
+
+  anonymousLoginClicked = () => {
+    firebaseAuth.signInAnonymously()
+    .then((credentials) => {
+      reactotron.logImportant('anonymous log in successful', credentials)
+      usersCollection.add({
+        uid: credentials.user.uid, 
+        email: credentials.user.email, 
+        password: null, 
+        isAnonymous: credentials.user.isAnonymous, 
+        providerId: credentials.user.providerId
+      })
+      .then(docRef => docRef.update({id: docRef.id}))
+      this.props.navigation.navigate('Home')
+    }, 
+    (error) => reactotron.logImportant(error))
+  }
 }
 
 const screenStyles = StyleSheet.create({
@@ -87,21 +100,4 @@ const usernameChanged = (usernameText) => {
 
 const passwordChanged = (passwordText) => {
   password = passwordText
-}
-
-const anonymousLoginClicked = () => {
-  firebaseAuth.signInAnonymously()
-  .then((credentials) => {
-    reactotron.logImportant('anonymous log in successful', credentials)
-    usersCollection.add({
-      uid: credentials.user.uid, 
-      email: credentials.user.email, 
-      password: null, 
-      isAnonymous: credentials.user.isAnonymous, 
-      providerId: credentials.user.providerId
-    })
-    .then(docRef => docRef.update({id: docRef.id}))
-    this.props.navigation.navigate('Home')
-  }, 
-  (error) => reactotron.logImportant(error))
 }
