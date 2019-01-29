@@ -6,6 +6,7 @@ import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react
 import { Icon } from 'react-native-elements'
 import { Provider } from 'react-redux'
 
+import LoginScreen from './components/login'
 import Home from './components/Home'
 import MyVocabulary from './components/MyVocabulary'
 import Settings from './components/Settings'
@@ -98,6 +99,7 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
 })
 
 const StackAppNavigator = createStackNavigator({
+  LoginScreen,
   TabAppNavigator: {
     screen: TabAppNavigator,
   }
@@ -105,7 +107,8 @@ const StackAppNavigator = createStackNavigator({
   {
     defaultNavigationOptions: {
       header: null,
-    }
+    },
+    initialRouteName: 'LoginScreen'
   })
 
 const AppContainer = createAppContainer(StackAppNavigator);

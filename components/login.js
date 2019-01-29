@@ -43,7 +43,7 @@ export default class LoginScreen extends Component {
   }
 
   onLoginPress() {
-
+    this.props.navigation.navigate('Home')
   }
 
   // async onFbLoginPress() {
