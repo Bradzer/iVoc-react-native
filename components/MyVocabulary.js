@@ -1,31 +1,84 @@
 import React from 'react';
-import { StyleSheet, FlatList, View } from 'react-native';
-import { Icon, ListItem } from 'react-native-elements'
+import { StyleSheet, FlatList, View, Text } from 'react-native';
+import { Icon, ListItem, Overlay, SearchBar } from 'react-native-elements'
+import firebase, { } from 'react-native-firebase'
+import { connect } from 'react-redux'
+import store from '../reducers'
 
 import AppConstants from '../Constants'
+import { 
+    clearListOfWords, 
+    displayVocabularyOverlay, 
+    hideVocabularyOverlay, 
+    updateListOfWords, 
+    deleteWordInList, 
+    updateSearchValue,
+    updateSearchResults } from '../actions'
 
-
-export default class MyVocabulary extends React.Component {
-
+    let firebaseAuth = null
+    let userId = null
+    let userWordsDetailsCollection = null
+        
+class MyVocabulary extends React.Component {
+    
     static navigationOptions = {
       headerTitle: AppConstants.APP_NAME,
       tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
       tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>
     }
 
-    render() {
+    listOfWords = []
+
+    render() {   
 
         return(
             <View style={styles.container}>
+                <SearchBar 
+                placeHolder= 'Seach...' value= ''
+                value= {this.props.searchBarValue}
+                onChangeText= {onSearchValueChanged}
+                />
                 <FlatList
                     keyExtractor={keyExtractor}
-                    data={list} 
+                    data={this.props.listOfWords} 
                     renderItem={renderItem}
                 />
+                <Overlay isVisible={this.props.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
+                    <View>
+                        <Text>{this.props.vocabularyWord}</Text>
+                        <Text>Pronunciation: {this.props.vocabularyPronunciation}</Text>
+                        <Text>Frequency: {this.props.vocabularyFrequency}</Text>
+                        <Text></Text>
+                        <Text>Definitions</Text>
+                        <Text></Text>
+                        <Text>{this.props.vocabularyDefinition}</Text>
+                    </View>
+                </Overlay>
             </View>
         )
     }
+
+
+    componentDidMount() {
+        
+        firebaseAuth = firebase.auth()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+
+        this.focusListener = this.props.navigation.addListener("didFocus", () => {
+            let listOfWords = []
+            userWordsDetailsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                store.dispatch(updateListOfWords(listOfWords))
+            })
+          });
+    }
 }
+
+export default connect(mapStateToProps)(MyVocabulary)
 
 const styles = StyleSheet.create({
     container: {
@@ -36,72 +89,64 @@ const styles = StyleSheet.create({
     },
   });
 
+function mapStateToProps(state) {
+    return {
+        vocabularyOverlayDisplay: state.vocabularyOverlayDisplay,
+        vocabularyWord: state.vocabularyWord,
+        vocabularyPartOfSpeech: state.vocabularyPartOfSpeech,
+        vocabularyDefinition: state.vocabularyDefinition,
+        vocabularyPronunciation: state.vocabularyPronunciation,
+        vocabularyFrequency: state.vocabularyFrequency,
+        listOfWords: state.listOfWords,
+        searchBarValue: state.searchBarValue
+    }
+}
+
+
   const keyExtractor = (item, index) => index.toString();
 
-  const renderItem = ({item}) => (
+  const renderItem = ({item, index}) => {
+    
+    let successPercentage = (item.numberOfRemembrances / item.numberOfAppearances) * 100
+    successPercentage = (successPercentage.toString()).substring(0, 5) + '%'
+    return(
     <ListItem
-        title={item.name}
-        subtitle={item.subtitle}
-        rightIcon= {<Icon name= 'keyboard-arrow-right' />}
+        title={item.word}
+        subtitle={item.partOfSpeech}
+        rightIcon= {<Icon name= 'delete' onPress={() => deleteWordPressed(item, index)}/>}
+        onPress= {() => itemPressed(item)}
+        rightTitle= {successPercentage}
     />
-  )
+    )
+  }
 
-  const list = [
-    {
-      name: 'Amy Farha',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-      subtitle: 'Vice President'
-    },
-    {
-      name: 'Chris Jackson',
-      avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-      subtitle: 'Vice Chairman'
-    },
-    {
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },{
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },{
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },{
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },{
-        name: 'Amy Farha',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-        subtitle: 'Vice President'
-      },
-      {
-        name: 'Chris Jackson',
-        avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-        subtitle: 'Vice Chairman'
-      },
-  ]
+  const itemPressed = (wordDetails) => {
+    store.dispatch(displayVocabularyOverlay(wordDetails))
+  }
+
+  const onBackdropPress = () => {
+    store.dispatch(hideVocabularyOverlay())
+  }
+
+  const deleteWordPressed = (item, index) => {
+    userWordsDetailsCollection.doc(item.id).delete()
+    store.dispatch(deleteWordInList(index))
+  }
+
+  const onSearchValueChanged = (changedText) => {
+        store.dispatch(updateSearchValue(changedText))
+        if(changedText) {
+            store.dispatch(updateSearchResults(changedText))
+        }
+        else {
+            let listOfWords = []
+            userWordsDetailsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                store.dispatch(updateListOfWords(listOfWords))
+            })
+        }
+  }
   

@@ -4,7 +4,6 @@ import { Button, Icon } from 'react-native-elements'
 
 import AppConstants from '../Constants'
 
-
 export default class Home extends React.Component {
 
     static navigationOptions = {
@@ -29,7 +28,7 @@ export default class Home extends React.Component {
                     titleStyle={{ fontSize: 24}} 
                     buttonStyle={{maxWidth: 250}} 
                     title={AppConstants.STRING_REVIEW_MY_VOCABULARY}
-                    onPress={() => this.props.navigation.navigate('RandomPractice')}
+                    onPress={() => this.props.navigation.navigate('ReviewVocabulary')}
                     />
                 </View>
             </View>

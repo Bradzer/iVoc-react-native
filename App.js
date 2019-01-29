@@ -1,20 +1,42 @@
 import React from 'react';
 import { View } from 'react-native';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
 import { Icon } from 'react-native-elements'
 import { Provider } from 'react-redux'
 
-
+import LoginScreen from './components/login'
 import Home from './components/Home'
 import MyVocabulary from './components/MyVocabulary'
 import Settings from './components/Settings'
 import RandomPractice from './components/RandomPractice'
 import Startup from './components/Startup'
+import ReviewVocabulary from './components/ReviewVocabulary'
 import AppConstants from './Constants'
 import store from './reducers'
 
+const Realm = require('realm');
+const realm = new Realm()
+realm.close()
+
+const settingsScreenSchema = {
+  name: 'settingsScreen',
+  primaryKey: 'pk',
+  properties: {
+      pk: 'int',
+      startingLettersChecked: 'bool?',
+      endingLettersChecked: 'bool?',
+      specificWordChecked: 'bool?',
+      updatedIndex: 'int?',
+      startingLettersText: 'string?',
+      endingLettersText: 'string?',
+      specificWordText: 'string?',
+      apiUrl: 'string?'
+  }
+}
+
+Realm.open({schema: [settingsScreenSchema]})
 
 export default class App extends React.Component {
 
@@ -35,7 +57,7 @@ const HomeTabStackNavigator = createStackNavigator({
     screen: RandomPractice
   },
   ReviewVocabulary: {
-    screen: Startup
+    screen: ReviewVocabulary
   }
 },
 {
@@ -76,15 +98,15 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
   initialRouteName: 'HomeTabStackNavigator',
 })
 
-const StackAppNavigator = createStackNavigator({
-  TabAppNavigator: {
-    screen: TabAppNavigator,
-  }
-},
+  const SwitchAppNavigator = createSwitchNavigator({
+    LoginScreen,
+    TabAppNavigator: {
+      screen: TabAppNavigator,
+    }  
+  },
   {
-    defaultNavigationOptions: {
-      header: null,
-    }
+    initialRouteName: 'LoginScreen',
+    
   })
 
-const AppContainer = createAppContainer(StackAppNavigator);
+const AppContainer = createAppContainer(SwitchAppNavigator);

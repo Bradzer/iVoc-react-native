@@ -1,6 +1,41 @@
-import { createStore } from 'redux'
+import { applyMiddleware } from 'redux'
+import Reactotron from './ReactotronConfig'
+import persistDataLocally from './persistDataLocally'
 
-import { CHANGE_TITLE, CHANGE_SUBTITLE, CHANGE_KEY, CHANGE_LIST_ITEM, ADD_RESPONSE_DATA, RESET_RESPONSE_DATA, DISPLAY_WORD_DEFINITION, displayWordDefinition } from './actions'
+import { 
+    ADD_RESPONSE_DATA, 
+    RESET_RESPONSE_DATA, 
+    DISPLAY_WORD_DEFINITION, 
+    UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, 
+    UPDATE_ENDING_LETTERS_CHKBOX, 
+    UPDATE_SPECIFIC_WORD_CHKBOX, 
+    UPDATE_REALM, 
+    UPDATE_STARTING_LETTERS_TEXT, 
+    UPDATE_ENDING_LETTERS_TEXT, 
+    UPDATE_SPECIFIC_WORD_TEXT, 
+    UPDATE_API_URL, 
+    UPDATE_SETTINGS_PREFERENCES, 
+    DISPLAY_CHANGE_PREFS_BTN, 
+    DISPLAY_VOCABULARY_OVERLAY, 
+    HIDE_VOCABULARY_OVERLAY, 
+    UPDATE_LIST_OF_WORDS,
+    UPDATE_VOCABULARY_WORD, 
+    UPDATE_VOCABULARY_PART_OF_SPEECH, 
+    UPDATE_VOCABULARY_DEFINITION, 
+    UPDATE_VOCABULARY_PRONUNCIATION, 
+    UPDATE_VOCABULARY_FREQUENCY, 
+    CLEAR_LIST_OF_WORDS,
+    DELETE_WORD_IN_LIST,
+    UPDATE_SEARCH_VALUE,
+    UPDATE_SEARCH_RESULTS,
+    UPDATE_REVIEW_CONTENT, 
+    SHOW_NO_VOCABULARY,
+    RESET_REVIEW_LAYOUT, 
+    SHOW_REVIEW_OVER,
+    HIDE_REVIEW_OVERLAY,
+    DISPLAY_REVIEW_OVERLAY_WITH_DATA,
+    DISPLAY_REVIEW_OVERLAY,
+    UPDATE_REVIEW_BUTTONS } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -12,42 +47,55 @@ const initialState = {
     itemFrequency: '',
     displayRandomWord: 'none',
     displayButtons: 'none',
+    displayScrollView: 'none',
     displayWordDefinition: 'none',
-    buttonRightIconName: 'x-circle',
-    buttonRightIconType: 'foundation',
-    buttonRightTitle: "I don't know this",
-    buttonLeftIconName: 'checkbox-marked-circle',
-    buttonLeftIconType:'material-community',
-    buttonLeftTitle:"I know this",
+    buttonRightIconName: 'controller-next',
+    buttonRightIconType: 'entypo',
+    buttonRightTitle: "Skip",
+    buttonLeftIconName: 'documents',
+    buttonLeftIconType:'entypo',
+    buttonLeftTitle:"Show definitions",
+    displayChangePrefsBtn: 'none',
+    selectedIndex: 0,
+    startingLettersChecked: false,
+    endingLettersChecked: false,
+    realm: null,
+    startingLettersText: '',
+    endingLettersText: '',
+    apiUrl: '',
+    vocabularyOverlayDisplay: false,
+    vocabularyWord: '',
+    vocabularyPartOfSpeech: '',
+    vocabularyDefinition: '',
+    vocabularyPronunciation: '',
+    vocabularyFrequency: '',
+    specificWordChecked: false,
+    specificWordText: '',
+    randomWordPrefDisplay: 'flex',
+    listOfWords: [],
+    searchBarValue: '',
+    reviewIntroTextDisplay: 'none',
+    displayReviewContent: 'none',
+    reviewWord: '',
+    reviewLeftBtnTitle: 'No',
+    reviewLeftBtnIconName: 'times-circle',
+    reviewLeftBtnIconType: 'font-awesome',
+    reviewRightBtnTitle: 'Yes',
+    reviewRightBtnIconName: 'check-circle',
+    reviewRightBtnIconType: 'font-awesome', 
+    reviewIntroText: 'Do your remember this...',
+    reviewOverlayDisplay: false,
+    reviewPronunciation: '',
+    reviewFrequency: '',
+    reviewDefinition: '',
+    reviewOriginalId: '',
 }
 
 const reducer = (state = initialState, action) => {
     switch(action.type) {
 
-        case CHANGE_TITLE:
-            return (Object.assign({}, state, {
-                itemTitle: action.title
-            }))
-
-        case CHANGE_SUBTITLE:
-            return (Object.assign({}, state, {
-                itemSubtitle: action.subtitle
-            }))
-
-        case CHANGE_KEY:
-            return (Object.assign({}, state, {
-                itemKey: action.key
-            }))
-
-        case CHANGE_LIST_ITEM:
-            return (Object.assign({}, state, {
-                itemKey: (action.itemData)[0],
-                itemTitle: (action.itemData)[1],
-                itemSubtitle: (action.itemData)[2]
-            }))
-
         case ADD_RESPONSE_DATA:
-            return(Object.assign({}, state, {
+            return updateState(state, {
                 itemWord: action.data.word,
                 itemPartOfSpeech: action.data.partOfSpeech,
                 itemPronunciation: action.data.pronunciation,
@@ -55,17 +103,17 @@ const reducer = (state = initialState, action) => {
                 itemDef: action.data.definition,
                 displayRandomWord: 'flex',
                 displayButtons: 'flex',
-                buttonRightIconName: 'x-circle',
-                buttonRightIconType: 'foundation',
-                buttonRightTitle: "I don't know this",
-                buttonLeftIconName: 'checkbox-marked-circle',
-                buttonLeftIconType:'material-community',
-                buttonLeftTitle:"I know this",            
-                displayWordDefinition: 'none'
-            }))
+                displayWordDefinition: 'none',
+                displayScrollView: 'flex',
+                displayChangePrefsBtn: 'none',
+                buttonLeftIconName: 'documents',
+                buttonLeftIconType:'entypo',
+                buttonLeftTitle:"Show definitions",
+            
+            })
 
         case RESET_RESPONSE_DATA:
-            return(Object.assign({}, state, {
+            return updateState(state, {
                 itemWord: '',
                 itemPartOfSpeech: '',
                 itemPronuncitation: '',
@@ -74,28 +122,229 @@ const reducer = (state = initialState, action) => {
                 displayRandomWord: 'none',
                 displayButtons: 'none',
                 displayWordDefinition: 'none',
-                buttonRightIconName: 'x-circle',
-                buttonRightIconType: 'foundation',
-                buttonRightTitle: "I don't know this",
-
-            }))
+            })
 
             case DISPLAY_WORD_DEFINITION:
-                return(Object.assign({}, state, {
+                return updateState(state, {
                     displayWordDefinition: 'flex',
-                    buttonRightIconName: 'checkbox-marked-circle',
-                    buttonRightIconType: 'material-community',
-                    buttonRightTitle: 'Got it',
-                    buttonLeftIconName: 'x-circle',
-                    buttonLeftIconType:'foundation',
-                    buttonLeftTitle:"Not interested",
+                    buttonLeftIconName: 'add-to-list',
+                    buttonLeftTitle:"Add to vocabulary",
                 
-                }))
+                })
+
+            case UPDATE_INDEX:
+                return updateState(state, {
+                    selectedIndex: action.data
+                })
+
+            case UPDATE_STARTING_LETTERS_CHKBOX:
+                return updateState(state, {
+                    startingLettersChecked: !(action.data),
+                    specificWordChecked: false
+                })
+
+            case UPDATE_ENDING_LETTERS_CHKBOX:
+                return updateState(state, {
+                    endingLettersChecked: !(action.data),
+                    specificWordChecked: false
+                })
+
+            case UPDATE_SPECIFIC_WORD_CHKBOX:
+                return updateState(state, {
+                    specificWordChecked: !(action.data),
+                    randomWordPrefDisplay: ((action.data) ? 'flex' : 'none')
+
+                })
+
+            case UPDATE_REALM: 
+                return updateState(state, {
+                    realm: action.data
+                })
+
+            case UPDATE_STARTING_LETTERS_TEXT:
+                return updateState(state, {
+                    startingLettersText: action.data
+                })
+
+            case UPDATE_ENDING_LETTERS_TEXT:
+                return updateState(state, {
+                    endingLettersText: action.data
+                })
+
+            case UPDATE_SPECIFIC_WORD_TEXT:
+                return updateState(state, {
+                    specificWordText: action.data
+                })
+
+            case UPDATE_API_URL:
+                return updateState(state, {
+                    apiUrl: action.data
+                })
+
+            case UPDATE_SETTINGS_PREFERENCES:
+                return updateState(state, {
+                    selectedIndex: action.data.updatedIndex,
+                    startingLettersChecked: action.data.startingLettersChecked,
+                    endingLettersChecked: action.data.endingLettersChecked,
+                    startingLettersText: action.data.startingLettersText,
+                    endingLettersText: action.data.endingLettersText,
+                    apiUrl: action.data.apiUrl,
+                    specificWordChecked: action.data.specificWordChecked,
+                    specificWordText: action.data.specificWordText,
+                    randomWordPrefDisplay: action.data.specificWordChecked ? 'none' : 'flex'
+                              
+                })
+
+            case DISPLAY_CHANGE_PREFS_BTN:
+                return updateState(state, {
+                    displayChangePrefsBtn: 'flex',
+                    displayButtons: 'none',
+                    displayScrollView: 'none',
+                
+                })
+
+            case CLEAR_LIST_OF_WORDS:
+                return updateState(state, {
+                    listOfWords: []
+                })
+
+            case DISPLAY_VOCABULARY_OVERLAY:
+                return updateState(state, {
+                    vocabularyOverlayDisplay: true,
+                    vocabularyWord: action.data.word,
+                    vocabularyPartOfSpeech: action.data.partOfSpeech,
+                    vocabularyDefinition: action.data.definition,
+                    vocabularyPronunciation: action.data.pronunciation,
+                    vocabularyFrequency: action.data.frequency,
+                
+                })
+
+            case HIDE_VOCABULARY_OVERLAY:
+                return updateState(state, {
+                    vocabularyOverlayDisplay: false,                
+                })
+
+            case UPDATE_LIST_OF_WORDS:
+                return updateState(state, {
+                    listOfWords: action.data
+                })
+
+            case UPDATE_SEARCH_VALUE:
+                return updateState(state, {
+                    searchBarValue: action.data
+                })
+
+            case UPDATE_SEARCH_RESULTS:
+                return updateState(state, {
+                    listOfWords: state.listOfWords.filter((value) => value.word.includes(action.data))
+                })
+
+            case DELETE_WORD_IN_LIST:
+                return updateState(state, {
+                    listOfWords: state.listOfWords.filter((value, index) => index !== action.data)
+                })
+
+            case UPDATE_VOCABULARY_WORD:
+                return updateState(state, {
+                    vocabularyWord: action.data
+                })
+
+            case UPDATE_VOCABULARY_PART_OF_SPEECH:
+                return updateState(state, {
+                    vocabularyPartOfSpeech: action.data
+                })
+
+            case UPDATE_VOCABULARY_DEFINITION:
+                return updateState(state, {
+                    vocabularyDefinition: action.data
+                })
+
+            case UPDATE_VOCABULARY_PRONUNCIATION:
+                return updateState(state, {
+                    vocabularyPronunciation: action.data
+                })
+
+            case UPDATE_VOCABULARY_FREQUENCY:
+                return updateState(state, {
+                    vocabularyFrequency: action.data
+                })
+
+            case UPDATE_REVIEW_CONTENT:
+                return updateState(state, {
+                    reviewWord: action.data,
+                    displayReviewContent: 'flex',
+                    reviewIntroTextDisplay: 'flex',
+                })
+
+            case SHOW_NO_VOCABULARY:
+                return updateState(state, {
+                    reviewIntroText: 'Your vocabulary is empty',
+                    reviewIntroTextDisplay: 'flex'
+                })
+
+            case RESET_REVIEW_LAYOUT:
+                return updateState(state, {
+                    reviewLeftBtnTitle: 'No',
+                    reviewLeftBtnIconName: 'times-circle',
+                    reviewLeftBtnIconType: 'font-awesome',
+                    reviewRightBtnTitle: 'Yes',
+                    reviewRightBtnIconName: 'check-circle',
+                    reviewRightBtnIconType: 'font-awesome', 
+                    reviewIntroText: 'Do your remember this...',
+                    reviewIntroTextDisplay: 'none',
+                    displayReviewContent: 'none',
+                    reviewOverlayDisplay: false
+                })
+
+            case SHOW_REVIEW_OVER: 
+                return updateState(state, {
+                    reviewIntroText: 'The review is over',
+                    displayReviewContent: 'none',
+                })
+
+            case HIDE_REVIEW_OVERLAY:
+                return updateState(state, {
+                    reviewOverlayDisplay: false
+                })
+
+            case DISPLAY_REVIEW_OVERLAY_WITH_DATA:
+                return updateState(state, {
+                    reviewPronunciation: action.data.pronunciation,
+                    reviewFrequency: action.data.frequency,
+                    reviewDefinition: action.data.definition,                
+                    reviewOverlayDisplay: true,
+                    reviewRightBtnTitle: 'Next',
+                    reviewRightBtnIconName: 'controller-next',
+                    reviewRightBtnIconType: 'entypo',
+                    reviewLeftBtnTitle: 'Show definitions',
+                    reviewLeftBtnIconName: 'documents',
+                    reviewLeftBtnIconType: 'entypo'
+                })
+
+            case UPDATE_REVIEW_BUTTONS:
+                return updateState(state, {
+                    reviewLeftBtnTitle: 'No',
+                    reviewLeftBtnIconName: 'times-circle',
+                    reviewLeftBtnIconType: 'font-awesome',
+                    reviewRightBtnTitle: 'Yes',
+                    reviewRightBtnIconName: 'check-circle',
+                    reviewRightBtnIconType: 'font-awesome',                 
+                })
+
+            case DISPLAY_REVIEW_OVERLAY:
+                return updateState(state, {
+                    reviewOverlayDisplay: true
+                })
+            
         default:
             return state
     }
 }
 
-const store = createStore(reducer)
+const store = Reactotron.createStore(reducer, applyMiddleware(persistDataLocally))
 
 export default store
+
+function updateState(state, updatedValues) {
+    return (Object.assign({}, state, updatedValues))
+}
