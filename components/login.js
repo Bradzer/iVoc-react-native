@@ -43,6 +43,7 @@ export default class LoginScreen extends Component {
   }
 
   componentDidMount() {
+    if(firebaseAuth.currentUser) this.props.navigation.navigate('Home')
   }
 
   componentWillUnmount() {
