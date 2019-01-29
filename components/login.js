@@ -8,7 +8,7 @@ import reactotron from "../ReactotronConfig";
 
 // const appId = "1047121222092614"
 
-const firebaseAuth = firebase.auth
+const firebaseAuth = firebase.auth()
 
 let username = ''
 let password = ''
@@ -30,12 +30,6 @@ export default class LoginScreen extends Component {
               onPress={() => this.onLoginPress()}
               title="Login"
             />
-            {/* <Button
-              buttonStyle={styles.fbLoginButton}
-              onPress={() => this.onFbLoginPress()}
-              title="Login with Facebook"
-              color="#3897f1"
-            /> */}
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -50,24 +44,9 @@ export default class LoginScreen extends Component {
   }
 
   onLoginPress() {
-    reactotron.logImportant('user : ', username)
-    reactotron.logImportant('pass : ', password)
+    firebaseAuth.signInAnonymously().then((credentials) => reactotron.logImportant('log in successful', credentials), (error) => reactotron.logImportant(error))
     // this.props.navigation.navigate('Home')
   }
-
-  // async onFbLoginPress() {
-  //   const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(appId, {
-  //     permissions: ['public_profile', 'email'],
-  //   });
-  //   if (type === 'success') {
-  //     const response = await fetch(
-  //       `https://graph.facebook.com/me?access_token=${token}`);
-  //     Alert.alert(
-  //       'Logged in!',
-  //       `Hi ${(await response.json()).name}!`,
-  //     );
-  //   }
-  // }
 }
 
 const usernameChanged = (usernameText) => {
