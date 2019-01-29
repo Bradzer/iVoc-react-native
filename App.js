@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
 import { Icon } from 'react-native-elements'
@@ -98,17 +98,15 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
   initialRouteName: 'HomeTabStackNavigator',
 })
 
-const StackAppNavigator = createStackNavigator({
-  LoginScreen,
-  TabAppNavigator: {
-    screen: TabAppNavigator,
-  }
-},
+  const SwitchAppNavigator = createSwitchNavigator({
+    LoginScreen,
+    TabAppNavigator: {
+      screen: TabAppNavigator,
+    }  
+  },
   {
-    defaultNavigationOptions: {
-      header: null,
-    },
-    initialRouteName: 'LoginScreen'
+    initialRouteName: 'LoginScreen',
+    
   })
 
-const AppContainer = createAppContainer(StackAppNavigator);
+const AppContainer = createAppContainer(SwitchAppNavigator);

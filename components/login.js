@@ -9,53 +9,66 @@ import reactotron from "../ReactotronConfig";
 // const appId = "1047121222092614"
 
 const firebaseAuth = firebase.auth()
+const wordsDetailsCollection = firebase.firestore().collection('wordsDetails')
+const usersCollection = firebase.firestore().collection('users')
+
 
 let username = ''
 let password = ''
 
 export default class LoginScreen extends Component {
 
+  state = {
+    displayComponent: 'none'
+  }
   render() {
     return (
-      <KeyboardAvoidingView style={styles.containerView} behavior="padding">
-
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.loginScreenContainer}>
-          <View style={styles.loginFormView}>
-          <Text style={styles.logoText}>iVoc</Text>
-            <TextInput placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
-            <TextInput placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
-            <Button
-              buttonStyle={styles.loginButton}
-              onPress={() => this.onLoginPress()}
-              title="Login"
-            />
-            <Button 
-            containerStyle= {screenStyles.anonymousLogin}
-            title='Login anonymously'
-            onPress={() => anonymousLoginClicked()}
-            />
+      <View style={[screenStyles.container, {display: this.state.displayComponent}]}>
+        <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.loginScreenContainer}>
+            <View style={styles.loginFormView}>
+            <Text style={styles.logoText}>iVoc</Text>
+              <TextInput placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
+              <TextInput placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
+              <Button
+                buttonStyle={styles.loginButton}
+                onPress={() => this.onLoginPress()}
+                title="Login"
+              />
+              <Button 
+              containerStyle= {screenStyles.anonymousLogin}
+              title='Login anonymously'
+              onPress={() => anonymousLoginClicked()}
+              />
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </View>
     );
   }
 
   componentDidMount() {
     if(firebaseAuth.currentUser) this.props.navigation.navigate('Home')
-  }
-
-  componentWillUnmount() {
+    else this.setState({displayComponent: 'flex'})
   }
 
   onLoginPress() {
-    firebaseAuth.signInAnonymously().then((credentials) => reactotron.logImportant('log in successful', credentials), (error) => reactotron.logImportant(error))
-    // this.props.navigation.navigate('Home')
+    firebaseAuth.createUserWithEmailAndPassword(username, password)
+    .then((credentials) => {
+      reactotron.logImportant('log in successful', credentials)
+      usersCollection.add({uid: credentials.user.uid, email: credentials.user.email, password: password}).then(docRef => docRef.update({id: docRef.id}))
+      this.props.navigation.navigate('Home')
+    }, 
+    (error) => reactotron.logImportant(error))
   }
 }
 
 const screenStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   anonymousLogin: {
     marginVertical: 16
   }
