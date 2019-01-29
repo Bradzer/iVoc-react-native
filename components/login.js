@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import styles from "./style";
-import {Keyboard, Text, View, TextInput, TouchableWithoutFeedback, Alert, KeyboardAvoidingView} from 'react-native';
+import {Keyboard, Text, View, TextInput, TouchableWithoutFeedback, StyleSheet, KeyboardAvoidingView} from 'react-native';
 import { Button } from 'react-native-elements';
 import firebase from 'react-native-firebase'
 import reactotron from "../ReactotronConfig";
@@ -30,6 +30,11 @@ export default class LoginScreen extends Component {
               onPress={() => this.onLoginPress()}
               title="Login"
             />
+            <Button 
+            containerStyle= {screenStyles.anonymousLogin}
+            title='Login anonymously'
+            onPress={() => anonymousLoginClicked()}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -49,10 +54,20 @@ export default class LoginScreen extends Component {
   }
 }
 
+const screenStyles = StyleSheet.create({
+  anonymousLogin: {
+    marginVertical: 16
+  }
+})
+
 const usernameChanged = (usernameText) => {
   username = usernameText
 }
 
 const passwordChanged = (passwordText) => {
   password = passwordText
+}
+
+const anonymousLoginClicked = () => {
+
 }
