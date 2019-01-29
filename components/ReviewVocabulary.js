@@ -22,8 +22,9 @@ const Realm = require('realm');
 let listOfWords = []
 let randomWordOriginalId = ''
 
-const userId = firebase.auth().currentUser.uid
-const userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+let firebaseAuth = null
+let userId = null
+let userWordsDetailsCollection = null
 
 class ReviewVocabulary extends React.Component {
 
@@ -65,23 +66,28 @@ class ReviewVocabulary extends React.Component {
     }
 
     componentDidMount() {
-            listOfWords = []
-            userWordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                if(listOfWords.length === 0) {
-                    store.dispatch(showNoVocabulary())
-                }
-                else {
-                    let randomIndex = Math.floor(Math.random() * listOfWords.length)
-                    let randomWord = listOfWords[randomIndex]
-                    randomWordOriginalId = randomWord.id
-                    store.dispatch(updateReviewContent(randomWord.word))
-                    listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
-                }
+        
+        firebaseAuth = firebase.auth()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+
+        listOfWords = []
+        userWordsDetailsCollection.get()
+        .then((queryResult) => {
+            queryResult.forEach((doc) => {
+                listOfWords.push(doc.data())
             })
+            if(listOfWords.length === 0) {
+                store.dispatch(showNoVocabulary())
+            }
+            else {
+                let randomIndex = Math.floor(Math.random() * listOfWords.length)
+                let randomWord = listOfWords[randomIndex]
+                randomWordOriginalId = randomWord.id
+                store.dispatch(updateReviewContent(randomWord.word))
+                listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
+            }
+        })
     }
 
     componentWillUnmount() {

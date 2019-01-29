@@ -9,8 +9,9 @@ import AppConstants from '../Constants'
 import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateSpecificWordCheckBox, updateStartingLettersText, updateEndingLettersText, updateSpecificWordText, updateSettingsPreferences } from '../actions'
 import reactotron from '../ReactotronConfig';
 
-const userId = firebase.auth().currentUser.uid
-const userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+let firebaseAuth = null
+let userId = null
+let userWordsDetailsCollection = null
 
 const Realm = require('realm');
 
@@ -88,6 +89,11 @@ class Settings extends React.Component {
     }
 
     componentDidMount() {
+        
+        firebaseAuth = firebase.auth()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+
         Realm.open({})
         .then((realm) => {
             realm.write(() => {

@@ -9,8 +9,9 @@ import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
 import reactotron from '../ReactotronConfig';
 
-const userId = firebase.auth().currentUser.uid
-const userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+let firebaseAuth = null
+let userId = null
+let userWordsDetailsCollection = null
 
 const axios = require('axios');
 
@@ -99,6 +100,11 @@ class RandomPractice extends React.Component {
     }
 
     componentDidMount() {
+
+        firebaseAuth = firebase.auth()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+
         Realm.open({})
         .then((realm) => {
             realm.write(() => {

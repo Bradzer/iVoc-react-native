@@ -15,9 +15,10 @@ import {
     updateSearchValue,
     updateSearchResults } from '../actions'
 
-const userId = firebase.auth().currentUser.uid
-const userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
-    
+    let firebaseAuth = null
+    let userId = null
+    let userWordsDetailsCollection = null
+        
 class MyVocabulary extends React.Component {
     
     static navigationOptions = {
@@ -59,6 +60,11 @@ class MyVocabulary extends React.Component {
 
 
     componentDidMount() {
+        
+        firebaseAuth = firebase.auth()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
             let listOfWords = []
             userWordsDetailsCollection.get()
