@@ -58,7 +58,14 @@ export default class LoginScreen extends Component {
     firebaseAuth.createUserWithEmailAndPassword(username, password)
     .then((credentials) => {
       reactotron.logImportant('email log in successful', credentials)
-      usersCollection.add({uid: credentials.user.uid, email: credentials.user.email, password: password, isAnonymous: credentials.user.isAnonymous, providerId: credentials.user.providerId}).then(docRef => docRef.update({id: docRef.id}))
+      usersCollection.add({
+        uid: credentials.user.uid, 
+        email: credentials.user.email, 
+        password: password, 
+        isAnonymous: credentials.user.isAnonymous, 
+        providerId: credentials.user.providerId
+      })
+      .then(docRef => docRef.update({id: docRef.id}))
       this.props.navigation.navigate('Home')
     }, 
     (error) => reactotron.logImportant(error))
@@ -86,7 +93,14 @@ const anonymousLoginClicked = () => {
   firebaseAuth.signInAnonymously()
   .then((credentials) => {
     reactotron.logImportant('anonymous log in successful', credentials)
-    usersCollection.add({uid: credentials.user.uid, email: credentials.user.email, password: null, isAnonymous: credentials.user.isAnonymous, providerId: credentials.user.providerId}).then(docRef => docRef.update({id: docRef.id}))
+    usersCollection.add({
+      uid: credentials.user.uid, 
+      email: credentials.user.email, 
+      password: null, 
+      isAnonymous: credentials.user.isAnonymous, 
+      providerId: credentials.user.providerId
+    })
+    .then(docRef => docRef.update({id: docRef.id}))
     this.props.navigation.navigate('Home')
   }, 
   (error) => reactotron.logImportant(error))
