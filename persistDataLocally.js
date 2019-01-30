@@ -9,7 +9,8 @@ import {
     UPDATE_SPECIFIC_WORD_TEXT,
     UPDATE_API_URL,
     UPDATE_SETTINGS_PREFERENCES,
-    UPDATE_PARTIAL_LETTERS_TEXT, } from './actions'
+    UPDATE_PARTIAL_LETTERS_TEXT,
+    UPDATE_PARTIAL_WORD_CHKBOX, } from './actions'
     
 import reactotron from './ReactotronConfig';
 
@@ -20,7 +21,6 @@ const _ = require('lodash')
 const persistDataLocally = store => next => action => {
 
     let commonUrlpart = 'https://wordsapiv1.p.mashape.com/words/'
-    let customUrlpart = ''
 
     switch(action.type) {
         
@@ -34,14 +34,18 @@ const persistDataLocally = store => next => action => {
                     let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                     let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                     let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
                     let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
                     let preferencesData = {
                         updatedIndex,
                         startingLettersChecked,
                         endingLettersChecked,
+                        partialLettersChecked,
                         startingLettersText,
-                        endingLettersText
+                        endingLettersText,
+                        partialLettersText,
                     }
                     let customUrl = getCustomUrlPart(preferencesData)
                     
@@ -61,14 +65,18 @@ const persistDataLocally = store => next => action => {
                     let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                     let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                     let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
                     let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
                     let preferencesData = {
                         updatedIndex,
                         startingLettersChecked,
                         endingLettersChecked,
+                        partialLettersChecked,
                         startingLettersText,
-                        endingLettersText
+                        endingLettersText,
+                        partialLettersText,
                     }
                     let customUrl = getCustomUrlPart(preferencesData)
 
@@ -88,14 +96,18 @@ const persistDataLocally = store => next => action => {
                     let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                     let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                     let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
                     let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
                     let preferencesData = {
                         updatedIndex,
                         startingLettersChecked,
                         endingLettersChecked,
+                        partialLettersChecked,
                         startingLettersText,
-                        endingLettersText
+                        endingLettersText,
+                        partialLettersText,
                     }
                     let customUrl = getCustomUrlPart(preferencesData)
 
@@ -105,6 +117,37 @@ const persistDataLocally = store => next => action => {
             .catch((error) => console.log(error))
             break;
         
+        case UPDATE_PARTIAL_WORD_CHKBOX:
+            Realm.open({})
+            .then((realm) => {
+                realm.write(() => {
+                    realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersChecked', !(action.data))
+
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
+                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
+                    let preferencesData = {
+                        updatedIndex,
+                        startingLettersChecked,
+                        endingLettersChecked,
+                        partialLettersChecked,
+                        startingLettersText,
+                        endingLettersText,
+                        partialLettersText,
+                    }
+                    let customUrl = getCustomUrlPart(preferencesData)
+
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
+                })
+            })
+            .catch((error) => console.log(error))
+            break;
+
         case UPDATE_SPECIFIC_WORD_CHKBOX:
             Realm.open({})
             .then((realm) => {
@@ -134,14 +177,18 @@ const persistDataLocally = store => next => action => {
                     let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                     let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                     let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
                     let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
                     let preferencesData = {
                         updatedIndex,
                         startingLettersChecked,
                         endingLettersChecked,
+                        partialLettersChecked,
                         startingLettersText,
-                        endingLettersText
+                        endingLettersText,
+                        partialLettersText,
                     }
                     let customUrl = getCustomUrlPart(preferencesData)
 
@@ -161,14 +208,49 @@ const persistDataLocally = store => next => action => {
                     let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
                     let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
                     let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
                     let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
                     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
                     let preferencesData = {
                         updatedIndex,
                         startingLettersChecked,
                         endingLettersChecked,
+                        partialLettersChecked,
                         startingLettersText,
-                        endingLettersText
+                        endingLettersText,
+                        partialLettersText,
+                    }
+                    let customUrl = getCustomUrlPart(preferencesData)
+                    
+                    realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
+                })
+            })
+            .catch((error) => console.log(error))
+            break;
+
+        case UPDATE_PARTIAL_LETTERS_TEXT:
+            Realm.open({})
+            .then((realm) => {
+                realm.write(() => {
+                    realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersText', action.data)
+
+                    let settingsScreen = realm.objects('settingsScreen')
+                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
+                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
+                    let preferencesData = {
+                        updatedIndex,
+                        startingLettersChecked,
+                        endingLettersChecked,
+                        partialLettersChecked,
+                        startingLettersText,
+                        endingLettersText,
+                        partialLettersText,
                     }
                     let customUrl = getCustomUrlPart(preferencesData)
                     
@@ -199,9 +281,11 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('updatedIndex', action.data.updatedIndex)
                     realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersChecked', action.data.startingLettersChecked)
                     realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersChecked', action.data.endingLettersChecked)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersChecked', action.data.partialLettersChecked)
                     realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', action.data.specificWordChecked)
                     realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersText', action.data.startingLettersText)
                     realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', action.data.endingLettersText)
+                    realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersText', action.data.partialLettersText)
                     realm.objects('settingsScreen').filtered('pk = 0').update('specificWordText', action.data.specificWordText)
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', action.data.apiUrl)
                 })
@@ -220,34 +304,61 @@ const persistDataLocally = store => next => action => {
   function getCustomUrlPart(preferencesData) {
 
     let customUrl = ''
-    const { startingLettersChecked, endingLettersChecked, updatedIndex, startingLettersText, endingLettersText } = preferencesData
+    const { startingLettersChecked, endingLettersChecked, partialLettersChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText } = preferencesData
     
     if(startingLettersChecked && startingLettersText ) {
         if (endingLettersChecked && endingLettersText) {
+            if(partialLettersChecked && partialLettersText) {
+                switch(updatedIndex) {
 
-            switch(updatedIndex) {
-
-                case 1:
-                customUrl += '?partOfSpeech=verb&'
-                    break
-
-                case 2:
-                customUrl += '?partOfSpeech=noun&'
-                    break
-                case 3:
-
-                customUrl += '?partOfSpeech=adjective&'
-                    break;
-                
-                default:
-                customUrl += '?'
-                    break
+                    case 1:
+                    customUrl += '?partOfSpeech=verb&'
+                        break
+    
+                    case 2:
+                    customUrl += '?partOfSpeech=noun&'
+                        break
+                    case 3:
+    
+                    customUrl += '?partOfSpeech=adjective&'
+                        break;
+                    
+                    default:
+                    customUrl += '?'
+                        break
+                }
+    
+                let startingLettersTextLower = startingLettersText.toLowerCase()
+                let endingLettersTextLower = endingLettersText.toLowerCase()
+                let partialLettersTextLower = partialLettersText.toLowerCase()
+    
+                customUrl += 'letterPattern=^' + startingLettersTextLower + '.*' + partialLettersTextLower + '.*' + endingLettersTextLower + '$&hasDetails=definitions&random=true'    
             }
+            else {
+                switch(updatedIndex) {
 
-            let startingLettersTextLower = startingLettersText.toLowerCase()
-            let endingLettersTextLower = endingLettersText.toLowerCase()
-
-            customUrl += 'letterPattern=^' + startingLettersTextLower + '.*' + endingLettersTextLower + '$&hasDetails=definitions&random=true'
+                    case 1:
+                    customUrl += '?partOfSpeech=verb&'
+                        break
+    
+                    case 2:
+                    customUrl += '?partOfSpeech=noun&'
+                        break
+                    case 3:
+    
+                    customUrl += '?partOfSpeech=adjective&'
+                        break;
+                    
+                    default:
+                    customUrl += '?'
+                        break
+                }
+    
+                let startingLettersTextLower = startingLettersText.toLowerCase()
+                let endingLettersTextLower = endingLettersText.toLowerCase()
+    
+                customUrl += 'letterPattern=^' + startingLettersTextLower + '.*' + endingLettersTextLower + '$&hasDetails=definitions&random=true'        
+            }
         }
         else {
 
@@ -276,6 +387,58 @@ const persistDataLocally = store => next => action => {
         
     }
     else if (endingLettersChecked && endingLettersText) {
+        if(partialLettersChecked && partialLettersText) {
+
+            switch(updatedIndex) {
+
+                case 1:
+                customUrl += '?partOfSpeech=verb&'
+                    break
+    
+                case 2:
+                customUrl += '?partOfSpeech=noun&'
+                    break
+                case 3:
+    
+                customUrl += '?partOfSpeech=adjective&'
+                    break;
+                
+                default:
+                customUrl += '?'
+                    break
+            }
+
+            let endingLettersTextLower = endingLettersText.toLowerCase()
+            let partialLettersTextLower = partialLettersText.toLowerCase()
+
+            customUrl += 'letterPattern=^' + '.*' + partialLettersTextLower + '.*' + endingLettersTextLower + '$&hasDetails=definitions&random=true'    
+
+        }
+        else {
+            switch(updatedIndex) {
+
+                case 1:
+                customUrl += '?partOfSpeech=verb&'
+                    break
+    
+                case 2:
+                customUrl += '?partOfSpeech=noun&'
+                    break
+                case 3:
+    
+                customUrl += '?partOfSpeech=adjective&'
+                    break;
+                
+                default:
+                customUrl += '?'
+                    break
+            }
+    
+            let endingLettersTextLower = endingLettersText.toLowerCase()
+            customUrl += 'letterPattern=^.*' + endingLettersTextLower + '$&hasDetails=definitions&random=true'    
+        }
+    }
+    else if(partialLettersChecked && partialLettersText) {
 
         switch(updatedIndex) {
 
@@ -295,11 +458,11 @@ const persistDataLocally = store => next => action => {
             customUrl += '?'
                 break
         }
+        let partialLettersTextLower = partialLettersText.toLowerCase()
 
-        let endingLettersTextLower = endingLettersText.toLowerCase()
-        customUrl += 'letterPattern=^.*' + endingLettersTextLower + '$&hasDetails=definitions&random=true'
+        customUrl += 'letterPattern=^' + '.*' + partialLettersTextLower + '.*' + '$&hasDetails=definitions&random=true'
     }
-    else {
+    else{
         switch(updatedIndex) {
 
             case 0:
@@ -322,6 +485,6 @@ const persistDataLocally = store => next => action => {
             customUrl += '?hasDetails=definitions&random=true'
                 break
         }
-    }
+    }    
     return customUrl
   }
