@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import styles from "./style";
-import {Keyboard, Text, View, TextInput, TouchableWithoutFeedback, StyleSheet, KeyboardAvoidingView} from 'react-native';
+import {Keyboard, Text, View, TextInput, TouchableWithoutFeedback, StyleSheet, KeyboardAvoidingView, ToastAndroid, } from 'react-native';
 import { Button } from 'react-native-elements';
 import firebase from 'react-native-firebase'
 import reactotron from "../ReactotronConfig";
@@ -51,20 +51,29 @@ export default class LoginScreen extends Component {
   }
 
   onLoginPress() {
-    firebaseAuth.createUserWithEmailAndPassword(username, password)
-    .then((credentials) => {
-      reactotron.logImportant('email log in successful', credentials)
-      usersCollection.add({
-        uid: credentials.user.uid, 
-        email: credentials.user.email, 
-        password: password, 
-        isAnonymous: credentials.user.isAnonymous, 
-        providerId: credentials.user.providerId
-      })
-      .then(docRef => docRef.update({id: docRef.id}))
-      this.props.navigation.navigate('Home')
-    }, 
-    (error) => reactotron.logImportant(error))
+    if(username && password) {
+      firebaseAuth.createUserWithEmailAndPassword(username, password)
+      .then((credentials) => {
+        onLoginSuccessful(credentials)
+        this.props.navigation.navigate('Home')
+      }, 
+      (createUserError) => {
+        if(createUserError.code === 'auth/email-already-in-use') {
+          firebaseAuth.signInWithEmailAndPassword(username, password)
+          .then(credentials => {
+            ToastAndroid.show('login successful', ToastAndroid.SHORT)
+            this.props.navigation.navigate('Home')    
+          },
+          (signInError) => ToastAndroid.show(signInError.code, ToastAndroid.SHORT))
+        }
+        else {
+          ToastAndroid.show(createUserError.code, ToastAndroid.SHORT)
+        }
+      })  
+    }
+    else {
+      ToastAndroid.show('Please enter account details', ToastAndroid.SHORT)
+    }
   }
 
   anonymousLoginClicked = () => {
@@ -79,9 +88,10 @@ export default class LoginScreen extends Component {
         providerId: credentials.user.providerId
       })
       .then(docRef => docRef.update({id: docRef.id}))
+      ToastAndroid.show('login successful', ToastAndroid.SHORT)
       this.props.navigation.navigate('Home')
     }, 
-    (error) => reactotron.logImportant(error))
+    (error) => ToastAndroid.show(error.code, ToastAndroid.SHORT))
   }
 }
 
@@ -100,4 +110,17 @@ const usernameChanged = (usernameText) => {
 
 const passwordChanged = (passwordText) => {
   password = passwordText
+}
+
+const onLoginSuccessful = (credentials) => {
+  reactotron.logImportant('email log in successful', credentials)
+  usersCollection.add({
+    uid: credentials.user.uid, 
+    email: credentials.user.email, 
+    password: password, 
+    isAnonymous: credentials.user.isAnonymous, 
+    providerId: credentials.user.providerId
+  })
+  .then(docRef => docRef.update({id: docRef.id}))
+  ToastAndroid.show('login successful', ToastAndroid.SHORT)
 }

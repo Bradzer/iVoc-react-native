@@ -35,7 +35,9 @@ import {
     HIDE_REVIEW_OVERLAY,
     DISPLAY_REVIEW_OVERLAY_WITH_DATA,
     DISPLAY_REVIEW_OVERLAY,
-    UPDATE_REVIEW_BUTTONS } from './actions'
+    UPDATE_REVIEW_BUTTONS,
+    UPDATE_PARTIAL_WORD_CHKBOX, 
+    UPDATE_PARTIAL_LETTERS_TEXT, } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -89,6 +91,8 @@ const initialState = {
     reviewFrequency: '',
     reviewDefinition: '',
     reviewOriginalId: '',
+    partialLettersChecked: false,
+    partialLettersText: '',
 }
 
 const reducer = (state = initialState, action) => {
@@ -149,11 +153,16 @@ const reducer = (state = initialState, action) => {
                     specificWordChecked: false
                 })
 
+            case UPDATE_PARTIAL_WORD_CHKBOX:
+            return updateState(state, {
+                partialLettersChecked: !(action.data),
+                specificWordChecked: false
+            })
+
             case UPDATE_SPECIFIC_WORD_CHKBOX:
                 return updateState(state, {
                     specificWordChecked: !(action.data),
                     randomWordPrefDisplay: ((action.data) ? 'flex' : 'none')
-
                 })
 
             case UPDATE_REALM: 
@@ -171,6 +180,11 @@ const reducer = (state = initialState, action) => {
                     endingLettersText: action.data
                 })
 
+            case UPDATE_PARTIAL_LETTERS_TEXT:
+                return updateState(state, {
+                    partialLettersText: action.data
+                })
+
             case UPDATE_SPECIFIC_WORD_TEXT:
                 return updateState(state, {
                     specificWordText: action.data
@@ -186,8 +200,10 @@ const reducer = (state = initialState, action) => {
                     selectedIndex: action.data.updatedIndex,
                     startingLettersChecked: action.data.startingLettersChecked,
                     endingLettersChecked: action.data.endingLettersChecked,
+                    partialLettersChecked: action.data.partialLettersChecked,
                     startingLettersText: action.data.startingLettersText,
                     endingLettersText: action.data.endingLettersText,
+                    partialLettersText: action.data.partialLettersText,
                     apiUrl: action.data.apiUrl,
                     specificWordChecked: action.data.specificWordChecked,
                     specificWordText: action.data.specificWordText,

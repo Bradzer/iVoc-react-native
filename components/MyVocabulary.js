@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, View, Text } from 'react-native';
+import { StyleSheet, FlatList, View, Text, ToastAndroid } from 'react-native';
 import { Icon, ListItem, Overlay, SearchBar } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
@@ -21,7 +21,7 @@ import {
 class MyVocabulary extends React.Component {
     
     static navigationOptions = {
-      headerTitle: AppConstants.APP_NAME,
+      headerTitle: 'Vocabulary',
       tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
       tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>
     }
@@ -65,14 +65,7 @@ class MyVocabulary extends React.Component {
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
-            let listOfWords = []
-            userWordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                store.dispatch(updateListOfWords(listOfWords))
-            })
+            onSearchValueChanged(this.props.searchBarValue)
           });
     }
 }
@@ -130,12 +123,21 @@ function mapStateToProps(state) {
   const deleteWordPressed = (item, index) => {
     userWordsDetailsCollection.doc(item.id).delete()
     store.dispatch(deleteWordInList(index))
+    ToastAndroid.show('deleted', ToastAndroid.SHORT)
   }
 
   const onSearchValueChanged = (changedText) => {
         store.dispatch(updateSearchValue(changedText))
         if(changedText) {
-            store.dispatch(updateSearchResults(changedText))
+            let listOfWords = []
+            userWordsDetailsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                store.dispatch(updateListOfWords(listOfWords))
+                store.dispatch(updateSearchResults(changedText))
+            })
         }
         else {
             let listOfWords = []
@@ -145,6 +147,10 @@ function mapStateToProps(state) {
                     listOfWords.push(doc.data())
                 })
                 store.dispatch(updateListOfWords(listOfWords))
+                if(listOfWords.length === 0) {
+                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
+                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
+                }    
             })
         }
   }
