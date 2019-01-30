@@ -8,8 +8,9 @@ import {
     UPDATE_ENDING_LETTERS_TEXT, 
     UPDATE_SPECIFIC_WORD_TEXT,
     UPDATE_API_URL,
-    UPDATE_SETTINGS_PREFERENCES
-} from './actions'
+    UPDATE_SETTINGS_PREFERENCES,
+    UPDATE_PARTIAL_LETTERS_TEXT, } from './actions'
+    
 import reactotron from './ReactotronConfig';
 
 const Realm = require('realm');
@@ -390,7 +391,6 @@ const persistDataLocally = store => next => action => {
             .then((realm) => {
                 realm.write(() => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', (!(action.data)))
-                    // reactotron.logImportant('UPDATE_SPECIFIC_WORD_CHKBOX AFTER CREATION IN REALM : ', realm.objects('settingsScreen'))
                     let settingsScreen = realm.objects('settingsScreen')
                     let specificWordText = ((_.valuesIn(settingsScreen))[0].specificWordText).toLowerCase()
 

@@ -32,6 +32,8 @@ export const HIDE_REVIEW_OVERLAY = 'HIDE_REVIEW_OVERLAY'
 export const DISPLAY_REVIEW_OVERLAY_WITH_DATA = 'DISPLAY_REVIEW_OVERLAY_WITH_DATA'
 export const DISPLAY_REVIEW_OVERLAY = 'DISPLAY_REVIEW_OVERLAY'
 export const UPDATE_REVIEW_BUTTONS = 'UPDATE_REVIEW_BUTTONS'
+export const UPDATE_PARTIAL_WORD_CHKBOX = 'UPDATE_PARTIAL_WORD_CHKBOX'
+export const UPDATE_PARTIAL_LETTERS_TEXT = 'UPDATE_PARTIAL_LETTERS_TEXT'
 
 export function addResponseData(data) {
     return {
@@ -80,6 +82,13 @@ export function updateSpecificWordCheckBox(currentStatus) {
     }
 }
 
+export function updatePartialWordCheckbox(currentStatus) {
+    return {
+        type: UPDATE_PARTIAL_WORD_CHKBOX,
+        data: currentStatus
+    }
+}
+
 export function updateRealm(realmObject) {
     return {
         type: UPDATE_REALM,
@@ -97,6 +106,13 @@ export function updateStartingLettersText(changedText) {
 export function updateEndingLettersText(changedText) {
     return {
         type: UPDATE_ENDING_LETTERS_TEXT,
+        data: changedText
+    }
+}
+
+export function updatePartialLettersText(changedText) {
+    return {
+        type: UPDATE_PARTIAL_LETTERS_TEXT,
         data: changedText
     }
 }
