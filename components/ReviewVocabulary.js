@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid } from 'react-native';
 import { Icon, ListItem, Overlay, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
@@ -79,6 +79,8 @@ class ReviewVocabulary extends React.Component {
             })
             if(listOfWords.length === 0) {
                 store.dispatch(showNoVocabulary())
+                ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
+                ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
             }
             else {
                 let randomIndex = Math.floor(Math.random() * listOfWords.length)
@@ -180,6 +182,8 @@ function goToNextReviewWord() {
     else {
         reactotron.logImportant('list = 0')
         store.dispatch(showReviewOver())
+        ToastAndroid.show('Your vocabulary review is done', ToastAndroid.SHORT)
+
     }
 }
 
