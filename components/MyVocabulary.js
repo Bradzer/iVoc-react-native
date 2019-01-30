@@ -66,18 +66,7 @@ class MyVocabulary extends React.Component {
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
-            let listOfWords = []
-            userWordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                store.dispatch(updateListOfWords(listOfWords))
-                if(listOfWords.length === 0) {
-                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
-                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
-                    }
-            })
+            onSearchValueChanged(this.props.searchBarValue)
           });
     }
 }
@@ -159,6 +148,10 @@ function mapStateToProps(state) {
                     listOfWords.push(doc.data())
                 })
                 store.dispatch(updateListOfWords(listOfWords))
+                if(listOfWords.length === 0) {
+                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
+                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
+                }    
             })
         }
   }
