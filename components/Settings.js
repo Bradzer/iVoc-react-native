@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid } from 'react-native';
 import { connect } from 'react-redux'
 import store from '../reducers'
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
   function clearVocabulary() {
     userWordsDetailsCollection.get()
       .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
+      ToastAndroid.show('vocabulary list cleared')
   }
 
 const changeIndex = (selectedIndex) => {
