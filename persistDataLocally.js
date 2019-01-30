@@ -12,8 +12,6 @@ import {
     UPDATE_PARTIAL_LETTERS_TEXT,
     UPDATE_PARTIAL_WORD_CHKBOX, } from './actions'
     
-import reactotron from './ReactotronConfig';
-
 const Realm = require('realm');
 
 const _ = require('lodash')

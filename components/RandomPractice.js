@@ -75,7 +75,6 @@ class RandomPractice extends React.Component {
                     </View>
 
                 </View>
-                {/* <Text>{AppConstants.STRING_LOREM_IPSUM}</Text> */}
             </ScrollView>
                 <View style={[styles.buttonGroup, {display: this.props.displayButtons}]}>
                     <Button
