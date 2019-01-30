@@ -6,7 +6,17 @@ import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-element
 import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
-import { updateIndex, updateStartingLettersCheckBox, updateEndingLettersCheckBox, updateSpecificWordCheckBox, updateStartingLettersText, updateEndingLettersText, updateSpecificWordText, updateSettingsPreferences } from '../actions'
+import { 
+    updateIndex, 
+    updateStartingLettersCheckBox, 
+    updateEndingLettersCheckBox, 
+    updateSpecificWordCheckBox, 
+    updateStartingLettersText, 
+    updateEndingLettersText, 
+    updateSpecificWordText, 
+    updateSettingsPreferences,
+    updatePartialWordCheckbox,
+    updatePartialLettersText, } from '../actions'
 import reactotron from '../ReactotronConfig';
 
 let firebaseAuth = null
@@ -61,6 +71,17 @@ class Settings extends React.Component {
                         value={this.props.endingLettersText}
                         containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
                     />
+                    <CheckBox 
+                    title= 'Words containing part with'
+                    checked= {this.props.partialLettersChecked}
+                    onPress= {() => partialLettersPressed(this.props.partialLettersChecked)}
+                    />
+                    <Input
+                    placeholder= 'Enter part of the word/expression' 
+                    onChangeText= {onPartialLettersTextChanged}
+                    value= {this.props.partialLettersText}
+                    containerStyle={{marginBottom: 16, display: this.inputDisplay('partialLetters')}}
+                    />
                     <Text style={{marginBottom: 8}}>Part of speech</Text>
                     <ButtonGroup
                         onPress={changeIndex}
@@ -101,13 +122,10 @@ class Settings extends React.Component {
                     let settingsScreen = realm.objects('settingsScreen')
                     reactotron.logImportant('VALUES UNCHANGED FROM REAL : ', settingsScreen)
                     let settingsPreferencesInRealm = getSettingsPreferencesInRealm(settingsScreen)
-                    // reactotron.logImportant('VALUES BEFORE DISPATCH : ', updatedIndex, startingLettersChecked, endingLettersChecked, specificWordChecked, startingLettersText, endingLettersText, specificWordText, apiUrl)
                     store.dispatch(updateSettingsPreferences(settingsPreferencesInRealm))
                 }
                 else{
-                    // reactotron.logImportant('REALM BEFORE CREATION : ', realm.objects('settingsScreen'))
-                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
-                    // reactotron.logImportant('REALM AFTER CREATION : ', realm.objects('settingsScreen'))
+                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                 }
             })
         })
@@ -121,6 +139,9 @@ class Settings extends React.Component {
             
             case 'endingLetters':
                 return (this.props.endingLettersChecked ? 'flex' : 'none')
+
+            case 'partialLetters':
+                return (this.props.partialLettersChecked ? 'flex' : 'none')
 
             case 'specificWord':
                 return (this.props.specificWordChecked ? 'flex' : 'none')
@@ -153,7 +174,9 @@ const styles = StyleSheet.create({
         endingLettersText: state.endingLettersText,
         specificWordChecked: state.specificWordChecked,
         specificWordText: state.specificWordText,
-        randomWordPrefDisplay: state.randomWordPrefDisplay
+        randomWordPrefDisplay: state.randomWordPrefDisplay,
+        partialLettersChecked: state.partialLettersChecked,
+        partialLettersText: state.partialLettersText,
       }
   }
 
@@ -179,12 +202,20 @@ const specificWordPressed = (currentStatus) => {
     store.dispatch(updateSpecificWordCheckBox(currentStatus))
 }
 
+const partialLettersPressed = (currentStatus) => {
+    store.dispatch(updatePartialWordCheckbox(currentStatus))
+}
+
 const onStartingLettersTextChanged = (changedText) => {
     store.dispatch(updateStartingLettersText(changedText))
 }
 
 const onEndingLettersTextChanged = (changedText) => {
     store.dispatch(updateEndingLettersText(changedText))
+}
+
+const onPartialLettersTextChanged = (changedText) => {
+    store.dispatch(updatePartialLettersText(changedText))
 }
 
 const onSpecificWordTextChanged = (changedText) => {
@@ -195,11 +226,13 @@ const getSettingsPreferencesInRealm = (settingsScreenRealmData) => {
     let updatedIndex = (_.valuesIn(settingsScreenRealmData))[0].updatedIndex
     let startingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].startingLettersChecked
     let endingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].endingLettersChecked
+    let partialLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].partialLettersChecked
     let specificWordChecked = (_.valuesIn(settingsScreenRealmData))[0].specificWordChecked
     let startingLettersText = (_.valuesIn(settingsScreenRealmData))[0].startingLettersText
     let endingLettersText = (_.valuesIn(settingsScreenRealmData))[0].endingLettersText
+    let partialLettersText = (_.valuesIn(settingsScreenRealmData))[0].partialLettersText
     let specificWordText = (_.valuesIn(settingsScreenRealmData))[0].specificWordText
     let apiUrl = (_.valuesIn(settingsScreenRealmData))[0].apiUrl
 
-    return { startingLettersChecked, endingLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, specificWordText, apiUrl }
+    return { startingLettersChecked, endingLettersChecked, partialLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
 }

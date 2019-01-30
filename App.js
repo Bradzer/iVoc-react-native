@@ -27,10 +27,12 @@ const settingsScreenSchema = {
       pk: 'int',
       startingLettersChecked: 'bool?',
       endingLettersChecked: 'bool?',
+      partialLettersChecked: 'bool?',
       specificWordChecked: 'bool?',
       updatedIndex: 'int?',
       startingLettersText: 'string?',
       endingLettersText: 'string?',
+      partialLettersText: 'string?',
       specificWordText: 'string?',
       apiUrl: 'string?'
   }
