@@ -30,6 +30,7 @@ const _ = require('lodash')
 class Settings extends React.Component {
 
     static navigationOptions = {
+        headerTitle: 'Settings',
         tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
         tabBarIcon: <Icon name= 'settings' />
     }
