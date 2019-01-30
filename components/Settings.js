@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid } from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid, ScrollView } from 'react-native';
 import { connect } from 'react-redux'
 import store from '../reducers'
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
@@ -48,63 +48,67 @@ class Settings extends React.Component {
 
         return(
             <View style={styles.container}>
-                <View style={{alignSelf: 'stretch', display: this.props.randomWordPrefDisplay}}>
+            <ScrollView>
+                <View>
+                    <View style={{alignSelf: 'stretch', display: this.props.randomWordPrefDisplay}}>
+                        <CheckBox
+                            title= 'Words starting with'
+                            checked= {this.props.startingLettersChecked}
+                            onPress= {() => startingLettersPressed(this.props.startingLettersChecked)}
+                        />
+                        <Input
+                            placeholder= 'Enter starting letters'
+                            onChangeText= {onStartingLettersTextChanged}
+                            value={this.props.startingLettersText}
+                            containerStyle={{marginBottom: 16, display: this.inputDisplay('startingLetters')}}
+                        />
+                        <CheckBox
+                            title= 'Words ending with'
+                            checked= {this.props.endingLettersChecked}
+                            onPress= {() => endingLettersPressed(this.props.endingLettersChecked)}
+                        />
+                        <Input
+                            placeholder= 'Enter ending letters'
+                            onChangeText={onEndingLettersTextChanged}
+                            value={this.props.endingLettersText}
+                            containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
+                        />
+                        <CheckBox 
+                        title= 'Words containing part with'
+                        checked= {this.props.partialLettersChecked}
+                        onPress= {() => partialLettersPressed(this.props.partialLettersChecked)}
+                        />
+                        <Input
+                        placeholder= 'Enter part of the word/expression' 
+                        onChangeText= {onPartialLettersTextChanged}
+                        value= {this.props.partialLettersText}
+                        containerStyle={{marginBottom: 16, display: this.inputDisplay('partialLetters')}}
+                        />
+                        <Text style={{marginBottom: 8}}>Part of speech</Text>
+                        <ButtonGroup
+                            onPress={changeIndex}
+                            buttons={buttons}
+                            selectedIndex={selectedIndex}
+                            containerStyle={{marginBottom: 16}}
+                        />
+                    </View>
                     <CheckBox
-                        title= 'Words starting with'
-                        checked= {this.props.startingLettersChecked}
-                        onPress= {() => startingLettersPressed(this.props.startingLettersChecked)}
-                    />
-                    <Input
-                        placeholder= 'Enter starting letters'
-                        onChangeText= {onStartingLettersTextChanged}
-                        value={this.props.startingLettersText}
-                        containerStyle={{marginBottom: 16, display: this.inputDisplay('startingLetters')}}
-                    />
-                    <CheckBox
-                        title= 'Words ending with'
-                        checked= {this.props.endingLettersChecked}
-                        onPress= {() => endingLettersPressed(this.props.endingLettersChecked)}
-                    />
-                    <Input
-                        placeholder= 'Enter ending letters'
-                        onChangeText={onEndingLettersTextChanged}
-                        value={this.props.endingLettersText}
-                        containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
-                    />
-                    <CheckBox 
-                    title= 'Words containing part with'
-                    checked= {this.props.partialLettersChecked}
-                    onPress= {() => partialLettersPressed(this.props.partialLettersChecked)}
-                    />
-                    <Input
-                    placeholder= 'Enter part of the word/expression' 
-                    onChangeText= {onPartialLettersTextChanged}
-                    value= {this.props.partialLettersText}
-                    containerStyle={{marginBottom: 16, display: this.inputDisplay('partialLetters')}}
-                    />
-                    <Text style={{marginBottom: 8}}>Part of speech</Text>
-                    <ButtonGroup
-                        onPress={changeIndex}
-                        buttons={buttons}
-                        selectedIndex={selectedIndex}
-                        containerStyle={{marginBottom: 16}}
-                    />
+                            title= 'Search for a specific word/expression'
+                            checked= {this.props.specificWordChecked}
+                            onPress= {() => specificWordPressed(this.props.specificWordChecked)}
+                        />
+                        <Input
+                            placeholder= 'Enter the word/expression'
+                            onChangeText= {onSpecificWordTextChanged}
+                            value={this.props.specificWordText}
+                            containerStyle={{marginBottom: 16, display: this.inputDisplay('specificWord')}}
+                        />
+                    <Button 
+                        title='Clear vocabulary'
+                        icon={<Icon name='playlist-remove' type='material-community' color='red'/>}
+                        onPress={clearVocabulary}/>
                 </View>
-                <CheckBox
-                        title= 'Search for a specific word/expression'
-                        checked= {this.props.specificWordChecked}
-                        onPress= {() => specificWordPressed(this.props.specificWordChecked)}
-                    />
-                    <Input
-                        placeholder= 'Enter the word/expression'
-                        onChangeText= {onSpecificWordTextChanged}
-                        value={this.props.specificWordText}
-                        containerStyle={{marginBottom: 16, display: this.inputDisplay('specificWord')}}
-                    />
-                <Button 
-                    title='Clear vocabulary'
-                    icon={<Icon name='playlist-remove' type='material-community' color='red'/>}
-                    onPress={clearVocabulary}/>
+            </ScrollView>
             </View>
         )
     }
