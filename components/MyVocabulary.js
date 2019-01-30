@@ -141,7 +141,15 @@ function mapStateToProps(state) {
   const onSearchValueChanged = (changedText) => {
         store.dispatch(updateSearchValue(changedText))
         if(changedText) {
-            store.dispatch(updateSearchResults(changedText))
+            let listOfWords = []
+            userWordsDetailsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                store.dispatch(updateListOfWords(listOfWords))
+                store.dispatch(updateSearchResults(changedText))
+            })
         }
         else {
             let listOfWords = []
