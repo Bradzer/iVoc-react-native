@@ -31,23 +31,7 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('updatedIndex', action.data)
 
                     let settingsScreen = realm.objects('settingsScreen')
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
-                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
-                    let preferencesData = {
-                        updatedIndex,
-                        startingLettersChecked,
-                        endingLettersChecked,
-                        partialLettersChecked,
-                        startingLettersText,
-                        endingLettersText,
-                        partialLettersText,
-                    }
-                    let customUrl = getCustomUrlPart(preferencesData)
+                    let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
                     
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
                 })
@@ -62,23 +46,7 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersChecked', !(action.data))
 
                     let settingsScreen = realm.objects('settingsScreen')
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
-                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
-                    let preferencesData = {
-                        updatedIndex,
-                        startingLettersChecked,
-                        endingLettersChecked,
-                        partialLettersChecked,
-                        startingLettersText,
-                        endingLettersText,
-                        partialLettersText,
-                    }
-                    let customUrl = getCustomUrlPart(preferencesData)
+                    let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
 
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
                 })
@@ -93,23 +61,7 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersChecked', !(action.data))
 
                     let settingsScreen = realm.objects('settingsScreen')
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
-                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
-                    let preferencesData = {
-                        updatedIndex,
-                        startingLettersChecked,
-                        endingLettersChecked,
-                        partialLettersChecked,
-                        startingLettersText,
-                        endingLettersText,
-                        partialLettersText,
-                    }
-                    let customUrl = getCustomUrlPart(preferencesData)
+                    let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
 
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
                 })
@@ -124,23 +76,7 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersChecked', !(action.data))
 
                     let settingsScreen = realm.objects('settingsScreen')
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
-                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
-                    let preferencesData = {
-                        updatedIndex,
-                        startingLettersChecked,
-                        endingLettersChecked,
-                        partialLettersChecked,
-                        startingLettersText,
-                        endingLettersText,
-                        partialLettersText,
-                    }
-                    let customUrl = getCustomUrlPart(preferencesData)
+                    let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
 
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
                 })
@@ -174,23 +110,7 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersText', action.data)
 
                     let settingsScreen = realm.objects('settingsScreen')
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
-                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
-                    let preferencesData = {
-                        updatedIndex,
-                        startingLettersChecked,
-                        endingLettersChecked,
-                        partialLettersChecked,
-                        startingLettersText,
-                        endingLettersText,
-                        partialLettersText,
-                    }
-                    let customUrl = getCustomUrlPart(preferencesData)
+                    let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
 
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
                 })
@@ -205,23 +125,7 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', action.data)
 
                     let settingsScreen = realm.objects('settingsScreen')
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
-                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
-                    let preferencesData = {
-                        updatedIndex,
-                        startingLettersChecked,
-                        endingLettersChecked,
-                        partialLettersChecked,
-                        startingLettersText,
-                        endingLettersText,
-                        partialLettersText,
-                    }
-                    let customUrl = getCustomUrlPart(preferencesData)
+                    let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
                     
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
                 })
@@ -236,23 +140,7 @@ const persistDataLocally = store => next => action => {
                     realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersText', action.data)
 
                     let settingsScreen = realm.objects('settingsScreen')
-                    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
-                    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
-                    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
-                    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
-                    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
-                    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
-                    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
-                    let preferencesData = {
-                        updatedIndex,
-                        startingLettersChecked,
-                        endingLettersChecked,
-                        partialLettersChecked,
-                        startingLettersText,
-                        endingLettersText,
-                        partialLettersText,
-                    }
-                    let customUrl = getCustomUrlPart(preferencesData)
+                    let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
                     
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
                 })
@@ -300,6 +188,27 @@ const persistDataLocally = store => next => action => {
 }
   
   export default persistDataLocally;
+
+  function getPreferencesData(settingsScreen) {
+
+    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+    let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
+    let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
+    let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
+    let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
+    let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
+    let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
+    let preferencesData = {
+        updatedIndex,
+        startingLettersChecked,
+        endingLettersChecked,
+        partialLettersChecked,
+        startingLettersText,
+        endingLettersText,
+        partialLettersText,
+    }
+    return preferencesData
+  }
 
   function getCustomUrlPart(preferencesData) {
 
