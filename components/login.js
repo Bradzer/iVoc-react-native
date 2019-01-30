@@ -54,19 +54,22 @@ export default class LoginScreen extends Component {
     if(username && password) {
       firebaseAuth.createUserWithEmailAndPassword(username, password)
       .then((credentials) => {
-        reactotron.logImportant('email log in successful', credentials)
-        usersCollection.add({
-          uid: credentials.user.uid, 
-          email: credentials.user.email, 
-          password: password, 
-          isAnonymous: credentials.user.isAnonymous, 
-          providerId: credentials.user.providerId
-        })
-        .then(docRef => docRef.update({id: docRef.id}))
-        ToastAndroid.show('login successful', ToastAndroid.SHORT)
+        onLoginSuccessful(credentials)
         this.props.navigation.navigate('Home')
       }, 
-      (error) => ToastAndroid.show(error.code, ToastAndroid.SHORT))  
+      (createUserError) => {
+        if(createUserError.code === 'auth/email-already-in-use') {
+          firebaseAuth.signInWithEmailAndPassword(username, password)
+          .then(credentials => {
+            ToastAndroid.show('login successful', ToastAndroid.SHORT)
+            this.props.navigation.navigate('Home')    
+          },
+          (signInError) => ToastAndroid.show(signInError.code, ToastAndroid.SHORT))
+        }
+        else {
+          ToastAndroid.show(createUserError.code, ToastAndroid.SHORT)
+        }
+      })  
     }
     else {
       ToastAndroid.show('Please enter account details', ToastAndroid.SHORT)
@@ -107,4 +110,17 @@ const usernameChanged = (usernameText) => {
 
 const passwordChanged = (passwordText) => {
   password = passwordText
+}
+
+const onLoginSuccessful = (credentials) => {
+  reactotron.logImportant('email log in successful', credentials)
+  usersCollection.add({
+    uid: credentials.user.uid, 
+    email: credentials.user.email, 
+    password: password, 
+    isAnonymous: credentials.user.isAnonymous, 
+    providerId: credentials.user.providerId
+  })
+  .then(docRef => docRef.update({id: docRef.id}))
+  ToastAndroid.show('login successful', ToastAndroid.SHORT)
 }
