@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   function clearVocabulary() {
     userWordsDetailsCollection.get()
       .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
-      ToastAndroid.show('vocabulary list cleared')
+      ToastAndroid.show('vocabulary list cleared', ToastAndroid.SHORT)
   }
 
 const changeIndex = (selectedIndex) => {
