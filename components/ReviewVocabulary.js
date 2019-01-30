@@ -25,6 +25,10 @@ let userWordsDetailsCollection = null
 
 class ReviewVocabulary extends React.Component {
 
+    static navigationOptions = {
+        headerTitle: 'Review',
+    }
+
     render() {
         return (
             <View style={styles.container}>

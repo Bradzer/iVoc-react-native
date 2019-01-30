@@ -22,7 +22,7 @@ import {
 class MyVocabulary extends React.Component {
     
     static navigationOptions = {
-      headerTitle: AppConstants.APP_NAME,
+      headerTitle: 'Vocabulary',
       tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
       tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>
     }

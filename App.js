@@ -85,6 +85,58 @@ const HomeTabStackNavigator = createStackNavigator({
   initialRouteName: 'Home'
 })
 
+const MyVocabularyStackAppNavigator = createStackNavigator({
+  MyVocabulary
+},
+{
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: AppConstants.APP_PRIMARY_COLOR
+    },
+    headerTintColor: AppConstants.COLOR_WHITE,
+    headerRight: (
+      <View>
+        <Menu>
+          <MenuTrigger>
+          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
+           </MenuTrigger>
+           <MenuOptions>
+             <MenuOption text={AppConstants.STRING_PREFERENCES} />
+             <MenuOption text={AppConstants.STRING_ABOUT} />
+           </MenuOptions>
+        </Menu>
+      </View>
+    )
+  },
+  initialRouteName: 'MyVocabulary'
+})
+
+const SettingsStackAppNavigator = createStackNavigator({
+  Settings,
+},
+{
+  defaultNavigationOptions: {
+    headerStyle: {
+      backgroundColor: AppConstants.APP_PRIMARY_COLOR
+    },
+    headerTintColor: AppConstants.COLOR_WHITE,
+    headerRight: (
+      <View>
+        <Menu>
+          <MenuTrigger>
+          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
+           </MenuTrigger>
+           <MenuOptions>
+             <MenuOption text={AppConstants.STRING_PREFERENCES} />
+             <MenuOption text={AppConstants.STRING_ABOUT} />
+           </MenuOptions>
+        </Menu>
+      </View>
+    )
+  },
+  initialRouteName: 'Settings'
+})
+
 const TabAppNavigator = createMaterialBottomTabNavigator({
   HomeTabStackNavigator: {
     screen: HomeTabStackNavigator,
@@ -93,8 +145,20 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
       tabBarIcon: <Icon name= 'home' />
     }
   },
-  MyVocabulary: MyVocabulary,
-  Settings: Settings,
+  MyVocabularyStackAppNavigator: {
+    screen: MyVocabularyStackAppNavigator,
+    navigationOptions: {
+      tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
+      tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>
+  },
+},
+  SettingsStackAppNavigator: {
+    screen: SettingsStackAppNavigator,
+    navigationOptions: {
+      tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
+      tabBarIcon: <Icon name= 'settings' />
+    },
+  },
 },
 {
   initialRouteName: 'HomeTabStackNavigator',

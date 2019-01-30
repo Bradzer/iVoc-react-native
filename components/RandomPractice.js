@@ -27,6 +27,10 @@ let numberOfDefinitions = 0;
 
 class RandomPractice extends React.Component {
 
+    static navigationOptions = {
+        headerTitle: 'Practice',
+    }
+
     url = ''
 
     displayFrequency = 'none';
