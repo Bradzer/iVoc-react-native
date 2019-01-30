@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, View, Text } from 'react-native';
+import { StyleSheet, FlatList, View, Text, ToastAndroid } from 'react-native';
 import { Icon, ListItem, Overlay, SearchBar } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
@@ -73,6 +73,10 @@ class MyVocabulary extends React.Component {
                     listOfWords.push(doc.data())
                 })
                 store.dispatch(updateListOfWords(listOfWords))
+                if(listOfWords.length === 0) {
+                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
+                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
+                    }
             })
           });
     }
@@ -131,6 +135,7 @@ function mapStateToProps(state) {
   const deleteWordPressed = (item, index) => {
     userWordsDetailsCollection.doc(item.id).delete()
     store.dispatch(deleteWordInList(index))
+    ToastAndroid.show('deleted', ToastAndroid.SHORT)
   }
 
   const onSearchValueChanged = (changedText) => {

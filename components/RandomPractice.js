@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
@@ -7,7 +7,6 @@ import firebase, { } from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
-import reactotron from '../ReactotronConfig';
 
 let firebaseAuth = null
 let userId = null
@@ -109,14 +108,12 @@ class RandomPractice extends React.Component {
         .then((realm) => {
             realm.write(() => {
                 if(!(realm.objects('settingsScreen').isEmpty())) {
-                    // reactotron.logImportant('REALM OBJECT NOT EMPTY')
                     let settingsScreen = realm.objects('settingsScreen')
                     let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
                         store.dispatch(updateApiUrl(apiUrl))
                         updateApiRequest(this.props.apiUrl)
                 }
                 else{
-                    // reactotron.logImportant('REALM OBJECT EMPTY')
                     realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                     store.dispatch(updateApiUrl(AppConstants.RANDOM_URL))
                     updateApiRequest(this.props.apiUrl)
@@ -193,9 +190,13 @@ function goToNextRandomWord(){
         }
         else {
             store.dispatch(displayUpdateChangePrefsBtn())
+            ToastAndroid.show('No word/expression matching preferences found', ToastAndroid.SHORT)
+            ToastAndroid.show('Please change preferences in settings', ToastAndroid.SHORT)
         }
     }, () => {
         store.dispatch(displayUpdateChangePrefsBtn())
+        ToastAndroid.show('No word/expression matching preferences found', ToastAndroid.SHORT)
+        ToastAndroid.show('Please change preferences in settings', ToastAndroid.SHORT)
     })
     .catch((error) => console.error(error))
 }
