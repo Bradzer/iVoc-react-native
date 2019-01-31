@@ -68,19 +68,7 @@ const HomeTabStackNavigator = createStackNavigator({
       backgroundColor: AppConstants.APP_PRIMARY_COLOR
     },
     headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
+    headerRight: <OverflowMenu />
   },
   initialRouteName: 'Home'
 })
@@ -94,19 +82,7 @@ const MyVocabularyStackAppNavigator = createStackNavigator({
       backgroundColor: AppConstants.APP_PRIMARY_COLOR
     },
     headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
+    headerRight: <OverflowMenu />
   },
   initialRouteName: 'MyVocabulary'
 })
@@ -120,19 +96,7 @@ const SettingsStackAppNavigator = createStackNavigator({
       backgroundColor: AppConstants.APP_PRIMARY_COLOR
     },
     headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
+    headerRight: <OverflowMenu />,
   },
   initialRouteName: 'Settings'
 })
@@ -176,3 +140,19 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
   })
 
 const AppContainer = createAppContainer(SwitchAppNavigator);
+
+function OverflowMenu(props) {
+  return (
+    <View>
+    <Menu>
+      <MenuTrigger>
+      <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
+       </MenuTrigger>
+       <MenuOptions>
+         <MenuOption text={AppConstants.STRING_PREFERENCES} />
+         <MenuOption text={AppConstants.STRING_ABOUT} />
+       </MenuOptions>
+    </Menu>
+  </View>
+  )
+}
