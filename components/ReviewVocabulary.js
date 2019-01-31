@@ -4,6 +4,7 @@ import { Overlay, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
 import store from '../reducers'
+import { BallIndicator } from 'react-native-indicators'
 
 import { 
     updateReviewContent, 
@@ -13,7 +14,9 @@ import {
     hideReviewOverlay, 
     displayReviewOverlayWithData, 
     displayReviewOverlay, 
-    updateReviewButtons, } from '../actions'
+    updateReviewButtons, 
+    showLoadingIndicator,
+    hideLoadingIndicator, } from '../actions'
 import reactotron from '../ReactotronConfig';
 
 let listOfWords = []
@@ -30,6 +33,15 @@ class ReviewVocabulary extends React.Component {
     }
 
     render() {
+
+        if(this.props.displayLoadingIndicator) {
+            return (
+                <View style={styles.loadingIndicator}>
+                    <BallIndicator />
+                </View>
+            )
+        }
+
         return (
             <View style={styles.container}>
                 <Text style={{display: this.props.reviewIntroTextDisplay}}>{this.props.reviewIntroText}</Text>
@@ -68,6 +80,7 @@ class ReviewVocabulary extends React.Component {
 
     componentDidMount() {
         
+        store.dispatch(showLoadingIndicator())
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
@@ -110,8 +123,12 @@ const styles = StyleSheet.create({
     buttonGroup: {
         flexDirection: 'row',
         justifyContent: 'center',
+    },
+    loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
-
 })
 
 function mapStateToProps(state) {
@@ -130,8 +147,8 @@ function mapStateToProps(state) {
         reviewPronunciation: state.reviewPronunciation,
         reviewFrequency: state.reviewFrequency,
         reviewDefinition: state.reviewDefinition,
-        reviewOriginalId: state.reviewOriginalId
-
+        reviewOriginalId: state.reviewOriginalId,
+        displayLoadingIndicator: state.displayLoadingIndicator
     }
 }
 

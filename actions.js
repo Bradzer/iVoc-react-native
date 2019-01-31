@@ -34,6 +34,8 @@ export const DISPLAY_REVIEW_OVERLAY = 'DISPLAY_REVIEW_OVERLAY'
 export const UPDATE_REVIEW_BUTTONS = 'UPDATE_REVIEW_BUTTONS'
 export const UPDATE_PARTIAL_WORD_CHKBOX = 'UPDATE_PARTIAL_WORD_CHKBOX'
 export const UPDATE_PARTIAL_LETTERS_TEXT = 'UPDATE_PARTIAL_LETTERS_TEXT'
+export const SHOW_LOADING_INDICATOR = 'SHOW_LOADING_INDICATOR'
+export const HIDE_LOADING_INDICATOR = 'HIDE_LOADING_INDICATOR'
 
 export function addResponseData(data) {
     return {
@@ -273,5 +275,17 @@ export function displayReviewOverlay() {
 export function updateReviewButtons() {
     return {
         type: UPDATE_REVIEW_BUTTONS
+    }
+}
+
+export function showLoadingIndicator() {
+    return {
+        type: SHOW_LOADING_INDICATOR
+    }
+}
+
+export function hideLoadingIndicator() {
+    return {
+        type: HIDE_LOADING_INDICATOR
     }
 }

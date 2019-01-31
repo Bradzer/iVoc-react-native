@@ -37,7 +37,9 @@ import {
     DISPLAY_REVIEW_OVERLAY,
     UPDATE_REVIEW_BUTTONS,
     UPDATE_PARTIAL_WORD_CHKBOX, 
-    UPDATE_PARTIAL_LETTERS_TEXT, } from './actions'
+    UPDATE_PARTIAL_LETTERS_TEXT, 
+    SHOW_LOADING_INDICATOR, 
+    HIDE_LOADING_INDICATOR, } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -93,6 +95,7 @@ const initialState = {
     reviewOriginalId: '',
     partialLettersChecked: false,
     partialLettersText: '',
+    displayLoadingIndicator: true,
 }
 
 const reducer = (state = initialState, action) => {
@@ -113,6 +116,7 @@ const reducer = (state = initialState, action) => {
                 buttonLeftIconName: 'documents',
                 buttonLeftIconType:'entypo',
                 buttonLeftTitle:"Show definitions",
+                displayLoadingIndicator: false,
             
             })
 
@@ -216,7 +220,7 @@ const reducer = (state = initialState, action) => {
                     displayChangePrefsBtn: 'flex',
                     displayButtons: 'none',
                     displayScrollView: 'none',
-                
+                    displayLoadingIndicator: false,
                 })
 
             case CLEAR_LIST_OF_WORDS:
@@ -242,7 +246,8 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_LIST_OF_WORDS:
                 return updateState(state, {
-                    listOfWords: action.data
+                    listOfWords: action.data,
+                    displayLoadingIndicator: false,
                 })
 
             case UPDATE_SEARCH_VALUE:
@@ -252,7 +257,7 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_SEARCH_RESULTS:
                 return updateState(state, {
-                    listOfWords: state.listOfWords.filter((value) => value.word.includes(action.data))
+                    listOfWords: state.listOfWords.filter((value) => value.word.includes(action.data)),
                 })
 
             case DELETE_WORD_IN_LIST:
@@ -290,12 +295,14 @@ const reducer = (state = initialState, action) => {
                     reviewWord: action.data,
                     displayReviewContent: 'flex',
                     reviewIntroTextDisplay: 'flex',
+                    displayLoadingIndicator: false,
                 })
 
             case SHOW_NO_VOCABULARY:
                 return updateState(state, {
                     reviewIntroText: 'Your vocabulary is empty',
-                    reviewIntroTextDisplay: 'flex'
+                    reviewIntroTextDisplay: 'flex',
+                    displayLoadingIndicator: false,
                 })
 
             case RESET_REVIEW_LAYOUT:
@@ -352,6 +359,16 @@ const reducer = (state = initialState, action) => {
                     reviewOverlayDisplay: true
                 })
             
+            case SHOW_LOADING_INDICATOR:
+                return updateState(state, {
+                    displayLoadingIndicator: true
+                })
+
+                case HIDE_LOADING_INDICATOR:
+                return updateState(state, {
+                    displayLoadingIndicator: false
+                })
+
         default:
             return state
     }
