@@ -8,6 +8,10 @@ import AppConstants from '../Constants'
 
 export default class Home extends React.Component {
 
+    _didFocusSubscription = null;
+    _willBlurSubscription = null;
+    _authStateListener = null;
+
     static navigationOptions = ({navigation}) => {
         return {
             headerTitle: AppConstants.APP_NAME,
