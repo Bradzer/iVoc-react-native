@@ -4,6 +4,7 @@ import { Icon, ListItem, Overlay, SearchBar } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
 import store from '../reducers'
+import { BallIndicator } from 'react-native-indicators'
 
 import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
@@ -14,7 +15,8 @@ import {
     updateListOfWords, 
     deleteWordInList, 
     updateSearchValue,
-    updateSearchResults } from '../actions'
+    updateSearchResults,
+    showLoadingIndicator, } from '../actions'
 
     let firebaseAuth = null
     let userId = null
@@ -46,11 +48,18 @@ class MyVocabulary extends React.Component {
                 value= {this.props.searchBarValue}
                 onChangeText= {onSearchValueChanged}
                 />
-                <FlatList
-                    keyExtractor={keyExtractor}
-                    data={this.props.listOfWords} 
-                    renderItem={renderItem}
-                />
+                {(this.props.displayLoadingIndicator) ?
+                    (
+                        <View style={styles.loadingIndicator}>
+                            <BallIndicator />
+                        </View>
+                    ) :
+                    <FlatList
+                        keyExtractor={keyExtractor}
+                        data={this.props.listOfWords} 
+                        renderItem={renderItem}
+                    />
+                }
                 <Overlay isVisible={this.props.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
                     <View>
                         <Text>{this.props.vocabularyWord}</Text>
@@ -88,6 +97,11 @@ const styles = StyleSheet.create({
     //   alignItems: 'center',
       justifyContent: 'flex-start',
     },
+    loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
   });
 
 function mapStateToProps(state) {
@@ -99,7 +113,8 @@ function mapStateToProps(state) {
         vocabularyPronunciation: state.vocabularyPronunciation,
         vocabularyFrequency: state.vocabularyFrequency,
         listOfWords: state.listOfWords,
-        searchBarValue: state.searchBarValue
+        searchBarValue: state.searchBarValue,
+        displayLoadingIndicator: state.displayLoadingIndicator
     }
 }
 
@@ -136,6 +151,7 @@ function mapStateToProps(state) {
   }
 
   const onSearchValueChanged = (changedText) => {
+        store.dispatch(showLoadingIndicator())
         store.dispatch(updateSearchValue(changedText))
         if(changedText) {
             let listOfWords = []

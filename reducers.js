@@ -246,7 +246,8 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_LIST_OF_WORDS:
                 return updateState(state, {
-                    listOfWords: action.data
+                    listOfWords: action.data,
+                    displayLoadingIndicator: false,
                 })
 
             case UPDATE_SEARCH_VALUE:
@@ -256,7 +257,7 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_SEARCH_RESULTS:
                 return updateState(state, {
-                    listOfWords: state.listOfWords.filter((value) => value.word.includes(action.data))
+                    listOfWords: state.listOfWords.filter((value) => value.word.includes(action.data)),
                 })
 
             case DELETE_WORD_IN_LIST:
@@ -294,12 +295,14 @@ const reducer = (state = initialState, action) => {
                     reviewWord: action.data,
                     displayReviewContent: 'flex',
                     reviewIntroTextDisplay: 'flex',
+                    displayLoadingIndicator: false,
                 })
 
             case SHOW_NO_VOCABULARY:
                 return updateState(state, {
                     reviewIntroText: 'Your vocabulary is empty',
-                    reviewIntroTextDisplay: 'flex'
+                    reviewIntroTextDisplay: 'flex',
+                    displayLoadingIndicator: false,
                 })
 
             case RESET_REVIEW_LAYOUT:
