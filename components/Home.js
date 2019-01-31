@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, } from 'react-native';
+import { StyleSheet, View, BackHandler, } from 'react-native';
 import { Button, Icon } from 'react-native-elements'
+import firebase from 'react-native-firebase'
 
 import OverflowMenu from './OverflowMenu'
 import AppConstants from '../Constants'
@@ -42,6 +43,37 @@ export default class Home extends React.Component {
                 </View>
             </View>
         )
+    }
+
+    componentDidMount() {
+
+        this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
+        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+        });
+
+        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () =>
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+        );
+
+        this._authStateListener = firebase.auth().onAuthStateChanged((user) => {
+            if(!user) {
+                this.props.navigation.navigate('LoginScreen')
+            }
+        })
+    }
+
+    onBackButtonPressAndroid = () => {
+        if (firebase.auth().currentUser) {
+          return true;
+        } else {
+          return false;
+        }
+      };
+    
+    componentWillUnmount() {
+        this._didFocusSubscription && this._didFocusSubscription.remove();
+        this._willBlurSubscription && this._willBlurSubscription.remove();
+        this._authStateListener()
     }
 }
 

@@ -122,8 +122,8 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
     }  
   },
   {
-    initialRouteName: 'LoginScreen',
-    
+    backBehavior: 'initialRoute',
+    initialRouteName: 'LoginScreen',  
   })
 
 const AppContainer = createAppContainer(SwitchAppNavigator);
