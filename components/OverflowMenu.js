@@ -34,7 +34,7 @@ export const MyVocabularyOverflowMenu = (props) => {
        </MenuTrigger>
        <MenuOptions>
         <MenuOption text='Multi deletion'/>
-        <MenuOption text='Clear all' />
+        <MenuOption text='Clear all' onSelect={() => clearVocabularyList(props.navigation)}/>
        </MenuOptions>
     </Menu>
   </View>
@@ -59,4 +59,20 @@ export const SettingsOverflowMenu = (props) => {
   
   function onSignOutSelected() {
     firebase.auth().signOut()
+  }
+
+  function clearVocabularyList(navigation) {
+
+    let userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + firebase.auth().currentUser.uid + '/userWordsDetails')
+
+    userWordsDetailsCollection.get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error)
+      let showClearDoneToast = navigation.getParam('showClearDoneToast')
+      showClearDoneToast()
+      let searchBarValue = navigation.getParam('getSearchBarValue')
+      searchBarValue = searchBarValue()
+      let onSearchValueChanged = navigation.getParam('onSearchValueChanged')
+      onSearchValueChanged(searchBarValue)
+    })
   }

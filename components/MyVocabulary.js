@@ -9,7 +9,6 @@ import { BallIndicator } from 'react-native-indicators'
 import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
 import { 
-    clearListOfWords, 
     displayVocabularyOverlay, 
     hideVocabularyOverlay, 
     updateListOfWords, 
@@ -78,6 +77,11 @@ class MyVocabulary extends React.Component {
 
     componentDidMount() {
         
+        this.props.navigation.setParams({
+            showClearDoneToast: showClearDoneToast,
+            onSearchValueChanged: onSearchValueChanged,
+            getSearchBarValue: this.getSearchBarValue,
+        })
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
@@ -85,6 +89,10 @@ class MyVocabulary extends React.Component {
         this.focusListener = this.props.navigation.addListener("didFocus", () => {
             onSearchValueChanged(this.props.searchBarValue)
           });
+    }
+
+    getSearchBarValue = () => {
+        return this.props.searchBarValue
     }
 }
 
@@ -178,5 +186,9 @@ function mapStateToProps(state) {
                 }    
             })
         }
+  }
+
+  const showClearDoneToast = () => {
+          ToastAndroid.show('vocabulary list cleared', ToastAndroid.SHORT)
   }
   
