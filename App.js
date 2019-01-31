@@ -15,6 +15,7 @@ import Startup from './components/Startup'
 import ReviewVocabulary from './components/ReviewVocabulary'
 import AppConstants from './Constants'
 import store from './reducers'
+import reactotron from './ReactotronConfig';
 
 const Realm = require('realm');
 const realm = new Realm()
@@ -68,19 +69,7 @@ const HomeTabStackNavigator = createStackNavigator({
       backgroundColor: AppConstants.APP_PRIMARY_COLOR
     },
     headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
+    // headerRight: <OverflowMenu />           
   },
   initialRouteName: 'Home'
 })
@@ -89,25 +78,6 @@ const MyVocabularyStackAppNavigator = createStackNavigator({
   MyVocabulary
 },
 {
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: AppConstants.APP_PRIMARY_COLOR
-    },
-    headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
-  },
   initialRouteName: 'MyVocabulary'
 })
 
@@ -115,25 +85,6 @@ const SettingsStackAppNavigator = createStackNavigator({
   Settings,
 },
 {
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: AppConstants.APP_PRIMARY_COLOR
-    },
-    headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
-  },
   initialRouteName: 'Settings'
 })
 
@@ -171,8 +122,8 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
     }  
   },
   {
-    initialRouteName: 'LoginScreen',
-    
+    backBehavior: 'initialRoute',
+    initialRouteName: 'LoginScreen',  
   })
 
 const AppContainer = createAppContainer(SwitchAppNavigator);
