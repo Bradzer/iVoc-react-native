@@ -2,14 +2,23 @@ import React from 'react';
 import { StyleSheet, View, } from 'react-native';
 import { Button, Icon } from 'react-native-elements'
 
+import OverflowMenu from './OverflowMenu'
 import AppConstants from '../Constants'
 
 export default class Home extends React.Component {
 
-    static navigationOptions = {
-        headerTitle: AppConstants.APP_NAME,
-        tabBarLabel: AppConstants.STRING_TAB_HOME,
-        tabBarIcon: <Icon name= 'home' />
+    static navigationOptions = ({navigation}) => {
+        return {
+            headerTitle: AppConstants.APP_NAME,
+            tabBarLabel: AppConstants.STRING_TAB_HOME,
+            tabBarIcon: <Icon name= 'home' />,
+            headerStyle: {
+                backgroundColor: AppConstants.APP_PRIMARY_COLOR
+              },
+              headerTintColor: AppConstants.COLOR_WHITE,
+              headerRight: <OverflowMenu navigation={navigation} />          
+   
+        }
     }
 
     render() {

@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
-import { Button } from 'react-native-elements'
+import { Icon, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
 import firebase, { } from 'react-native-firebase'
 
+import OverflowMenu from './OverflowMenu'
 import AppConstants from '../Constants'
 import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
 
@@ -27,8 +28,10 @@ let numberOfDefinitions = 0;
 
 class RandomPractice extends React.Component {
 
-    static navigationOptions = {
-        headerTitle: 'Practice',
+    static navigationOptions = ({navigation}) => {
+        return {
+            headerTitle: 'Practice',
+        }
     }
 
     url = ''

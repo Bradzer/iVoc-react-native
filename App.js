@@ -15,6 +15,7 @@ import Startup from './components/Startup'
 import ReviewVocabulary from './components/ReviewVocabulary'
 import AppConstants from './Constants'
 import store from './reducers'
+import reactotron from './ReactotronConfig';
 
 const Realm = require('realm');
 const realm = new Realm()
@@ -68,7 +69,7 @@ const HomeTabStackNavigator = createStackNavigator({
       backgroundColor: AppConstants.APP_PRIMARY_COLOR
     },
     headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: <OverflowMenu />
+    // headerRight: <OverflowMenu />           
   },
   initialRouteName: 'Home'
 })
@@ -77,13 +78,6 @@ const MyVocabularyStackAppNavigator = createStackNavigator({
   MyVocabulary
 },
 {
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: AppConstants.APP_PRIMARY_COLOR
-    },
-    headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: <OverflowMenu />
-  },
   initialRouteName: 'MyVocabulary'
 })
 
@@ -91,13 +85,6 @@ const SettingsStackAppNavigator = createStackNavigator({
   Settings,
 },
 {
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: AppConstants.APP_PRIMARY_COLOR
-    },
-    headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: <OverflowMenu />,
-  },
   initialRouteName: 'Settings'
 })
 
@@ -140,20 +127,3 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
   })
 
 const AppContainer = createAppContainer(SwitchAppNavigator);
-
-function OverflowMenu(props) {
-  return (
-    <View>
-    <Menu>
-      <MenuTrigger>
-      <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-       </MenuTrigger>
-       <MenuOptions>
-         <MenuOption text={AppConstants.STRING_PREFERENCES} />
-         <MenuOption text={AppConstants.STRING_ABOUT} />
-         <MenuOption text={AppConstants.STRING_SIGN_OUT} />
-       </MenuOptions>
-    </Menu>
-  </View>
-  )
-}

@@ -5,6 +5,7 @@ import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
 import store from '../reducers'
 
+import OverflowMenu from './OverflowMenu'
 import AppConstants from '../Constants'
 import { 
     clearListOfWords, 
@@ -21,10 +22,17 @@ import {
         
 class MyVocabulary extends React.Component {
     
-    static navigationOptions = {
-      headerTitle: 'Vocabulary',
-      tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
-      tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>
+    static navigationOptions = ({navigation}) => {
+        return {
+            headerTitle: 'Vocabulary',
+            tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
+            tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>,
+            headerStyle: {
+                backgroundColor: AppConstants.APP_PRIMARY_COLOR
+              },
+              headerTintColor: AppConstants.COLOR_WHITE,
+              headerRight: <OverflowMenu navigation={navigation} />          
+        }
     }
 
     listOfWords = []

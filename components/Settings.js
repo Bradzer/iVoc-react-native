@@ -5,6 +5,7 @@ import store from '../reducers'
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 
+import OverflowMenu from './OverflowMenu'
 import AppConstants from '../Constants'
 import { 
     updateIndex, 
@@ -29,10 +30,17 @@ const _ = require('lodash')
 
 class Settings extends React.Component {
 
-    static navigationOptions = {
-        headerTitle: 'Settings',
-        tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
-        tabBarIcon: <Icon name= 'settings' />
+    static navigationOptions = ({navigation}) => {
+        return{
+            headerTitle: 'Settings',
+            tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
+            tabBarIcon: <Icon name= 'settings' />,
+            headerStyle: {
+                backgroundColor: AppConstants.APP_PRIMARY_COLOR
+              },
+              headerTintColor: AppConstants.COLOR_WHITE,
+              headerRight: <OverflowMenu navigation={navigation} />    
+        }      
     }
 
     partOfSpeechAll = () => <Text>All</Text>
