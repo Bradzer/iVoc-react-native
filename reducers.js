@@ -37,7 +37,9 @@ import {
     DISPLAY_REVIEW_OVERLAY,
     UPDATE_REVIEW_BUTTONS,
     UPDATE_PARTIAL_WORD_CHKBOX, 
-    UPDATE_PARTIAL_LETTERS_TEXT, } from './actions'
+    UPDATE_PARTIAL_LETTERS_TEXT, 
+    SHOW_LOADING_INDICATOR, 
+    HIDE_LOADING_INDICATOR, } from './actions'
 
 const initialState = {
     itemDef: '',
@@ -93,6 +95,7 @@ const initialState = {
     reviewOriginalId: '',
     partialLettersChecked: false,
     partialLettersText: '',
+    displayLoadingIndicator: true,
 }
 
 const reducer = (state = initialState, action) => {
@@ -113,6 +116,7 @@ const reducer = (state = initialState, action) => {
                 buttonLeftIconName: 'documents',
                 buttonLeftIconType:'entypo',
                 buttonLeftTitle:"Show definitions",
+                displayLoadingIndicator: false,
             
             })
 
@@ -216,7 +220,7 @@ const reducer = (state = initialState, action) => {
                     displayChangePrefsBtn: 'flex',
                     displayButtons: 'none',
                     displayScrollView: 'none',
-                
+                    displayLoadingIndicator: false,
                 })
 
             case CLEAR_LIST_OF_WORDS:
@@ -352,6 +356,16 @@ const reducer = (state = initialState, action) => {
                     reviewOverlayDisplay: true
                 })
             
+            case SHOW_LOADING_INDICATOR:
+                return updateState(state, {
+                    displayLoadingIndicator: true
+                })
+
+                case HIDE_LOADING_INDICATOR:
+                return updateState(state, {
+                    displayLoadingIndicator: false
+                })
+
         default:
             return state
     }

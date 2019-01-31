@@ -4,10 +4,18 @@ import { Icon, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
 import firebase, { } from 'react-native-firebase'
+import { BallIndicator } from 'react-native-indicators'
 
 import OverflowMenu from './OverflowMenu'
 import AppConstants from '../Constants'
-import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
+import { 
+    addResponseData, 
+    resetResponseData, 
+    displayWordDefinition, 
+    updateApiUrl, 
+    displayUpdateChangePrefsBtn,
+    showLoadingIndicator,
+    hideLoadingIndicator, } from '../actions'
 
 let firebaseAuth = null
 let userId = null
@@ -62,6 +70,13 @@ class RandomPractice extends React.Component {
 
     render() {
 
+        if(this.props.displayLoadingIndicator) {
+            return (
+                <View style={styles.loadingIndicator}>
+                    <BallIndicator />
+                </View>
+            )
+        }
         return(
             <View style={styles.container}>
             <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1, display: this.props.displayScrollView}}>
@@ -106,7 +121,6 @@ class RandomPractice extends React.Component {
     }
 
     componentDidMount() {
-
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
@@ -148,6 +162,11 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         flexDirection: 'row',
         justifyContent: 'center',
+    },
+    loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 
@@ -171,12 +190,13 @@ function mapStateToProps(state) {
         buttonLeftTitle: state.buttonLeftTitle,
         apiUrl: state.apiUrl,
         displayScrollView: state.displayScrollView,
-        displayChangePrefsBtn: state.displayChangePrefsBtn
-
+        displayChangePrefsBtn: state.displayChangePrefsBtn,
+        displayLoadingIndicator: state.displayLoadingIndicator
     }
 }
 
 function goToNextRandomWord(){
+    store.dispatch(showLoadingIndicator())
     let definitions = ''
     apiRequest.get()
     .then((response) => {
