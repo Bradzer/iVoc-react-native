@@ -151,6 +151,7 @@ function OverflowMenu(props) {
        <MenuOptions>
          <MenuOption text={AppConstants.STRING_PREFERENCES} />
          <MenuOption text={AppConstants.STRING_ABOUT} />
+         <MenuOption text={AppConstants.STRING_SIGN_OUT} />
        </MenuOptions>
     </Menu>
   </View>
