@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid } from 'react-native';
-import { Overlay, Button } from 'react-native-elements'
+import { StyleSheet, View, Text, ToastAndroid, BackHandler } from 'react-native';
+import { Overlay, Button, Icon } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
 import store from '../reducers'
@@ -28,8 +28,21 @@ let userWordsDetailsCollection = null
 
 class ReviewVocabulary extends React.Component {
 
-    static navigationOptions = {
-        headerTitle: 'Review',
+    _didFocusSubscription = null;
+    _willBlurSubscription = null;
+
+    static navigationOptions = ({navigation}) => {
+        return {
+            headerTitle: 'Review',
+            headerLeft: <Icon name='arrow-back' color='white' underlayColor='#367b38' onPress={() => {
+                let removeWillBlurSub = navigation.getParam('removeWillBlurSub')
+                removeWillBlurSub()
+                navigation.navigate('Home')
+            }}/>,
+            headerLeftContainerStyle: {
+                marginLeft: 16
+            }
+        }
     }
 
     render() {
@@ -80,35 +93,63 @@ class ReviewVocabulary extends React.Component {
 
     componentDidMount() {
         
-        store.dispatch(showLoadingIndicator())
-        firebaseAuth = firebase.auth()
-        userId = firebaseAuth.currentUser.uid
-        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
-
-        listOfWords = []
-        userWordsDetailsCollection.get()
-        .then((queryResult) => {
-            queryResult.forEach((doc) => {
-                listOfWords.push(doc.data())
-            })
-            if(listOfWords.length === 0) {
-                store.dispatch(showNoVocabulary())
-                ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
-                ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
-            }
-            else {
-                let randomIndex = Math.floor(Math.random() * listOfWords.length)
-                let randomWord = listOfWords[randomIndex]
-                randomWordOriginalId = randomWord.id
-                store.dispatch(updateReviewContent(randomWord.word))
-                listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
-            }
+        this.props.navigation.setParams({
+            removeWillBlurSub: this.removeWillBlurSub
         })
+
+        this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+            store.dispatch(showLoadingIndicator())
+            firebaseAuth = firebase.auth()
+            userId = firebaseAuth.currentUser.uid
+            userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+    
+            listOfWords = []
+            userWordsDetailsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                if(listOfWords.length === 0) {
+                    store.dispatch(showNoVocabulary())
+                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
+                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
+                }
+                else {
+                    let randomIndex = Math.floor(Math.random() * listOfWords.length)
+                    let randomWord = listOfWords[randomIndex]
+                    randomWordOriginalId = randomWord.id
+                    store.dispatch(updateReviewContent(randomWord.word))
+                    listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
+                }
+            }) 
+            });
+    
+        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
+            ToastAndroid.show('You unexpectedlty left the review', ToastAndroid.SHORT)
+            ToastAndroid.show('The word will be supposed not remembered', ToastAndroid.SHORT)
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+        updateNumberOfAppearances(randomWordOriginalId)
+        });
     }
 
     componentWillUnmount() {
+
+        this._didFocusSubscription && this._didFocusSubscription.remove();
+        this._willBlurSubscription && this._willBlurSubscription.remove();
+
         store.dispatch(resetReviewLayout())
     }
+
+    onBackButtonPressAndroid = () => {
+        this._willBlurSubscription.remove()
+        return false
+      };
+
+      removeWillBlurSub = () => {
+        this._willBlurSubscription.remove()
+      }
+
 }
 
 export default connect(mapStateToProps)(ReviewVocabulary)

@@ -15,8 +15,6 @@ export default class Home extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
             headerTitle: AppConstants.APP_NAME,
-            tabBarLabel: AppConstants.STRING_TAB_HOME,
-            tabBarIcon: <Icon name= 'home' />,
             headerStyle: {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
