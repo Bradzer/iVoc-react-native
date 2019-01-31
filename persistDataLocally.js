@@ -198,6 +198,11 @@ const persistDataLocally = store => next => action => {
     let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
     let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
+
+    startingLettersText = _.escapeRegExp(startingLettersText)
+    endingLettersText =  _.escapeRegExp(endingLettersText)
+    partialLettersText =  _.escapeRegExp(partialLettersText)
+    
     let preferencesData = {
         updatedIndex,
         startingLettersChecked,
