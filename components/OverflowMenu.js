@@ -6,7 +6,7 @@ import firebase from 'react-native-firebase'
 
 import AppConstants from '../Constants'
 
-export default function OverflowMenu(props) {
+export const HomeOverflowMenu = (props) => {
     return (
       <View>
       <Menu>
@@ -24,6 +24,38 @@ export default function OverflowMenu(props) {
     </View>
     )
   }
+
+export const MyVocabularyOverflowMenu = (props) => {
+  return (
+    <View>
+    <Menu>
+      <MenuTrigger>
+      <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
+       </MenuTrigger>
+       <MenuOptions>
+        <MenuOption text='Multi deletion'/>
+        <MenuOption text='Clear all' />
+       </MenuOptions>
+    </Menu>
+  </View>
+  )
+}
+
+export const SettingsOverflowMenu = (props) => {
+  return (
+    <View>
+    <Menu>
+      <MenuTrigger>
+      <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
+       </MenuTrigger>
+       <MenuOptions>
+        <MenuOption text={AppConstants.STRING_ABOUT} />
+        <MenuOption text={AppConstants.STRING_SIGN_OUT} onSelect={() => onSignOutSelected()} />
+       </MenuOptions>
+    </Menu>
+  </View>
+  )
+}
   
   function onSignOutSelected() {
     firebase.auth().signOut()

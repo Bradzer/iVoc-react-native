@@ -3,7 +3,7 @@ import { StyleSheet, View, BackHandler, } from 'react-native';
 import { Button, Icon } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 
-import OverflowMenu from './OverflowMenu'
+import {HomeOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
 
 export default class Home extends React.Component {
@@ -21,7 +21,7 @@ export default class Home extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <OverflowMenu navigation={navigation} />          
+              headerRight: <HomeOverflowMenu navigation={navigation} />          
    
         }
     }

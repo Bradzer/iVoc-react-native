@@ -5,7 +5,7 @@ import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
 import store from '../reducers'
 
-import OverflowMenu from './OverflowMenu'
+import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
 import { 
     clearListOfWords, 
@@ -31,7 +31,7 @@ class MyVocabulary extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <OverflowMenu navigation={navigation} />          
+              headerRight: <MyVocabularyOverflowMenu navigation={navigation} />          
         }
     }
 

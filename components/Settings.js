@@ -5,7 +5,7 @@ import store from '../reducers'
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 
-import OverflowMenu from './OverflowMenu'
+import {SettingsOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
 import { 
     updateIndex, 
@@ -39,7 +39,7 @@ class Settings extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <OverflowMenu navigation={navigation} />    
+              headerRight: <SettingsOverflowMenu navigation={navigation} />    
         }      
     }
 
