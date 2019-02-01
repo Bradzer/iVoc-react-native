@@ -56,9 +56,9 @@ const initialState = {
     buttonRightIconName: 'controller-next',
     buttonRightIconType: 'entypo',
     buttonRightTitle: "Skip",
-    buttonLeftIconName: 'documents',
+    buttonLeftIconName: 'add-to-list',
     buttonLeftIconType:'entypo',
-    buttonLeftTitle:"Show definitions",
+    buttonLeftTitle:"Add to vocabulary",
     displayChangePrefsBtn: 'none',
     selectedIndex: 0,
     startingLettersChecked: false,
@@ -113,11 +113,7 @@ const reducer = (state = initialState, action) => {
                 displayWordDefinition: 'none',
                 displayScrollView: 'flex',
                 displayChangePrefsBtn: 'none',
-                buttonLeftIconName: 'documents',
-                buttonLeftIconType:'entypo',
-                buttonLeftTitle:"Show definitions",
                 displayLoadingIndicator: false,
-            
             })
 
         case RESET_RESPONSE_DATA:
@@ -135,9 +131,6 @@ const reducer = (state = initialState, action) => {
             case DISPLAY_WORD_DEFINITION:
                 return updateState(state, {
                     displayWordDefinition: 'flex',
-                    buttonLeftIconName: 'add-to-list',
-                    buttonLeftTitle:"Add to vocabulary",
-                
                 })
 
             case UPDATE_INDEX:

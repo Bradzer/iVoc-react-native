@@ -86,12 +86,11 @@ class RandomPractice extends React.Component {
                     <Text>Pronunciation : {this.props.itemPronunciation}</Text>
                     <Text>Frequency of : {this.props.itemFrequency}</Text>
                     <Text></Text>
-                    <View style={{display: this.props.displayWordDefinition}}>
+                    {/* <View style={{display: this.props.displayWordDefinition}}> */}
                         <Text>Definitions</Text>
                         <Text></Text>
                         <Text>{this.props.itemDef}</Text>
-                    </View>
-
+                    {/* </View> */}
                 </View>
                 {/* <Text>{AppConstants.STRING_LOREM_IPSUM}</Text> */}
             </ScrollView>
@@ -100,7 +99,7 @@ class RandomPractice extends React.Component {
                     icon={{name: this.props.buttonLeftIconName, type: this.props.buttonLeftIconType}}
                     title= {this.props.buttonLeftTitle}
                     containerStyle={{marginHorizontal: 16}}
-                    onPress={((this.props.buttonLeftTitle !== 'Show definitions') ? addToVocabularyBtnClicked : showWordDefinition)}
+                    onPress={addToVocabularyBtnClicked}
                     />
                     <Button
                     icon={{name: this.props.buttonRightIconName, type: this.props.buttonRightIconType}}
