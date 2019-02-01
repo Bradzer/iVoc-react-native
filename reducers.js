@@ -42,7 +42,7 @@ import {
     HIDE_LOADING_INDICATOR, } from './actions'
 
 const initialState = {
-    itemDef: '',
+    itemDef: [],
     itemSynonyms: '',
     itemExamples: '',
     itemWord: '',
@@ -122,7 +122,7 @@ const reducer = (state = initialState, action) => {
                 itemPartOfSpeech: '',
                 itemPronuncitation: '',
                 itemFrequency: '',
-                itemDef: '',
+                itemDef: [],
                 displayRandomWord: 'none',
                 displayButtons: 'none',
                 displayWordDefinition: 'none',
