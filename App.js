@@ -113,6 +113,8 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
   },
 },
 {
+  activeTintColor: 'white',
+  barStyle: {backgroundColor: AppConstants.APP_PRIMARY_COLOR},
   initialRouteName: 'HomeTabStackNavigator',
 })
 

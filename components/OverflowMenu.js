@@ -14,10 +14,10 @@ export const HomeOverflowMenu = (props) => {
         <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
          </MenuTrigger>
          <MenuOptions>
-          <MenuOption text={AppConstants.STRING_TAB_MY_VOCABULARY} onSelect={() => props.navigation.navigate('MyVocabulary')}/>
-          <MenuOption text={AppConstants.STRING_TAB_SETTINGS} onSelect={() => props.navigation.navigate('Settings')}/>
-          <MenuOption text={AppConstants.STRING_ABOUT} />
-          <MenuOption text={AppConstants.STRING_SIGN_OUT} onSelect={() => onSignOutSelected()} />
+          <MenuOption text={AppConstants.STRING_TAB_MY_VOCABULARY} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => props.navigation.navigate('MyVocabulary')}/>
+          <MenuOption text={AppConstants.STRING_TAB_SETTINGS} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => props.navigation.navigate('Settings')}/>
+          <MenuOption text={AppConstants.STRING_ABOUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} />
+          <MenuOption text={AppConstants.STRING_SIGN_OUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => onSignOutSelected()} />
          </MenuOptions>
       </Menu>
     </View>
@@ -32,8 +32,8 @@ export const MyVocabularyOverflowMenu = (props) => {
       <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
        </MenuTrigger>
        <MenuOptions>
-        <MenuOption text='Multi deletion' onSelect={() => multiDeletionPressed(props.navigation)}/>
-        <MenuOption text='Clear all' onSelect={() => clearVocabularyList(props.navigation)}/>
+        <MenuOption text='Multi deletion' customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => multiDeletionPressed(props.navigation)}/>
+        <MenuOption text='Clear all' customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => clearVocabularyList(props.navigation)}/>
        </MenuOptions>
     </Menu>
   </View>
@@ -48,8 +48,8 @@ export const SettingsOverflowMenu = (props) => {
       <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
        </MenuTrigger>
        <MenuOptions>
-        <MenuOption text={AppConstants.STRING_ABOUT}/>
-        <MenuOption text={AppConstants.STRING_SIGN_OUT} onSelect={() => onSignOutSelected()} />
+        <MenuOption text={AppConstants.STRING_ABOUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}}/>
+        <MenuOption text={AppConstants.STRING_SIGN_OUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => onSignOutSelected()} />
        </MenuOptions>
     </Menu>
   </View>

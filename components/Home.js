@@ -19,9 +19,7 @@ export default class Home extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <HomeOverflowMenu navigation={navigation} />          
-   
-        }
+              headerRight: <HomeOverflowMenu navigation={navigation} />        }
     }
 
     render() {

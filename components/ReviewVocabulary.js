@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid, BackHandler } from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid, BackHandler,  } from 'react-native';
 import { Overlay, Button, Icon, Input } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
@@ -56,7 +56,7 @@ class ReviewVocabulary extends React.Component {
         if(this.props.showNoVocabulary) {
             return (
                 <View style={styles.loadingIndicator}>
-                    <Text>Your vocabulary is empty</Text>
+                    <Text style={{fontSize: 24}}>Your vocabulary is empty</Text>
                 </View>
             )
         }
@@ -64,18 +64,19 @@ class ReviewVocabulary extends React.Component {
         if(this.props.showReviewOver) {
             return (
                 <View style={styles.loadingIndicator}>
-                    <Text>The review is over</Text>
+                    <Text style={{fontSize: 24}}>The review is over</Text>
                 </View>
             )
         }
         return (
             <View style={[styles.container, {display: this.props.displayReviewContent}]}>
-                <Text>The word/expression starts with letter</Text>
-                <Text>{this.props.reviewStartingLetter}{'\n'}</Text>
-                <Text>And ends with letter</Text>
-                <Text>{this.props.reviewEndingLetter}{'\n'}</Text>
-                <Text>Definition</Text>
-                <Text>{this.props.currentRewiewDefinition}</Text>
+
+                <Text style={{fontSize: 24, color: 'black'}}>The word/expression starts with letter</Text>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.props.reviewStartingLetter}{'\''}{'\n'}</Text>
+                <Text style={{fontSize: 24, color: 'black'}}>And ends with letter</Text>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.props.reviewEndingLetter}{'\''}{'\n'}</Text>
+                <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>Definition</Text>
+                <Text style={{fontSize: 18, fontStyle: 'italic'}}>{this.props.currentRewiewDefinition}</Text>
                 <Input
                     placeholder= "What's the word ?"
                     onChangeText= {onReviewAnswerTextChanged}
