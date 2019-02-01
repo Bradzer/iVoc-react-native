@@ -117,7 +117,6 @@ const onLoginSuccessful = (credentials) => {
   usersCollection.add({
     uid: credentials.user.uid, 
     email: credentials.user.email, 
-    password: password, 
     isAnonymous: credentials.user.isAnonymous, 
     providerId: credentials.user.providerId
   })

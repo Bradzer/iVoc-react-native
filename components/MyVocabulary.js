@@ -24,7 +24,6 @@ import {
 class MyVocabulary extends React.Component {
 
     _didFocusSubscription = null;
-    _willBlurSubscription = null;
     
     static navigationOptions = ({navigation}) => {
         return {
@@ -95,7 +94,7 @@ class MyVocabulary extends React.Component {
 
 
     componentDidMount() {
-        
+        store.dispatch(showLoadingIndicator())
         this.props.navigation.setParams({
             showClearDoneToast: showClearDoneToast,
             onSearchValueChanged: onSearchValueChanged,
@@ -108,16 +107,10 @@ class MyVocabulary extends React.Component {
         this._didFocusSubscription = this.props.navigation.addListener("didFocus", () => {
             onSearchValueChanged(this.props.searchBarValue)
           });
-
-        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
-            store.dispatch(showLoadingIndicator())
-        })
     }
 
     componentWillUnmount() {
         this._didFocusSubscription && this._didFocusSubscription.remove();
-        this._willBlurSubscription && this._willBlurSubscription.remove();
-        store.dispatch(showLoadingIndicator())
     }
 
     getSearchBarValue = () => {
@@ -162,15 +155,17 @@ function mapStateToProps(state) {
     
     let successPercentage = (item.numberOfRemembrances / item.numberOfAppearances) * 100
     successPercentage = (successPercentage.toString()).substring(0, 5) + '%'
-    return(
-    <ListItem
-        title={item.word}
-        subtitle={item.partOfSpeech}
-        rightIcon= {<Icon name= 'delete' onPress={() => deleteWordPressed(item, index)}/>}
-        onPress= {() => itemPressed(item)}
-        rightTitle= {successPercentage}
-    />
-    )
+
+        return(
+        <ListItem
+            title={item.word}
+            subtitle={item.partOfSpeech}
+            rightIcon= {<Icon name= 'delete' onPress={() => deleteWordPressed(item, index)}/>}
+            onPress= {() => itemPressed(item)}
+            rightTitle= {successPercentage}
+            rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
+        />
+        )
   }
 
   const itemPressed = (wordDetails) => {
