@@ -38,7 +38,8 @@ import {
     UPDATE_PARTIAL_LETTERS_TEXT, 
     SHOW_LOADING_INDICATOR, 
     HIDE_LOADING_INDICATOR,
-    UPDATE_REVIEW_ANSWER_TEXT_VALUE, } from './actions'
+    UPDATE_REVIEW_ANSWER_TEXT_VALUE,
+    UPDATE_PRONUNCIATION_WORD_CHKBOX, } from './actions'
 
 const initialState = {
     itemDef: [],
@@ -94,6 +95,7 @@ const initialState = {
     reviewAnswerText: '',
     showNoVocabulary: false,
     showReviewOver: false,
+    onlyPronunciationWordChecked: false,
 }
 
 const reducer = (state = initialState, action) => {
@@ -155,6 +157,11 @@ const reducer = (state = initialState, action) => {
                 specificWordChecked: false
             })
 
+            case UPDATE_PRONUNCIATION_WORD_CHKBOX:
+                return updateState(state, {
+                    onlyPronunciationWordChecked: !(action.data)
+                })
+
             case UPDATE_SPECIFIC_WORD_CHKBOX:
                 return updateState(state, {
                     specificWordChecked: !(action.data),
@@ -197,6 +204,7 @@ const reducer = (state = initialState, action) => {
                     startingLettersChecked: action.data.startingLettersChecked,
                     endingLettersChecked: action.data.endingLettersChecked,
                     partialLettersChecked: action.data.partialLettersChecked,
+                    onlyPronunciationWordChecked: action.data.onlyPronunciationWordChecked,
                     startingLettersText: action.data.startingLettersText,
                     endingLettersText: action.data.endingLettersText,
                     partialLettersText: action.data.partialLettersText,
