@@ -143,6 +143,7 @@ class ReviewVocabulary extends React.Component {
                 })
                 if(listOfWords.length === 0) {
                     store.dispatch(showNoVocabulary())
+                    _willBlurSubscription.remove()
                     ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
                     ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
                 }
