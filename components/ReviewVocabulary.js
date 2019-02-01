@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, ToastAndroid, BackHandler } from 'react-native';
-import { Overlay, Button, Icon } from 'react-native-elements'
+import { Overlay, Button, Icon, Input } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
 import store from '../reducers'
@@ -16,7 +16,10 @@ import {
     displayReviewOverlay, 
     updateReviewButtons, 
     showLoadingIndicator,
-    hideLoadingIndicator, } from '../actions'
+    hideLoadingIndicator,
+    updateReviewStartingAndEndingLetters,
+    updateCurrentReviewDef,
+    updateReviewAnswerTextValue, } from '../actions'
 import reactotron from '../ReactotronConfig';
 
 let listOfWords = []
@@ -55,35 +58,65 @@ class ReviewVocabulary extends React.Component {
             )
         }
 
-        return (
-            <View style={styles.container}>
-                <Text style={{display: this.props.reviewIntroTextDisplay}}>{this.props.reviewIntroText}</Text>
-                <View style={{display: this.props.displayReviewContent}}>
-                    <Text>{this.props.reviewWord}</Text>
-                    <View style={[styles.buttonGroup]}>
-                        <Button
-                        icon={{name: this.props.reviewLeftBtnIconName, type: this.props.reviewLeftBtnIconType}}
-                        title= {this.props.reviewLeftBtnTitle}
-                        containerStyle={{marginHorizontal: 16}}
-                        onPress={((this.props.reviewLeftBtnTitle !== 'No') ? showDefinitionBtnClicked : ()  => noBtnClicked(randomWordOriginalId))}
-                        />
-                        <Button
-                        icon={{name: this.props.reviewRightBtnIconName, type: this.props.reviewRightBtnIconType}}
-                        title= {this.props.reviewRightBtnTitle}
-                        containerStyle={{marginHorizontal: 16}}
-                        onPress={((this.props.reviewRightBtnTitle !== 'Yes') ? nextBtnClicked : yesBtnClicked)}
-                        />
-                    </View>
+        if(this.props.showNoVocabulary) {
+            return (
+                <View style={styles.loadingIndicator}>
+                    <Text>Your vocabulary is empty</Text>
                 </View>
+            )
+        }
+
+        if(this.props.showReviewOver) {
+            return (
+                <View style={styles.loadingIndicator}>
+                    <Text>The review is over</Text>
+                </View>
+            )
+        }
+        return (
+            <View style={[styles.container, {display: this.props.displayReviewContent}]}>
+                <Text>The word/expression starts with letter</Text>
+                <Text>{this.props.reviewStartingLetter}{'\n'}</Text>
+                <Text>And ends with letter</Text>
+                <Text>{this.props.reviewEndingLetter}{'\n'}</Text>
+                <Text>Definition</Text>
+                <Text>{this.props.currentRewiewDefinition}</Text>
+                <Input
+                    placeholder= "What's the word ?"
+                    onChangeText= {onReviewAnswerTextChanged}
+                    value={this.props.reviewAnswerText}
+                    containerStyle={{marginBottom: 16,}}
+                />
+                <Button 
+                    title='Confirm'
+                    icon={<Icon name='check-circle' type='font-awesome'/>}
+                    onPress={() => onConfirmAnswerPressed(this.props.reviewAnswerText)}/>
+
+
                 <Overlay isVisible={this.props.reviewOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
                     <View>
                         <Text>{this.props.reviewWord}</Text>
                         <Text>Pronunciation: {this.props.reviewPronunciation}</Text>
-                        <Text>Frequency: {this.props.reviewFrequency}</Text>
-                        <Text></Text>
-                        <Text>Definitions</Text>
-                        <Text></Text>
-                        <Text>{this.props.reviewDefinition}</Text>
+                        <Text>Frequency: {this.props.reviewFrequency}{'\n'}</Text>
+                        <Text>Definitions{'\n'}</Text>
+                        {this.props.reviewDefinition.map((element, index, array) => {
+                        if(array.length !== 1)
+                        return (
+                            <View key={index}>
+                                <Text>{index + 1}.</Text>
+                                <Text>{element.partOfSpeech}</Text>
+                                <Text>{element.definition}{'\n'}</Text>
+                            </View>
+
+                        )
+                        else
+                        return (
+                            <View key={index}>
+                                <Text>{element.partOfSpeech}</Text>
+                                <Text>{element.definition}</Text>
+                            </View>
+                        )
+                    })}
                     </View>
                 </Overlay>
 
@@ -99,7 +132,6 @@ class ReviewVocabulary extends React.Component {
 
         this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
             BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-            store.dispatch(showLoadingIndicator())
             firebaseAuth = firebase.auth()
             userId = firebaseAuth.currentUser.uid
             userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
@@ -119,7 +151,8 @@ class ReviewVocabulary extends React.Component {
                     let randomIndex = Math.floor(Math.random() * listOfWords.length)
                     let randomWord = listOfWords[randomIndex]
                     randomWordOriginalId = randomWord.id
-                    store.dispatch(updateReviewContent(randomWord.word))
+                    let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
+                    store.dispatch(updateReviewContent(randomWord, randomDefIndex))
                     listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
                 }
             }) 
@@ -189,7 +222,13 @@ function mapStateToProps(state) {
         reviewFrequency: state.reviewFrequency,
         reviewDefinition: state.reviewDefinition,
         reviewOriginalId: state.reviewOriginalId,
-        displayLoadingIndicator: state.displayLoadingIndicator
+        displayLoadingIndicator: state.displayLoadingIndicator,
+        reviewStartingLetter: state.reviewStartingLetter,
+        reviewEndingLetter: state.reviewEndingLetter,
+        currentRewiewDefinition: state.currentRewiewDefinition,
+        reviewAnswerText: state.reviewAnswerText,
+        showNoVocabulary: state.showNoVocabulary,
+        showReviewOver: state.showReviewOver,
     }
 }
 
@@ -227,19 +266,20 @@ function goToNextReviewWord() {
         if(listOfWords.length === 1) {
             let randomWord = listOfWords[0]
             randomWordOriginalId = randomWord.id
-            store.dispatch(updateReviewContent(randomWord.word))
+            let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
+            store.dispatch(updateReviewContent(randomWord.word, randomDefIndex))
             listOfWords = listOfWords.filter((value, index) => index !== 0)
         }
         else {
             let randomIndex = Math.floor(Math.random() * listOfWords.length)
             let randomWord = listOfWords[randomIndex]
             randomWordOriginalId = randomWord.id
-            store.dispatch(updateReviewContent(randomWord.word))
+            let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
+            store.dispatch(updateReviewContent(randomWord.word, randomDefIndex))
             listOfWords = listOfWords.filter((value, index) => index !== randomIndex)                
         }
     }
     else {
-        reactotron.logImportant('list = 0')
         store.dispatch(showReviewOver())
         ToastAndroid.show('Your vocabulary review is done', ToastAndroid.SHORT)
 
@@ -262,4 +302,12 @@ function updateNumberOfRemembrances(originalId) {
         numberOfRemembrances = docRef.get('numberOfRemembrances') +1
         userWordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
     })
+}
+
+const onReviewAnswerTextChanged = (changedText) => {
+
+}
+
+const onConfirmAnswerPressed = (answer) => {
+
 }

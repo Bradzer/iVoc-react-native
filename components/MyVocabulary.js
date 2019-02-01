@@ -22,6 +22,9 @@ import {
     let userWordsDetailsCollection = null
         
 class MyVocabulary extends React.Component {
+
+    _didFocusSubscription = null;
+    _willBlurSubscription = null;
     
     static navigationOptions = ({navigation}) => {
         return {
@@ -102,9 +105,19 @@ class MyVocabulary extends React.Component {
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
-        this.focusListener = this.props.navigation.addListener("didFocus", () => {
+        this._didFocusSubscription = this.props.navigation.addListener("didFocus", () => {
             onSearchValueChanged(this.props.searchBarValue)
           });
+
+        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
+            store.dispatch(showLoadingIndicator())
+        })
+    }
+
+    componentWillUnmount() {
+        this._didFocusSubscription && this._didFocusSubscription.remove();
+        this._willBlurSubscription && this._willBlurSubscription.remove();
+        store.dispatch(showLoadingIndicator())
     }
 
     getSearchBarValue = () => {
