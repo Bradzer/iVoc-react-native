@@ -2,7 +2,8 @@ import AppConstants from './Constants'
 import { 
     UPDATE_INDEX, 
     UPDATE_STARTING_LETTERS_CHKBOX, 
-    UPDATE_ENDING_LETTERS_CHKBOX, 
+    UPDATE_ENDING_LETTERS_CHKBOX,
+    UPDATE_PRONUNCIATION_WORD_CHKBOX, 
     UPDATE_SPECIFIC_WORD_CHKBOX,
     UPDATE_STARTING_LETTERS_TEXT, 
     UPDATE_ENDING_LETTERS_TEXT, 
@@ -12,6 +13,7 @@ import {
     UPDATE_PARTIAL_LETTERS_TEXT,
     UPDATE_PARTIAL_WORD_CHKBOX, } from './actions'
     
+
 const Realm = require('realm');
 
 const _ = require('lodash')
@@ -81,6 +83,21 @@ const persistDataLocally = store => next => action => {
             })
             .catch((error) => console.log(error))
             break;
+
+            case UPDATE_PRONUNCIATION_WORD_CHKBOX:
+                Realm.open({})
+                .then((realm) => {
+                    realm.write(() => {
+                        realm.objects('settingsScreen').filtered('pk = 0').update('onlyPronunciationWordChecked', !(action.data))
+
+                        let settingsScreen = realm.objects('settingsScreen')
+                        let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
+
+                        realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
+                    })
+                })
+                .catch((error) => console.log(error))
+                break;
 
         case UPDATE_SPECIFIC_WORD_CHKBOX:
             Realm.open({})
@@ -193,14 +210,21 @@ const persistDataLocally = store => next => action => {
     let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
     let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
     let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
+    let onlyPronunciationWordChecked = (_.valuesIn(settingsScreen))[0].onlyPronunciationWordChecked
     let startingLettersText = (_.valuesIn(settingsScreen))[0].startingLettersText
     let endingLettersText = (_.valuesIn(settingsScreen))[0].endingLettersText
     let partialLettersText = (_.valuesIn(settingsScreen))[0].partialLettersText
+
+    startingLettersText = _.escapeRegExp(startingLettersText)
+    endingLettersText =  _.escapeRegExp(endingLettersText)
+    partialLettersText =  _.escapeRegExp(partialLettersText)
+    
     let preferencesData = {
         updatedIndex,
         startingLettersChecked,
         endingLettersChecked,
         partialLettersChecked,
+        onlyPronunciationWordChecked,
         startingLettersText,
         endingLettersText,
         partialLettersText,
@@ -211,7 +235,7 @@ const persistDataLocally = store => next => action => {
   function getCustomUrlPart(preferencesData) {
 
     let customUrl = ''
-    const { startingLettersChecked, endingLettersChecked, partialLettersChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText } = preferencesData
+    const { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText } = preferencesData
     
     if(startingLettersChecked && startingLettersText ) {
         if (endingLettersChecked && endingLettersText) {
@@ -226,7 +250,6 @@ const persistDataLocally = store => next => action => {
                     customUrl += '?partOfSpeech=noun&'
                         break
                     case 3:
-    
                     customUrl += '?partOfSpeech=adjective&'
                         break;
                     
@@ -252,7 +275,6 @@ const persistDataLocally = store => next => action => {
                     customUrl += '?partOfSpeech=noun&'
                         break
                     case 3:
-    
                     customUrl += '?partOfSpeech=adjective&'
                         break;
                     
@@ -279,7 +301,6 @@ const persistDataLocally = store => next => action => {
                 customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-
                 customUrl += '?partOfSpeech=adjective&'
                     break;
                 
@@ -306,7 +327,6 @@ const persistDataLocally = store => next => action => {
                 customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-    
                 customUrl += '?partOfSpeech=adjective&'
                     break;
                 
@@ -332,7 +352,6 @@ const persistDataLocally = store => next => action => {
                 customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-    
                 customUrl += '?partOfSpeech=adjective&'
                     break;
                 
@@ -357,7 +376,6 @@ const persistDataLocally = store => next => action => {
             customUrl += '?partOfSpeech=noun&'
                 break
             case 3:
-
             customUrl += '?partOfSpeech=adjective&'
                 break;
             
@@ -384,7 +402,6 @@ const persistDataLocally = store => next => action => {
             customUrl += '?partOfSpeech=noun&hasDetails=definitions&random=true'
                 break
             case 3:
-
             customUrl += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
                 break;
             
@@ -392,6 +409,8 @@ const persistDataLocally = store => next => action => {
             customUrl += '?hasDetails=definitions&random=true'
                 break
         }
-    }    
+    }
+    if(onlyPronunciationWordChecked) customUrl += '&pronunciationPattern=\\w'    
+
     return customUrl
   }

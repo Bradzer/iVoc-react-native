@@ -1,8 +1,7 @@
 import React from 'react';
-import { View } from 'react-native';
 import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
+import { MenuProvider, } from 'react-native-popup-menu';
 import { Icon } from 'react-native-elements'
 import { Provider } from 'react-redux'
 
@@ -28,6 +27,7 @@ const settingsScreenSchema = {
       endingLettersChecked: 'bool?',
       partialLettersChecked: 'bool?',
       specificWordChecked: 'bool?',
+      onlyPronunciationWordChecked: 'bool?',
       updatedIndex: 'int?',
       startingLettersText: 'string?',
       endingLettersText: 'string?',
@@ -67,19 +67,6 @@ const HomeTabStackNavigator = createStackNavigator({
       backgroundColor: AppConstants.APP_PRIMARY_COLOR
     },
     headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
   },
   initialRouteName: 'Home'
 })
@@ -88,25 +75,6 @@ const MyVocabularyStackAppNavigator = createStackNavigator({
   MyVocabulary
 },
 {
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: AppConstants.APP_PRIMARY_COLOR
-    },
-    headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
-  },
   initialRouteName: 'MyVocabulary'
 })
 
@@ -114,25 +82,6 @@ const SettingsStackAppNavigator = createStackNavigator({
   Settings,
 },
 {
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: AppConstants.APP_PRIMARY_COLOR
-    },
-    headerTintColor: AppConstants.COLOR_WHITE,
-    headerRight: (
-      <View>
-        <Menu>
-          <MenuTrigger>
-          <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-           </MenuTrigger>
-           <MenuOptions>
-             <MenuOption text={AppConstants.STRING_PREFERENCES} />
-             <MenuOption text={AppConstants.STRING_ABOUT} />
-           </MenuOptions>
-        </Menu>
-      </View>
-    )
-  },
   initialRouteName: 'Settings'
 })
 
@@ -160,6 +109,8 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
   },
 },
 {
+  activeTintColor: 'white',
+  barStyle: {backgroundColor: AppConstants.APP_PRIMARY_COLOR},
   initialRouteName: 'HomeTabStackNavigator',
 })
 
@@ -170,8 +121,8 @@ const TabAppNavigator = createMaterialBottomTabNavigator({
     }  
   },
   {
-    initialRouteName: 'LoginScreen',
-    
+    backBehavior: 'initialRoute',
+    initialRouteName: 'LoginScreen',  
   })
 
 const AppContainer = createAppContainer(SwitchAppNavigator);

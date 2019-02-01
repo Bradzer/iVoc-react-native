@@ -1,12 +1,18 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
-import { Button } from 'react-native-elements'
+import {  Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
 import firebase, { } from 'react-native-firebase'
+import { BallIndicator } from 'react-native-indicators'
 
 import AppConstants from '../Constants'
-import { addResponseData, resetResponseData, displayWordDefinition, updateApiUrl, displayUpdateChangePrefsBtn } from '../actions'
+import { 
+    addResponseData, 
+    resetResponseData, 
+    updateApiUrl, 
+    displayUpdateChangePrefsBtn,
+    showLoadingIndicator, } from '../actions'
 
 let firebaseAuth = null
 let userId = null
@@ -27,8 +33,10 @@ let numberOfDefinitions = 0;
 
 class RandomPractice extends React.Component {
 
-    static navigationOptions = {
-        headerTitle: 'Practice',
+    static navigationOptions = ({navigation}) => {
+        return {
+            headerTitle: 'Practice',
+        }
     }
 
     url = ''
@@ -59,21 +67,40 @@ class RandomPractice extends React.Component {
 
     render() {
 
+        if(this.props.displayLoadingIndicator) {
+            return (
+                <View style={styles.loadingIndicator}>
+                    <BallIndicator />
+                </View>
+            )
+        }
         return(
             <View style={styles.container}>
             <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1, display: this.props.displayScrollView}}>
                 <View style={{display: this.props.displayRandomWord}}>
-                    <Text>{this.props.itemWord}</Text>
-                    <Text>{this.props.itemPartOfSpeech}</Text>
-                    <Text>Pronunciation : {this.props.itemPronunciation}</Text>
-                    <Text>Frequency of : {this.props.itemFrequency}</Text>
-                    <Text></Text>
-                    <View style={{display: this.props.displayWordDefinition}}>
-                        <Text>Definitions</Text>
-                        <Text></Text>
-                        <Text>{this.props.itemDef}</Text>
-                    </View>
+                    <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.props.itemWord}</Text>
+                    <Text style={{fontSize: 18, color: 'black'}}>{this.props.itemPartOfSpeech}</Text>
+                    <Text style={{fontSize: 18, color: 'black'}}>Pronunciation : {this.props.itemPronunciation}</Text>
+                    <Text style={{fontSize: 18, color: 'black'}}>Frequency of : {this.props.itemFrequency}{'\n'}</Text>
+                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>Definitions{'\n'}</Text>
+                    {this.props.itemDef.map((element, index, array) => {
+                        if(array.length !== 1)
+                        return (
+                            <View key={index}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold'}}>{index + 1}.</Text>
+                                <Text style={{fontSize: 18, color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
+                            </View>
 
+                        )
+                        else
+                        return (
+                            <View key={index}>
+                                <Text style={{fontSize: 18, color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}</Text>
+                            </View>
+                        )
+                    })}
                 </View>
             </ScrollView>
                 <View style={[styles.buttonGroup, {display: this.props.displayButtons}]}>
@@ -81,7 +108,7 @@ class RandomPractice extends React.Component {
                     icon={{name: this.props.buttonLeftIconName, type: this.props.buttonLeftIconType}}
                     title= {this.props.buttonLeftTitle}
                     containerStyle={{marginHorizontal: 16}}
-                    onPress={((this.props.buttonLeftTitle !== 'Show definitions') ? addToVocabularyBtnClicked : showWordDefinition)}
+                    onPress={addToVocabularyBtnClicked}
                     />
                     <Button
                     icon={{name: this.props.buttonRightIconName, type: this.props.buttonRightIconType}}
@@ -102,7 +129,6 @@ class RandomPractice extends React.Component {
     }
 
     componentDidMount() {
-
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
@@ -117,7 +143,7 @@ class RandomPractice extends React.Component {
                         updateApiRequest(this.props.apiUrl)
                 }
                 else{
-                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                     store.dispatch(updateApiUrl(AppConstants.RANDOM_URL))
                     updateApiRequest(this.props.apiUrl)
                 }
@@ -144,6 +170,11 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         flexDirection: 'row',
         justifyContent: 'center',
+    },
+    loadingIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 
@@ -167,12 +198,13 @@ function mapStateToProps(state) {
         buttonLeftTitle: state.buttonLeftTitle,
         apiUrl: state.apiUrl,
         displayScrollView: state.displayScrollView,
-        displayChangePrefsBtn: state.displayChangePrefsBtn
-
+        displayChangePrefsBtn: state.displayChangePrefsBtn,
+        displayLoadingIndicator: state.displayLoadingIndicator
     }
 }
 
 function goToNextRandomWord(){
+    store.dispatch(showLoadingIndicator())
     let definitions = ''
     apiRequest.get()
     .then((response) => {
@@ -220,10 +252,6 @@ function addKnownWordToCloud(word){
     })
 }
 
-function showWordDefinition() {
-    store.dispatch(displayWordDefinition())
-}
-
 function updateApiRequest(baseURL) {
     apiRequest = axios.create({
         baseURL: baseURL,
@@ -237,29 +265,42 @@ function updateApiRequest(baseURL) {
 
 function createDataGoingToStore(apiResponse, definitions= null) {
     if(definitions) {
+        let pronunciation = null
+
+        if(_.hasIn(apiResponse, 'pronunciation.all'))
+            pronunciation = apiResponse.pronunciation.all
+        else pronunciation = apiResponse.pronunciation
         return {
             word: apiResponse.word,
             partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-            pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+            pronunciation: (pronunciation ? pronunciation : 'empty'),
             frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
             definition: definitions,    
         }
     }
+    let pronunciation = null
+
+    if(_.hasIn(apiResponse, 'pronunciation.all'))
+        pronunciation = apiResponse.pronunciation.all
+    else pronunciation = apiResponse.pronunciation
+
+    let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty')
+    let definition = apiResponse.results[0].definition
     return {
         word: apiResponse.word,
-        partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-        pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+        partOfSpeech,
+        pronunciation: (pronunciation ? pronunciation : 'empty'),
         frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-        definition: apiResponse.results[0].definition,
+        definition: [{partOfSpeech, definition}]
     }
 }
 
 function getAllDefinitions(apiResponse, numberOfDefinitions) {
-    let definitions = ''
+    let definitions = []
     for(let i= 0; i < numberOfDefinitions; i++) {
         let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
         let definition = apiResponse.results[i].definition
-        definitions += i+1 + '.\n' + partOfSpeech + '\n' + definition + '\n\n'
+        definitions.push({partOfSpeech, definition})
     }
     return definitions
 }
