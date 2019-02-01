@@ -63,10 +63,8 @@ class MyVocabulary extends React.Component {
                     <View>
                         <Text>{this.props.vocabularyWord}</Text>
                         <Text>Pronunciation: {this.props.vocabularyPronunciation}</Text>
-                        <Text>Frequency: {this.props.vocabularyFrequency}</Text>
-                        <Text></Text>
-                        <Text>Definitions</Text>
-                        <Text></Text>
+                        <Text>Frequency: {this.props.vocabularyFrequency}{'\n'}</Text>
+                        <Text>Definitions{'\n'}</Text>
                         <Text>{this.props.vocabularyDefinition}</Text>
                     </View>
                 </Overlay>

@@ -83,8 +83,7 @@ class RandomPractice extends React.Component {
                     <Text>{this.props.itemWord}</Text>
                     <Text>{this.props.itemPartOfSpeech}</Text>
                     <Text>Pronunciation : {this.props.itemPronunciation}</Text>
-                    <Text>Frequency of : {this.props.itemFrequency}</Text>
-                    <Text></Text>
+                    <Text>Frequency of : {this.props.itemFrequency}{'\n'}</Text>
                     <Text>Definitions{'\n'}</Text>
                     {this.props.itemDef.map((element, index, array) => {
                         if(array.length !== 1)
