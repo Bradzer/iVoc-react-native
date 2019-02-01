@@ -7,6 +7,7 @@ import store from '../reducers'
 import { BallIndicator } from 'react-native-indicators'
 
 import { 
+    showLoadingIndicator,
     updateReviewContent, 
     showNoVocabulary, 
     resetReviewLayout, 
@@ -120,6 +121,8 @@ class ReviewVocabulary extends React.Component {
 
     componentDidMount() {
         
+        store.dispatch(showLoadingIndicator())
+
         this.props.navigation.setParams({
             removeWillBlurSub: this.removeWillBlurSub
         })

@@ -126,7 +126,6 @@ const reducer = (state = initialState, action) => {
                 displayRandomWord: 'none',
                 displayButtons: 'none',
                 displayWordDefinition: 'none',
-                displayLoadingIndicator: true,
             })
 
             case DISPLAY_WORD_DEFINITION:
@@ -319,7 +318,6 @@ const reducer = (state = initialState, action) => {
                     showNoVocabulary: false,
                     showReviewOver: false,
                     displayReviewContent: 'none',
-                    displayLoadingIndicator: true,                
                 })
 
             case SHOW_REVIEW_OVER: 
