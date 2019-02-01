@@ -1,20 +1,18 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
-import { Icon, Button } from 'react-native-elements'
+import {  Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import store from '../reducers'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 
-import OverflowMenu from './OverflowMenu'
 import AppConstants from '../Constants'
 import { 
     addResponseData, 
     resetResponseData, 
     updateApiUrl, 
     displayUpdateChangePrefsBtn,
-    showLoadingIndicator,
-    hideLoadingIndicator, } from '../actions'
+    showLoadingIndicator, } from '../actions'
 
 let firebaseAuth = null
 let userId = null
@@ -104,7 +102,6 @@ class RandomPractice extends React.Component {
                         )
                     })}
                 </View>
-                {/* <Text>{AppConstants.STRING_LOREM_IPSUM}</Text> */}
             </ScrollView>
                 <View style={[styles.buttonGroup, {display: this.props.displayButtons}]}>
                     <Button

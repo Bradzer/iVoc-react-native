@@ -5,11 +5,9 @@ import persistDataLocally from './persistDataLocally'
 import { 
     ADD_RESPONSE_DATA, 
     RESET_RESPONSE_DATA, 
-    DISPLAY_WORD_DEFINITION, 
     UPDATE_INDEX, UPDATE_STARTING_LETTERS_CHKBOX, 
     UPDATE_ENDING_LETTERS_CHKBOX, 
     UPDATE_SPECIFIC_WORD_CHKBOX, 
-    UPDATE_REALM, 
     UPDATE_STARTING_LETTERS_TEXT, 
     UPDATE_ENDING_LETTERS_TEXT, 
     UPDATE_SPECIFIC_WORD_TEXT, 
@@ -19,12 +17,6 @@ import {
     DISPLAY_VOCABULARY_OVERLAY, 
     HIDE_VOCABULARY_OVERLAY, 
     UPDATE_LIST_OF_WORDS,
-    UPDATE_VOCABULARY_WORD, 
-    UPDATE_VOCABULARY_PART_OF_SPEECH, 
-    UPDATE_VOCABULARY_DEFINITION, 
-    UPDATE_VOCABULARY_PRONUNCIATION, 
-    UPDATE_VOCABULARY_FREQUENCY, 
-    CLEAR_LIST_OF_WORDS,
     DELETE_WORD_IN_LIST,
     UPDATE_SEARCH_VALUE,
     UPDATE_SEARCH_RESULTS,
@@ -128,11 +120,6 @@ const reducer = (state = initialState, action) => {
                 displayWordDefinition: 'none',
             })
 
-            case DISPLAY_WORD_DEFINITION:
-                return updateState(state, {
-                    displayWordDefinition: 'flex',
-                })
-
             case UPDATE_INDEX:
                 return updateState(state, {
                     selectedIndex: action.data
@@ -165,11 +152,6 @@ const reducer = (state = initialState, action) => {
                 return updateState(state, {
                     specificWordChecked: !(action.data),
                     randomWordPrefDisplay: ((action.data) ? 'flex' : 'none')
-                })
-
-            case UPDATE_REALM: 
-                return updateState(state, {
-                    realm: action.data
                 })
 
             case UPDATE_STARTING_LETTERS_TEXT:
@@ -222,11 +204,6 @@ const reducer = (state = initialState, action) => {
                     displayLoadingIndicator: false,
                 })
 
-            case CLEAR_LIST_OF_WORDS:
-                return updateState(state, {
-                    listOfWords: []
-                })
-
             case DISPLAY_VOCABULARY_OVERLAY:
                 return updateState(state, {
                     vocabularyOverlayDisplay: true,
@@ -262,31 +239,6 @@ const reducer = (state = initialState, action) => {
             case DELETE_WORD_IN_LIST:
                 return updateState(state, {
                     listOfWords: state.listOfWords.filter((value, index) => index !== action.data)
-                })
-
-            case UPDATE_VOCABULARY_WORD:
-                return updateState(state, {
-                    vocabularyWord: action.data
-                })
-
-            case UPDATE_VOCABULARY_PART_OF_SPEECH:
-                return updateState(state, {
-                    vocabularyPartOfSpeech: action.data
-                })
-
-            case UPDATE_VOCABULARY_DEFINITION:
-                return updateState(state, {
-                    vocabularyDefinition: action.data
-                })
-
-            case UPDATE_VOCABULARY_PRONUNCIATION:
-                return updateState(state, {
-                    vocabularyPronunciation: action.data
-                })
-
-            case UPDATE_VOCABULARY_FREQUENCY:
-                return updateState(state, {
-                    vocabularyFrequency: action.data
                 })
 
             case UPDATE_REVIEW_CONTENT:

@@ -13,7 +13,6 @@ import {
     UPDATE_PARTIAL_LETTERS_TEXT,
     UPDATE_PARTIAL_WORD_CHKBOX, } from './actions'
     
-import reactotron from './ReactotronConfig';
 
 const Realm = require('realm');
 
@@ -251,7 +250,6 @@ const persistDataLocally = store => next => action => {
                     customUrl += '?partOfSpeech=noun&'
                         break
                     case 3:
-    
                     customUrl += '?partOfSpeech=adjective&'
                         break;
                     
@@ -277,7 +275,6 @@ const persistDataLocally = store => next => action => {
                     customUrl += '?partOfSpeech=noun&'
                         break
                     case 3:
-    
                     customUrl += '?partOfSpeech=adjective&'
                         break;
                     
@@ -304,7 +301,6 @@ const persistDataLocally = store => next => action => {
                 customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-
                 customUrl += '?partOfSpeech=adjective&'
                     break;
                 
@@ -331,7 +327,6 @@ const persistDataLocally = store => next => action => {
                 customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-    
                 customUrl += '?partOfSpeech=adjective&'
                     break;
                 
@@ -357,7 +352,6 @@ const persistDataLocally = store => next => action => {
                 customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-    
                 customUrl += '?partOfSpeech=adjective&'
                     break;
                 
@@ -382,7 +376,6 @@ const persistDataLocally = store => next => action => {
             customUrl += '?partOfSpeech=noun&'
                 break
             case 3:
-
             customUrl += '?partOfSpeech=adjective&'
                 break;
             
@@ -409,7 +402,6 @@ const persistDataLocally = store => next => action => {
             customUrl += '?partOfSpeech=noun&hasDetails=definitions&random=true'
                 break
             case 3:
-
             customUrl += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
                 break;
             

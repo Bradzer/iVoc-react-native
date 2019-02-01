@@ -15,7 +15,6 @@ import {
     hideReviewOverlay, 
     displayReviewOverlay, 
     updateReviewAnswerTextValue, } from '../actions'
-import reactotron from '../ReactotronConfig';
 
 let listOfWords = []
 let randomWordOriginalId = ''
@@ -128,7 +127,7 @@ class ReviewVocabulary extends React.Component {
             removeWillBlurSub: this.removeWillBlurSub
         })
 
-        didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
+        _didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
             BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
             firebaseAuth = firebase.auth()
             userId = firebaseAuth.currentUser.uid
@@ -255,7 +254,7 @@ function goToNextReviewWord() {
             let randomWord = listOfWords[0]
             randomWordOriginalId = randomWord.id
             let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
-            store.dispatch(updateReviewContent(randomWord.word, randomDefIndex))
+            store.dispatch(updateReviewContent(randomWord, randomDefIndex))
             listOfWords = listOfWords.filter((value, index) => index !== 0)
         }
         else {
@@ -263,7 +262,7 @@ function goToNextReviewWord() {
             let randomWord = listOfWords[randomIndex]
             randomWordOriginalId = randomWord.id
             let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
-            store.dispatch(updateReviewContent(randomWord.word, randomDefIndex))
+            store.dispatch(updateReviewContent(randomWord, randomDefIndex))
             listOfWords = listOfWords.filter((value, index) => index !== randomIndex)                
         }
     }

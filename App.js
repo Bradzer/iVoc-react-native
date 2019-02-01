@@ -1,8 +1,7 @@
 import React from 'react';
-import { View } from 'react-native';
 import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-import { MenuProvider, Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
+import { MenuProvider, } from 'react-native-popup-menu';
 import { Icon } from 'react-native-elements'
 import { Provider } from 'react-redux'
 
@@ -11,11 +10,9 @@ import Home from './components/Home'
 import MyVocabulary from './components/MyVocabulary'
 import Settings from './components/Settings'
 import RandomPractice from './components/RandomPractice'
-import Startup from './components/Startup'
 import ReviewVocabulary from './components/ReviewVocabulary'
 import AppConstants from './Constants'
 import store from './reducers'
-import reactotron from './ReactotronConfig';
 
 const Realm = require('realm');
 const realm = new Realm()
@@ -70,7 +67,6 @@ const HomeTabStackNavigator = createStackNavigator({
       backgroundColor: AppConstants.APP_PRIMARY_COLOR
     },
     headerTintColor: AppConstants.COLOR_WHITE,
-    // headerRight: <OverflowMenu />           
   },
   initialRouteName: 'Home'
 })
