@@ -33,13 +33,12 @@ import {
     RESET_REVIEW_LAYOUT, 
     SHOW_REVIEW_OVER,
     HIDE_REVIEW_OVERLAY,
-    DISPLAY_REVIEW_OVERLAY_WITH_DATA,
     DISPLAY_REVIEW_OVERLAY,
-    UPDATE_REVIEW_BUTTONS,
     UPDATE_PARTIAL_WORD_CHKBOX, 
     UPDATE_PARTIAL_LETTERS_TEXT, 
     SHOW_LOADING_INDICATOR, 
-    HIDE_LOADING_INDICATOR, } from './actions'
+    HIDE_LOADING_INDICATOR,
+    UPDATE_REVIEW_ANSWER_TEXT_VALUE, } from './actions'
 
 const initialState = {
     itemDef: [],
@@ -81,21 +80,20 @@ const initialState = {
     reviewIntroTextDisplay: 'none',
     displayReviewContent: 'none',
     reviewWord: '',
-    reviewLeftBtnTitle: 'No',
-    reviewLeftBtnIconName: 'times-circle',
-    reviewLeftBtnIconType: 'font-awesome',
-    reviewRightBtnTitle: 'Yes',
-    reviewRightBtnIconName: 'check-circle',
-    reviewRightBtnIconType: 'font-awesome', 
-    reviewIntroText: 'Do your remember this...',
     reviewOverlayDisplay: false,
     reviewPronunciation: '',
     reviewFrequency: '',
-    reviewDefinition: '',
+    reviewDefinition: [],
     reviewOriginalId: '',
     partialLettersChecked: false,
     partialLettersText: '',
     displayLoadingIndicator: true,
+    reviewStartingLetter: '',
+    reviewEndingLetter: '',
+    currentRewiewDefinition: '',
+    reviewAnswerText: '',
+    showNoVocabulary: false,
+    showReviewOver: false,
 }
 
 const reducer = (state = initialState, action) => {
@@ -126,6 +124,7 @@ const reducer = (state = initialState, action) => {
                 displayRandomWord: 'none',
                 displayButtons: 'none',
                 displayWordDefinition: 'none',
+                displayLoadingIndicator: true,
             })
 
             case DISPLAY_WORD_DEFINITION:
@@ -285,66 +284,44 @@ const reducer = (state = initialState, action) => {
 
             case UPDATE_REVIEW_CONTENT:
                 return updateState(state, {
-                    reviewWord: action.data,
-                    displayReviewContent: 'flex',
-                    reviewIntroTextDisplay: 'flex',
+                    reviewStartingLetter: action.data.wordObject.word.charAt(0),
+                    reviewEndingLetter: action.data.wordObject.word.charAt(action.data.wordObject.word.length - 1),
+                    currentRewiewDefinition: action.data.wordObject.definition[action.data.randomDefIndex].definition,
+                    reviewWord: action.data.wordObject.word,
+                    reviewPronunciation: action.data.wordObject.pronunciation,
+                    reviewFrequency: action.data.wordObject.frequency,
+                    reviewDefinition: action.data.wordObject.definition,
                     displayLoadingIndicator: false,
+                    displayReviewContent: 'flex',
                 })
 
             case SHOW_NO_VOCABULARY:
                 return updateState(state, {
-                    reviewIntroText: 'Your vocabulary is empty',
-                    reviewIntroTextDisplay: 'flex',
+                    showNoVocabulary: true,
                     displayLoadingIndicator: false,
                 })
 
             case RESET_REVIEW_LAYOUT:
                 return updateState(state, {
-                    reviewLeftBtnTitle: 'No',
-                    reviewLeftBtnIconName: 'times-circle',
-                    reviewLeftBtnIconType: 'font-awesome',
-                    reviewRightBtnTitle: 'Yes',
-                    reviewRightBtnIconName: 'check-circle',
-                    reviewRightBtnIconType: 'font-awesome', 
-                    reviewIntroText: 'Do your remember this...',
-                    reviewIntroTextDisplay: 'none',
+                    reviewDefinition: [],
+                    reviewStartingLetter: '',
+                    reviewEndingLetter: '',
+                    currentRewiewDefinition: '',
+                    reviewAnswerText: '',
+                    showNoVocabulary: false,
+                    showReviewOver: false,
                     displayReviewContent: 'none',
-                    reviewOverlayDisplay: false
+                    displayLoadingIndicator: true,                
                 })
 
             case SHOW_REVIEW_OVER: 
                 return updateState(state, {
-                    reviewIntroText: 'The review is over',
-                    displayReviewContent: 'none',
+                    showReviewOver: true,
                 })
 
             case HIDE_REVIEW_OVERLAY:
                 return updateState(state, {
                     reviewOverlayDisplay: false
-                })
-
-            case DISPLAY_REVIEW_OVERLAY_WITH_DATA:
-                return updateState(state, {
-                    reviewPronunciation: action.data.pronunciation,
-                    reviewFrequency: action.data.frequency,
-                    reviewDefinition: action.data.definition,                
-                    reviewOverlayDisplay: true,
-                    reviewRightBtnTitle: 'Next',
-                    reviewRightBtnIconName: 'controller-next',
-                    reviewRightBtnIconType: 'entypo',
-                    reviewLeftBtnTitle: 'Show definitions',
-                    reviewLeftBtnIconName: 'documents',
-                    reviewLeftBtnIconType: 'entypo'
-                })
-
-            case UPDATE_REVIEW_BUTTONS:
-                return updateState(state, {
-                    reviewLeftBtnTitle: 'No',
-                    reviewLeftBtnIconName: 'times-circle',
-                    reviewLeftBtnIconType: 'font-awesome',
-                    reviewRightBtnTitle: 'Yes',
-                    reviewRightBtnIconName: 'check-circle',
-                    reviewRightBtnIconType: 'font-awesome',                 
                 })
 
             case DISPLAY_REVIEW_OVERLAY:
@@ -362,6 +339,10 @@ const reducer = (state = initialState, action) => {
                     displayLoadingIndicator: false
                 })
 
+            case UPDATE_REVIEW_ANSWER_TEXT_VALUE:
+                return updateState(state, {
+                    reviewAnswerText: action.data
+                })
         default:
             return state
     }
