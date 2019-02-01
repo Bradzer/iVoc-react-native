@@ -32,7 +32,7 @@ export const MyVocabularyOverflowMenu = (props) => {
       <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
        </MenuTrigger>
        <MenuOptions>
-        <MenuOption text='Multi deletion'/>
+        <MenuOption text='Multi deletion' onSelect={() => multiDeletionPressed(props.navigation)}/>
         <MenuOption text='Clear all' onSelect={() => clearVocabularyList(props.navigation)}/>
        </MenuOptions>
     </Menu>
@@ -48,7 +48,7 @@ export const SettingsOverflowMenu = (props) => {
       <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
        </MenuTrigger>
        <MenuOptions>
-        <MenuOption text={AppConstants.STRING_ABOUT} />
+        <MenuOption text={AppConstants.STRING_ABOUT}/>
         <MenuOption text={AppConstants.STRING_SIGN_OUT} onSelect={() => onSignOutSelected()} />
        </MenuOptions>
     </Menu>
@@ -74,4 +74,11 @@ export const SettingsOverflowMenu = (props) => {
       let onSearchValueChanged = navigation.getParam('onSearchValueChanged')
       onSearchValueChanged(searchBarValue)
     })
+  }
+
+  function multiDeletionPressed(navigation) {
+    let showMultiDeletionOnToast = navigation.getParam('showMultiDeletionOnToast')
+    showMultiDeletionOnToast()
+    let setMultiDeletionStatus = navigation.getParam('setMultiDeletionStatus')
+    setMultiDeletionStatus(true)
   }
