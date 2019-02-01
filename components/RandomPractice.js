@@ -146,7 +146,7 @@ class RandomPractice extends React.Component {
                         updateApiRequest(this.props.apiUrl)
                 }
                 else{
-                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                     store.dispatch(updateApiUrl(AppConstants.RANDOM_URL))
                     updateApiRequest(this.props.apiUrl)
                 }
@@ -268,20 +268,31 @@ function updateApiRequest(baseURL) {
 
 function createDataGoingToStore(apiResponse, definitions= null) {
     if(definitions) {
+        let pronunciation = null
+
+        if(_.hasIn(apiResponse, 'pronunciation.all'))
+            pronunciation = apiResponse.pronunciation.all
+        else pronunciation = apiResponse.pronunciation
         return {
             word: apiResponse.word,
             partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-            pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+            pronunciation: (pronunciation ? pronunciation : 'empty'),
             frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
             definition: definitions,    
         }
     }
+    let pronunciation = null
+
+    if(_.hasIn(apiResponse, 'pronunciation.all'))
+        pronunciation = apiResponse.pronunciation.all
+    else pronunciation = apiResponse.pronunciation
+
     let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty')
     let definition = apiResponse.results[0].definition
     return {
         word: apiResponse.word,
         partOfSpeech,
-        pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
+        pronunciation: (pronunciation ? pronunciation : 'empty'),
         frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
         definition: [{partOfSpeech, definition}]
     }

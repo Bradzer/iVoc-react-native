@@ -17,7 +17,8 @@ import {
     updateSpecificWordText, 
     updateSettingsPreferences,
     updatePartialWordCheckbox,
-    updatePartialLettersText, } from '../actions'
+    updatePartialLettersText, 
+    updatePronunciationCheckbox, } from '../actions'
 import reactotron from '../ReactotronConfig';
 
 let firebaseAuth = null
@@ -100,18 +101,23 @@ class Settings extends React.Component {
                             selectedIndex={selectedIndex}
                             containerStyle={{marginBottom: 16}}
                         />
+                        <CheckBox
+                            title= 'Only word/expression with pronunciation'
+                            checked= {this.props.onlyPronunciationWordChecked}
+                            onPress= {() => onlyPronunciationWordPressed(this.props.onlyPronunciationWordChecked)}
+                        />
                     </View>
                     <CheckBox
                             title= 'Search for a specific word/expression'
                             checked= {this.props.specificWordChecked}
                             onPress= {() => specificWordPressed(this.props.specificWordChecked)}
-                        />
-                        <Input
-                            placeholder= 'Enter the word/expression'
-                            onChangeText= {onSpecificWordTextChanged}
-                            value={this.props.specificWordText}
-                            containerStyle={{marginBottom: 16, display: this.inputDisplay('specificWord')}}
-                        />
+                    />
+                    <Input
+                        placeholder= 'Enter the word/expression'
+                        onChangeText= {onSpecificWordTextChanged}
+                        value={this.props.specificWordText}
+                        containerStyle={{marginBottom: 16, display: this.inputDisplay('specificWord')}}
+                    />
                     <Button 
                         title='Clear vocabulary'
                         icon={<Icon name='playlist-remove' type='material-community' color='red'/>}
@@ -138,7 +144,7 @@ class Settings extends React.Component {
                     store.dispatch(updateSettingsPreferences(settingsPreferencesInRealm))
                 }
                 else{
-                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                 }
             })
         })
@@ -190,6 +196,7 @@ const styles = StyleSheet.create({
         randomWordPrefDisplay: state.randomWordPrefDisplay,
         partialLettersChecked: state.partialLettersChecked,
         partialLettersText: state.partialLettersText,
+        onlyPronunciationWordChecked: state.onlyPronunciationWordChecked,
       }
   }
 
@@ -219,6 +226,10 @@ const partialLettersPressed = (currentStatus) => {
     store.dispatch(updatePartialWordCheckbox(currentStatus))
 }
 
+const onlyPronunciationWordPressed = (currentStatus) => {
+    store.dispatch(updatePronunciationCheckbox(currentStatus))
+}
+
 const onStartingLettersTextChanged = (changedText) => {
     store.dispatch(updateStartingLettersText(changedText))
 }
@@ -240,6 +251,7 @@ const getSettingsPreferencesInRealm = (settingsScreenRealmData) => {
     let startingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].startingLettersChecked
     let endingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].endingLettersChecked
     let partialLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].partialLettersChecked
+    let onlyPronunciationWordChecked = (_.valuesIn(settingsScreenRealmData))[0].onlyPronunciationWordChecked
     let specificWordChecked = (_.valuesIn(settingsScreenRealmData))[0].specificWordChecked
     let startingLettersText = (_.valuesIn(settingsScreenRealmData))[0].startingLettersText
     let endingLettersText = (_.valuesIn(settingsScreenRealmData))[0].endingLettersText
@@ -247,5 +259,5 @@ const getSettingsPreferencesInRealm = (settingsScreenRealmData) => {
     let specificWordText = (_.valuesIn(settingsScreenRealmData))[0].specificWordText
     let apiUrl = (_.valuesIn(settingsScreenRealmData))[0].apiUrl
 
-    return { startingLettersChecked, endingLettersChecked, partialLettersChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
+    return { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
 }

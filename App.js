@@ -30,6 +30,7 @@ const settingsScreenSchema = {
       endingLettersChecked: 'bool?',
       partialLettersChecked: 'bool?',
       specificWordChecked: 'bool?',
+      onlyPronunciationWordChecked: 'bool?',
       updatedIndex: 'int?',
       startingLettersText: 'string?',
       endingLettersText: 'string?',

@@ -35,6 +35,7 @@ export const UPDATE_PARTIAL_LETTERS_TEXT = 'UPDATE_PARTIAL_LETTERS_TEXT'
 export const SHOW_LOADING_INDICATOR = 'SHOW_LOADING_INDICATOR'
 export const HIDE_LOADING_INDICATOR = 'HIDE_LOADING_INDICATOR'
 export const UPDATE_REVIEW_ANSWER_TEXT_VALUE = 'UPDATE_REVIEW_ANSWER_TEXT_VALUE'
+export const UPDATE_PRONUNCIATION_WORD_CHKBOX = 'UPDATE_PRONUNCIATION_WORD_CHKBOX'
 
 export function addResponseData(data) {
     return {
@@ -79,6 +80,13 @@ export function updateEndingLettersCheckBox(currentStatus) {
 export function updateSpecificWordCheckBox(currentStatus) {
     return {
         type: UPDATE_SPECIFIC_WORD_CHKBOX,
+        data: currentStatus
+    }
+}
+
+export function updatePronunciationCheckbox(currentStatus) {
+    return {
+        type: UPDATE_PRONUNCIATION_WORD_CHKBOX,
         data: currentStatus
     }
 }
