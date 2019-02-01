@@ -86,11 +86,9 @@ class RandomPractice extends React.Component {
                     <Text>Pronunciation : {this.props.itemPronunciation}</Text>
                     <Text>Frequency of : {this.props.itemFrequency}</Text>
                     <Text></Text>
-                    {/* <View style={{display: this.props.displayWordDefinition}}> */}
-                        <Text>Definitions</Text>
-                        <Text></Text>
-                        <Text>{this.props.itemDef}</Text>
-                    {/* </View> */}
+                    <Text>Definitions</Text>
+                    <Text></Text>
+                    <Text>{this.props.itemDef}</Text>
                 </View>
                 {/* <Text>{AppConstants.STRING_LOREM_IPSUM}</Text> */}
             </ScrollView>
