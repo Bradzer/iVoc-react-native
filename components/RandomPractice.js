@@ -80,26 +80,26 @@ class RandomPractice extends React.Component {
             <View style={styles.container}>
             <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1, display: this.props.displayScrollView}}>
                 <View style={{display: this.props.displayRandomWord}}>
-                    <Text>{this.props.itemWord}</Text>
-                    <Text>{this.props.itemPartOfSpeech}</Text>
-                    <Text>Pronunciation : {this.props.itemPronunciation}</Text>
-                    <Text>Frequency of : {this.props.itemFrequency}{'\n'}</Text>
-                    <Text>Definitions{'\n'}</Text>
+                    <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.props.itemWord}</Text>
+                    <Text style={{fontSize: 18, color: 'black'}}>{this.props.itemPartOfSpeech}</Text>
+                    <Text style={{fontSize: 18, color: 'black'}}>Pronunciation : {this.props.itemPronunciation}</Text>
+                    <Text style={{fontSize: 18, color: 'black'}}>Frequency of : {this.props.itemFrequency}{'\n'}</Text>
+                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>Definitions{'\n'}</Text>
                     {this.props.itemDef.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
-                                <Text>{index + 1}.</Text>
-                                <Text>{element.partOfSpeech}</Text>
-                                <Text>{element.definition}{'\n'}</Text>
+                                <Text style={{fontSize: 18, fontWeight: 'bold'}}>{index + 1}.</Text>
+                                <Text style={{fontSize: 18, color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
                         )
                         else
                         return (
                             <View key={index}>
-                                <Text>{element.partOfSpeech}</Text>
-                                <Text>{element.definition}</Text>
+                                <Text style={{fontSize: 18, color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )
                     })}
