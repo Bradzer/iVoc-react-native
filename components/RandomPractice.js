@@ -99,7 +99,7 @@ class RandomPractice extends React.Component {
                         return (
                             <View key={index}>
                                 <Text>{element.partOfSpeech}</Text>
-                                <Text>{element.definition}{'\n\n'}</Text>
+                                <Text>{element.definition}</Text>
                             </View>
                         )
                     })}

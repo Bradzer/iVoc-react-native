@@ -70,7 +70,7 @@ const initialState = {
     vocabularyOverlayDisplay: false,
     vocabularyWord: '',
     vocabularyPartOfSpeech: '',
-    vocabularyDefinition: '',
+    vocabularyDefinition: [],
     vocabularyPronunciation: '',
     vocabularyFrequency: '',
     specificWordChecked: false,
