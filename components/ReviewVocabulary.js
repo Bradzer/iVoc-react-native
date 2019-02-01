@@ -12,13 +12,7 @@ import {
     resetReviewLayout, 
     showReviewOver, 
     hideReviewOverlay, 
-    displayReviewOverlayWithData, 
     displayReviewOverlay, 
-    updateReviewButtons, 
-    showLoadingIndicator,
-    hideLoadingIndicator,
-    updateReviewStartingAndEndingLetters,
-    updateCurrentReviewDef,
     updateReviewAnswerTextValue, } from '../actions'
 import reactotron from '../ReactotronConfig';
 
@@ -29,10 +23,10 @@ let firebaseAuth = null
 let userId = null
 let userWordsDetailsCollection = null
 
-class ReviewVocabulary extends React.Component {
+let _didFocusSubscription = null;
+let _willBlurSubscription = null;
 
-    _didFocusSubscription = null;
-    _willBlurSubscription = null;
+class ReviewVocabulary extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
@@ -90,7 +84,7 @@ class ReviewVocabulary extends React.Component {
                 <Button 
                     title='Confirm'
                     icon={<Icon name='check-circle' type='font-awesome'/>}
-                    onPress={() => onConfirmAnswerPressed(this.props.reviewAnswerText)}/>
+                    onPress={() => this.onConfirmAnswerPressed(this.props.reviewAnswerText)}/>
 
 
                 <Overlay isVisible={this.props.reviewOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
@@ -130,7 +124,7 @@ class ReviewVocabulary extends React.Component {
             removeWillBlurSub: this.removeWillBlurSub
         })
 
-        this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
+        didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
             BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
             firebaseAuth = firebase.auth()
             userId = firebaseAuth.currentUser.uid
@@ -158,7 +152,7 @@ class ReviewVocabulary extends React.Component {
             }) 
             });
     
-        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
+        _willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
             ToastAndroid.show('You unexpectedlty left the review', ToastAndroid.SHORT)
             ToastAndroid.show('The word will be supposed not remembered', ToastAndroid.SHORT)
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
@@ -168,19 +162,33 @@ class ReviewVocabulary extends React.Component {
 
     componentWillUnmount() {
 
-        this._didFocusSubscription && this._didFocusSubscription.remove();
-        this._willBlurSubscription && this._willBlurSubscription.remove();
+        _didFocusSubscription && _didFocusSubscription.remove();
+        _willBlurSubscription && _willBlurSubscription.remove();
 
         store.dispatch(resetReviewLayout())
     }
 
+    onConfirmAnswerPressed = (answer) => {
+        if(answer === this.props.reviewWord) {
+            ToastAndroid.show('right answer ;)', ToastAndroid.SHORT)
+            updateNumberOfAppearances(randomWordOriginalId)
+            updateNumberOfRemembrances(randomWordOriginalId)        
+            goToNextReviewWord()
+        }
+        else {
+            ToastAndroid.show('You got it wrong :(', ToastAndroid.SHORT)
+            updateNumberOfAppearances(randomWordOriginalId)
+            store.dispatch(displayReviewOverlay())
+        }
+    }    
+
     onBackButtonPressAndroid = () => {
-        this._willBlurSubscription.remove()
+        _willBlurSubscription.remove()
         return false
       };
 
       removeWillBlurSub = () => {
-        this._willBlurSubscription.remove()
+        _willBlurSubscription.remove()
       }
 
 }
@@ -232,36 +240,12 @@ function mapStateToProps(state) {
     }
 }
 
-const showDefinitionBtnClicked = () => {
-    store.dispatch(displayReviewOverlay())
-}
-
-const noBtnClicked = (originalId) => {
-    updateNumberOfAppearances(randomWordOriginalId)
-    userWordsDetailsCollection.doc(originalId).get()
-    .then((docSnapshot) => {
-        store.dispatch(displayReviewOverlayWithData(docSnapshot.data()))
-    })
-}
-
-const nextBtnClicked = () => {
-    goToNextReviewWord()
-    store.dispatch(updateReviewButtons())
-}
-
-const yesBtnClicked = () => {
-    updateNumberOfAppearances(randomWordOriginalId)
-    updateNumberOfRemembrances(randomWordOriginalId)
-    goToNextReviewWord()
-    store.dispatch(updateReviewButtons())
-}
-
 const onBackdropPress = () => {
     store.dispatch(hideReviewOverlay())
+    goToNextReviewWord()
 }
 
 function goToNextReviewWord() {
-    reactotron.logImportant(listOfWords)
     if (listOfWords.length > 0) {
         if(listOfWords.length === 1) {
             let randomWord = listOfWords[0]
@@ -282,7 +266,7 @@ function goToNextReviewWord() {
     else {
         store.dispatch(showReviewOver())
         ToastAndroid.show('Your vocabulary review is done', ToastAndroid.SHORT)
-
+        _willBlurSubscription.remove()
     }
 }
 
@@ -305,9 +289,5 @@ function updateNumberOfRemembrances(originalId) {
 }
 
 const onReviewAnswerTextChanged = (changedText) => {
-
-}
-
-const onConfirmAnswerPressed = (answer) => {
-
+    store.dispatch(updateReviewAnswerTextValue(changedText))
 }

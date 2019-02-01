@@ -29,15 +29,11 @@ export const SHOW_NO_VOCABULARY = 'SHOW_NO_VOCABULARY'
 export const RESET_REVIEW_LAYOUT = 'RESET_REVIEW_LAYOUT'
 export const SHOW_REVIEW_OVER = 'SHOW_REVIEW_OVER'
 export const HIDE_REVIEW_OVERLAY = 'HIDE_REVIEW_OVERLAY'
-export const DISPLAY_REVIEW_OVERLAY_WITH_DATA = 'DISPLAY_REVIEW_OVERLAY_WITH_DATA'
 export const DISPLAY_REVIEW_OVERLAY = 'DISPLAY_REVIEW_OVERLAY'
-export const UPDATE_REVIEW_BUTTONS = 'UPDATE_REVIEW_BUTTONS'
 export const UPDATE_PARTIAL_WORD_CHKBOX = 'UPDATE_PARTIAL_WORD_CHKBOX'
 export const UPDATE_PARTIAL_LETTERS_TEXT = 'UPDATE_PARTIAL_LETTERS_TEXT'
 export const SHOW_LOADING_INDICATOR = 'SHOW_LOADING_INDICATOR'
 export const HIDE_LOADING_INDICATOR = 'HIDE_LOADING_INDICATOR'
-export const UPDATE_REVIEW_STARTING_AND_ENDING_LETTERS = 'UPDATE_REVIEW_STARTING_AND_ENDING_LETTERS'
-export const UPDATE_CURRENT_REVIEW_DEF = 'UPDATE_CURRENT_REVIEW_DEF'
 export const UPDATE_REVIEW_ANSWER_TEXT_VALUE = 'UPDATE_REVIEW_ANSWER_TEXT_VALUE'
 
 export function addResponseData(data) {
@@ -265,22 +261,9 @@ export function hideReviewOverlay() {
     }
 }
 
-export function displayReviewOverlayWithData(wordDocument) {
-    return {
-        type: DISPLAY_REVIEW_OVERLAY_WITH_DATA,
-        data: wordDocument
-    }
-}
-
 export function displayReviewOverlay() {
     return {
         type: DISPLAY_REVIEW_OVERLAY,
-    }
-}
-
-export function updateReviewButtons() {
-    return {
-        type: UPDATE_REVIEW_BUTTONS
     }
 }
 
@@ -293,20 +276,6 @@ export function showLoadingIndicator() {
 export function hideLoadingIndicator() {
     return {
         type: HIDE_LOADING_INDICATOR
-    }
-}
-
-export function updateReviewStartingAndEndingLetters(currentWord) {
-    return {
-        type: UPDATE_REVIEW_STARTING_AND_ENDING_LETTERS,
-        data: currentWord
-    }
-}
-
-export function updateCurrentReviewDef(definition) {
-    return {
-        type: UPDATE_CURRENT_REVIEW_DEF,
-        data: definition,
     }
 }
 

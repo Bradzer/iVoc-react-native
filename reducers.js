@@ -33,15 +33,11 @@ import {
     RESET_REVIEW_LAYOUT, 
     SHOW_REVIEW_OVER,
     HIDE_REVIEW_OVERLAY,
-    DISPLAY_REVIEW_OVERLAY_WITH_DATA,
     DISPLAY_REVIEW_OVERLAY,
-    UPDATE_REVIEW_BUTTONS,
     UPDATE_PARTIAL_WORD_CHKBOX, 
     UPDATE_PARTIAL_LETTERS_TEXT, 
     SHOW_LOADING_INDICATOR, 
     HIDE_LOADING_INDICATOR,
-    UPDATE_REVIEW_STARTING_AND_ENDING_LETTERS,
-    UPDATE_CURRENT_REVIEW_DEF,
     UPDATE_REVIEW_ANSWER_TEXT_VALUE, } from './actions'
 
 const initialState = {
@@ -84,13 +80,6 @@ const initialState = {
     reviewIntroTextDisplay: 'none',
     displayReviewContent: 'none',
     reviewWord: '',
-    reviewLeftBtnTitle: 'No',
-    reviewLeftBtnIconName: 'times-circle',
-    reviewLeftBtnIconType: 'font-awesome',
-    reviewRightBtnTitle: 'Yes',
-    reviewRightBtnIconName: 'check-circle',
-    reviewRightBtnIconType: 'font-awesome', 
-    reviewIntroText: 'Do your remember this...',
     reviewOverlayDisplay: false,
     reviewPronunciation: '',
     reviewFrequency: '',
@@ -335,30 +324,6 @@ const reducer = (state = initialState, action) => {
                     reviewOverlayDisplay: false
                 })
 
-            // case DISPLAY_REVIEW_OVERLAY_WITH_DATA:
-            //     return updateState(state, {
-            //         reviewPronunciation: action.data.pronunciation,
-            //         reviewFrequency: action.data.frequency,
-            //         reviewDefinition: action.data.definition,                
-            //         reviewOverlayDisplay: true,
-            //         reviewRightBtnTitle: 'Next',
-            //         reviewRightBtnIconName: 'controller-next',
-            //         reviewRightBtnIconType: 'entypo',
-            //         reviewLeftBtnTitle: 'Show definitions',
-            //         reviewLeftBtnIconName: 'documents',
-            //         reviewLeftBtnIconType: 'entypo'
-            //     })
-
-            case UPDATE_REVIEW_BUTTONS:
-                return updateState(state, {
-                    reviewLeftBtnTitle: 'No',
-                    reviewLeftBtnIconName: 'times-circle',
-                    reviewLeftBtnIconType: 'font-awesome',
-                    reviewRightBtnTitle: 'Yes',
-                    reviewRightBtnIconName: 'check-circle',
-                    reviewRightBtnIconType: 'font-awesome',                 
-                })
-
             case DISPLAY_REVIEW_OVERLAY:
                 return updateState(state, {
                     reviewOverlayDisplay: true
@@ -372,17 +337,6 @@ const reducer = (state = initialState, action) => {
                 case HIDE_LOADING_INDICATOR:
                 return updateState(state, {
                     displayLoadingIndicator: false
-                })
-
-            case UPDATE_REVIEW_STARTING_AND_ENDING_LETTERS:
-                return updateState(state, {
-                    reviewStartingLetter: (action.data)[0],
-                    reviewEndingLetter: (action.data)[action.data.length - 1]
-                })
-
-            case UPDATE_CURRENT_REVIEW_DEF:
-                return updateState(state, {
-                    currentRewiewDefinition: action.data,
                 })
 
             case UPDATE_REVIEW_ANSWER_TEXT_VALUE:
