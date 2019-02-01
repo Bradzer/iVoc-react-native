@@ -19,7 +19,6 @@ import {
     updatePartialWordCheckbox,
     updatePartialLettersText, 
     updatePronunciationCheckbox, } from '../actions'
-import reactotron from '../ReactotronConfig';
 
 let firebaseAuth = null
 let userId = null
@@ -139,7 +138,6 @@ class Settings extends React.Component {
             realm.write(() => {
                 if(!(realm.objects('settingsScreen').isEmpty())) {
                     let settingsScreen = realm.objects('settingsScreen')
-                    reactotron.logImportant('VALUES UNCHANGED FROM REAL : ', settingsScreen)
                     let settingsPreferencesInRealm = getSettingsPreferencesInRealm(settingsScreen)
                     store.dispatch(updateSettingsPreferences(settingsPreferencesInRealm))
                 }

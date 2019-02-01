@@ -1,11 +1,9 @@
 export const ADD_RESPONSE_DATA = 'ADD_RESPONSE_DATA'
 export const RESET_RESPONSE_DATA = 'RESET_RESPONSE_DATA'
-export const DISPLAY_WORD_DEFINITION = 'DISPLAY_WORD_DEFINITION'
 export const UPDATE_INDEX = 'UPDATE_INDEX'
 export const UPDATE_STARTING_LETTERS_CHKBOX = 'UPDATE_STARTING_LETTERS_CHKBOX'
 export const UPDATE_ENDING_LETTERS_CHKBOX = 'UPDATE_ENDING_LETTERS_CHKBOX'
 export const UPDATE_SPECIFIC_WORD_CHKBOX = 'UPDATE_SPECIFIC_WORD_CHKBOX'
-export const UPDATE_REALM = 'UPDATE_REALM'
 export const UPDATE_SETTINGS_PREFERENCES = 'UPDATE_SETTINGS_PREFERENCES'
 export const UPDATE_STARTING_LETTERS_TEXT = 'UPDATE_STARTING_LETTERS_TEXT'
 export const UPDATE_ENDING_LETTERS_TEXT = 'UPDATE_ENDING_LETTERS_TEXT'
@@ -14,12 +12,6 @@ export const UPDATE_API_URL = 'UPDATE_API_URL'
 export const DISPLAY_CHANGE_PREFS_BTN = 'DISPLAY_CHANGE_PREFS_BTN'
 export const DISPLAY_VOCABULARY_OVERLAY = 'DISPLAY_VOCABULARY_OVERLAY'
 export const HIDE_VOCABULARY_OVERLAY = 'HIDE_VOCABULARY_OVERLAY'
-export const UPDATE_VOCABULARY_WORD = 'UPDATE_VOCABULARY_WORD'
-export const UPDATE_VOCABULARY_PART_OF_SPEECH = 'UPDATE_VOCABULARY_PART_OF_SPEECH'
-export const UPDATE_VOCABULARY_DEFINITION = 'UPDATE_VOCABULARY_DEFINITION'
-export const UPDATE_VOCABULARY_PRONUNCIATION = 'UPDATE_VOCABULARY_PRONUNCIATION'
-export const UPDATE_VOCABULARY_FREQUENCY = 'UPDATE_VOCABULARY_FREQUENCY'
-export const CLEAR_LIST_OF_WORDS = 'CLEAR_LIST_OF_WORDS'
 export const UPDATE_LIST_OF_WORDS = 'UPDATE_LIST_OF_WORDS'
 export const DELETE_WORD_IN_LIST = 'DELETE_WORD_IN_LIST'
 export const UPDATE_SEARCH_VALUE = 'UPDATE_SEARCH_VALUE'
@@ -47,12 +39,6 @@ export function addResponseData(data) {
 export function resetResponseData() {
     return {
         type: RESET_RESPONSE_DATA
-    }
-}
-
-export function displayWordDefinition() {
-    return {
-        type: DISPLAY_WORD_DEFINITION
     }
 }
 
@@ -97,13 +83,6 @@ export function updatePartialWordCheckbox(currentStatus) {
         data: currentStatus
     }
 }
-
-export function updateRealm(realmObject) {
-    return {
-        type: UPDATE_REALM,
-        data: realmObject
-    }
-} 
 
 export function updateStartingLettersText(changedText) {
     return {
@@ -154,11 +133,6 @@ export function updateSettingsPreferences(settingsPreferencesRealmData) {
     }
 }
 
-export function clearListOfWords() {
-    return {
-        type: CLEAR_LIST_OF_WORDS
-    }
-}
 export function displayVocabularyOverlay(wordDetails){
     return {
         type: DISPLAY_VOCABULARY_OVERLAY,
@@ -169,13 +143,6 @@ export function displayVocabularyOverlay(wordDetails){
 export function hideVocabularyOverlay() {
     return {
         type: HIDE_VOCABULARY_OVERLAY
-    }
-}
-
-export function updateVocabularyWord(word) {
-    return {
-        type: UPDATE_VOCABULARY_WORD,
-        data: word
     }
 }
 
@@ -204,34 +171,6 @@ export function updateSearchResults(changedText) {
     return {
         type: UPDATE_SEARCH_RESULTS,
         data: changedText
-    }
-}
-
-export function updateVocabularyPartOfSpeech(partOfSpeech) {
-    return {
-        type: UPDATE_VOCABULARY_PART_OF_SPEECH,
-        data: partOfSpeech
-    }
-}
-
-export function updateVocabularyDefinition(definition) {
-    return {
-        type: UPDATE_VOCABULARY_DEFINITION,
-        data: definition
-    }
-}
-
-export function updateVocabularyPronunciation(pronunciation) {
-    return {
-        type: UPDATE_VOCABULARY_PRONUNCIATION,
-        data: pronunciation
-    }
-}
-
-export function updateVocabularyFrequency(frequency) {
-    return {
-        type: UPDATE_VOCABULARY_FREQUENCY,
-        data: frequency
     }
 }
 
