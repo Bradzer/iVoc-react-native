@@ -11,7 +11,6 @@ import AppConstants from '../Constants'
 import { 
     addResponseData, 
     resetResponseData, 
-    displayWordDefinition, 
     updateApiUrl, 
     displayUpdateChangePrefsBtn,
     showLoadingIndicator,
@@ -84,13 +83,26 @@ class RandomPractice extends React.Component {
                     <Text>{this.props.itemWord}</Text>
                     <Text>{this.props.itemPartOfSpeech}</Text>
                     <Text>Pronunciation : {this.props.itemPronunciation}</Text>
-                    <Text>Frequency of : {this.props.itemFrequency}</Text>
-                    <Text></Text>
-                    {/* <View style={{display: this.props.displayWordDefinition}}> */}
-                        <Text>Definitions</Text>
-                        <Text></Text>
-                        <Text>{this.props.itemDef}</Text>
-                    {/* </View> */}
+                    <Text>Frequency of : {this.props.itemFrequency}{'\n'}</Text>
+                    <Text>Definitions{'\n'}</Text>
+                    {this.props.itemDef.map((element, index, array) => {
+                        if(array.length !== 1)
+                        return (
+                            <View key={index}>
+                                <Text>{index + 1}.</Text>
+                                <Text>{element.partOfSpeech}</Text>
+                                <Text>{element.definition}{'\n'}</Text>
+                            </View>
+
+                        )
+                        else
+                        return (
+                            <View key={index}>
+                                <Text>{element.partOfSpeech}</Text>
+                                <Text>{element.definition}</Text>
+                            </View>
+                        )
+                    })}
                 </View>
                 {/* <Text>{AppConstants.STRING_LOREM_IPSUM}</Text> */}
             </ScrollView>
@@ -243,10 +255,6 @@ function addKnownWordToCloud(word){
     })
 }
 
-function showWordDefinition() {
-    store.dispatch(displayWordDefinition())
-}
-
 function updateApiRequest(baseURL) {
     apiRequest = axios.create({
         baseURL: baseURL,
@@ -268,21 +276,23 @@ function createDataGoingToStore(apiResponse, definitions= null) {
             definition: definitions,    
         }
     }
+    let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty')
+    let definition = apiResponse.results[0].definition
     return {
         word: apiResponse.word,
-        partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+        partOfSpeech,
         pronunciation: (apiResponse.pronunciation ? (apiResponse.pronunciation.all ? apiResponse.pronunciation.all : 'empty') : 'empty'),
         frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-        definition: apiResponse.results[0].definition,
+        definition: [{partOfSpeech, definition}]
     }
 }
 
 function getAllDefinitions(apiResponse, numberOfDefinitions) {
-    let definitions = ''
+    let definitions = []
     for(let i= 0; i < numberOfDefinitions; i++) {
         let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
         let definition = apiResponse.results[i].definition
-        definitions += i+1 + '.\n' + partOfSpeech + '\n' + definition + '\n\n'
+        definitions.push({partOfSpeech, definition})
     }
     return definitions
 }

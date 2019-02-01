@@ -63,11 +63,27 @@ class MyVocabulary extends React.Component {
                     <View>
                         <Text>{this.props.vocabularyWord}</Text>
                         <Text>Pronunciation: {this.props.vocabularyPronunciation}</Text>
-                        <Text>Frequency: {this.props.vocabularyFrequency}</Text>
-                        <Text></Text>
-                        <Text>Definitions</Text>
-                        <Text></Text>
-                        <Text>{this.props.vocabularyDefinition}</Text>
+                        <Text>Frequency: {this.props.vocabularyFrequency}{'\n'}</Text>
+                        <Text>Definitions{'\n'}</Text>
+                        {this.props.vocabularyDefinition.map((element, index, array) => {
+                        if(array.length !== 1)
+                        return (
+                            <View key={index}>
+                                <Text>{index + 1}.</Text>
+                                <Text>{element.partOfSpeech}</Text>
+                                <Text>{element.definition}{'\n'}</Text>
+                            </View>
+
+                        )
+                        else
+                        return (
+                            <View key={index}>
+                                <Text>{element.partOfSpeech}</Text>
+                                <Text>{element.definition}</Text>
+                            </View>
+                        )
+                    })}
+
                     </View>
                 </Overlay>
             </View>
