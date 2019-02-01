@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid, BackHandler,  } from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid, BackHandler, ScrollView } from 'react-native';
 import { Overlay, Button, Icon, Input } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { connect } from 'react-redux'
@@ -69,24 +69,26 @@ class ReviewVocabulary extends React.Component {
         }
         return (
             <View style={[styles.container, {display: this.props.displayReviewContent}]}>
-
-                <Text style={{fontSize: 24, color: 'black'}}>The word/expression starts with letter</Text>
-                <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.props.reviewStartingLetter}{'\''}{'\n'}</Text>
-                <Text style={{fontSize: 24, color: 'black'}}>And ends with letter</Text>
-                <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.props.reviewEndingLetter}{'\''}{'\n'}</Text>
-                <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>Definition</Text>
-                <Text style={{fontSize: 18, fontStyle: 'italic'}}>{this.props.currentRewiewDefinition}</Text>
-                <Input
-                    placeholder= "What's the word ?"
-                    onChangeText= {onReviewAnswerTextChanged}
-                    value={this.props.reviewAnswerText}
-                    containerStyle={{marginBottom: 16,}}
-                />
-                <Button 
-                    title='Confirm'
-                    icon={<Icon name='check-circle' type='font-awesome'/>}
-                    onPress={() => this.onConfirmAnswerPressed(this.props.reviewAnswerText)}/>
-
+                <ScrollView style={{flex: 1, flexGrow: 1}}>
+                    <View style={styles.container}>
+                        <Text style={{fontSize: 24, color: 'black'}}>The word/expression starts with letter</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.props.reviewStartingLetter}{'\''}{'\n'}</Text>
+                        <Text style={{fontSize: 24, color: 'black'}}>And ends with letter</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.props.reviewEndingLetter}{'\''}{'\n'}</Text>
+                        <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>Definition</Text>
+                        <Text style={{fontSize: 18, fontStyle: 'italic'}}>{this.props.currentRewiewDefinition}</Text>
+                        <Input
+                            placeholder= "What's the word ?"
+                            onChangeText= {onReviewAnswerTextChanged}
+                            value={this.props.reviewAnswerText}
+                            containerStyle={{marginBottom: 16,}}
+                        />
+                        <Button 
+                            title='Confirm'
+                            icon={<Icon name='check-circle' type='font-awesome'/>}
+                            onPress={() => this.onConfirmAnswerPressed(this.props.reviewAnswerText)}/>
+                    </View>
+                </ScrollView>
 
                 <Overlay isVisible={this.props.reviewOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
                     <View>
@@ -141,6 +143,7 @@ class ReviewVocabulary extends React.Component {
                 })
                 if(listOfWords.length === 0) {
                     store.dispatch(showNoVocabulary())
+                    _willBlurSubscription.remove()
                     ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
                     ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
                 }
