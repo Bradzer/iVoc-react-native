@@ -161,7 +161,7 @@ class ReviewVocabulary extends React.Component {
             ToastAndroid.show('You unexpectedlty left the review', ToastAndroid.SHORT)
             ToastAndroid.show('The word will be supposed not remembered', ToastAndroid.SHORT)
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        this.updateNumberOfAppearances(randomWordOriginalId)
+        updateNumberOfAppearances(randomWordOriginalId)
         });
     }
 
@@ -177,13 +177,13 @@ class ReviewVocabulary extends React.Component {
     onConfirmAnswerPressed = (answer) => {
         if(answer === this.store.reviewWord) {
             ToastAndroid.show('right answer ;)', ToastAndroid.SHORT)
-            this.updateNumberOfAppearances(randomWordOriginalId)
-            this.updateNumberOfRemembrances(randomWordOriginalId)        
+            updateNumberOfAppearances(randomWordOriginalId)
+            updateNumberOfRemembrances(randomWordOriginalId)        
             this.goToNextReviewWord()
         }
         else {
             ToastAndroid.show('You got it wrong :(', ToastAndroid.SHORT)
-            this.updateNumberOfAppearances(randomWordOriginalId)
+            updateNumberOfAppearances(randomWordOriginalId)
             this.store.displayReviewOverlay()
         }
     }    
@@ -227,24 +227,6 @@ class ReviewVocabulary extends React.Component {
         }
     }
     
-    updateNumberOfAppearances = (originalId) => {
-        let numberOfAppearances = 0
-        userWordsDetailsCollection.doc(originalId).get()
-        .then((docRef) => {
-            numberOfAppearances = (docRef.get('numberOfAppearances') + 1)
-            userWordsDetailsCollection.doc(originalId).update({numberOfAppearances: numberOfAppearances})
-        })
-    }
-    
-    updateNumberOfRemembrances = (originalId) => {
-        let numberOfRemembrances = 0
-        userWordsDetailsCollection.doc(originalId).get()
-        .then((docRef) => {
-            numberOfRemembrances = docRef.get('numberOfRemembrances') +1
-            userWordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
-        })
-    }
-    
     onReviewAnswerTextChanged = (changedText) => {
         this.store.updateReviewAnswerTextValue(changedText)
     }
@@ -269,3 +251,21 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 })
+
+const updateNumberOfAppearances = (originalId) => {
+    let numberOfAppearances = 0
+    userWordsDetailsCollection.doc(originalId).get()
+    .then((docRef) => {
+        numberOfAppearances = (docRef.get('numberOfAppearances') + 1)
+        userWordsDetailsCollection.doc(originalId).update({numberOfAppearances: numberOfAppearances})
+    })
+}
+
+const updateNumberOfRemembrances = (originalId) => {
+    let numberOfRemembrances = 0
+    userWordsDetailsCollection.doc(originalId).get()
+    .then((docRef) => {
+        numberOfRemembrances = docRef.get('numberOfRemembrances') +1
+        userWordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
+    })
+}

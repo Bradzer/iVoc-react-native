@@ -127,7 +127,7 @@ class Settings extends React.Component {
             realm.write(() => {
                 if(!(realm.objects('settingsScreen').isEmpty())) {
                     let settingsScreen = realm.objects('settingsScreen')
-                    let settingsPreferencesInRealm = this.getSettingsPreferencesInRealm(settingsScreen)
+                    let settingsPreferencesInRealm = getSettingsPreferencesInRealm(settingsScreen)
                     this.store.updateSettingsPreferences(settingsPreferencesInRealm)
                 }
                 else{
@@ -202,22 +202,6 @@ class Settings extends React.Component {
     onSpecificWordTextChanged = (changedText) => {
         this.store.updateSpecificWordText(changedText)
     }
-    
-    getSettingsPreferencesInRealm = (settingsScreenRealmData) => {
-        let updatedIndex = (_.valuesIn(settingsScreenRealmData))[0].updatedIndex
-        let startingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].startingLettersChecked
-        let endingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].endingLettersChecked
-        let partialLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].partialLettersChecked
-        let onlyPronunciationWordChecked = (_.valuesIn(settingsScreenRealmData))[0].onlyPronunciationWordChecked
-        let specificWordChecked = (_.valuesIn(settingsScreenRealmData))[0].specificWordChecked
-        let startingLettersText = (_.valuesIn(settingsScreenRealmData))[0].startingLettersText
-        let endingLettersText = (_.valuesIn(settingsScreenRealmData))[0].endingLettersText
-        let partialLettersText = (_.valuesIn(settingsScreenRealmData))[0].partialLettersText
-        let specificWordText = (_.valuesIn(settingsScreenRealmData))[0].specificWordText
-        let apiUrl = (_.valuesIn(settingsScreenRealmData))[0].apiUrl
-    
-        return { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
-    }
 }
 
 export default inject('store')(observer(Settings))
@@ -231,3 +215,19 @@ const styles = StyleSheet.create({
       padding: 8
     },
   });
+
+  function getSettingsPreferencesInRealm(settingsScreenRealmData) {
+    let updatedIndex = (_.valuesIn(settingsScreenRealmData))[0].updatedIndex
+    let startingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].startingLettersChecked
+    let endingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].endingLettersChecked
+    let partialLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].partialLettersChecked
+    let onlyPronunciationWordChecked = (_.valuesIn(settingsScreenRealmData))[0].onlyPronunciationWordChecked
+    let specificWordChecked = (_.valuesIn(settingsScreenRealmData))[0].specificWordChecked
+    let startingLettersText = (_.valuesIn(settingsScreenRealmData))[0].startingLettersText
+    let endingLettersText = (_.valuesIn(settingsScreenRealmData))[0].endingLettersText
+    let partialLettersText = (_.valuesIn(settingsScreenRealmData))[0].partialLettersText
+    let specificWordText = (_.valuesIn(settingsScreenRealmData))[0].specificWordText
+    let apiUrl = (_.valuesIn(settingsScreenRealmData))[0].apiUrl
+
+    return { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
+}

@@ -2,20 +2,12 @@ import React from 'react';
 import { StyleSheet, FlatList, View, Text, ToastAndroid, BackHandler } from 'react-native';
 import { Icon, ListItem, Overlay, SearchBar } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
-import { connect } from 'react-redux'
-import store from '../reducers'
 import { BallIndicator } from 'react-native-indicators'
+import { inject, observer } from 'mobx-react'
+import { autorun } from 'mobx'
 
 import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
-import { 
-    displayVocabularyOverlay, 
-    hideVocabularyOverlay, 
-    updateListOfWords, 
-    deleteWordInList, 
-    updateSearchValue,
-    updateSearchResults,
-    showLoadingIndicator, } from '../actions'
 
     let firebaseAuth = null
     let userId = null
@@ -26,6 +18,8 @@ class MyVocabulary extends React.Component {
 
     _didFocusSubscription = null;
     _willBlurSubscription = null;
+
+    store = this.props.store
     
     static navigationOptions = ({navigation}) => {
         return {
@@ -47,11 +41,11 @@ class MyVocabulary extends React.Component {
         return(
             <View style={styles.container}>
                 <SearchBar 
-                placeHolder= 'Seach...' value= ''
-                value= {this.props.searchBarValue}
-                onChangeText= {onSearchValueChanged}
+                placeHolder= 'Seach...'
+                value= {this.store.searchBarValue}
+                onChangeText= {this.onSearchValueChanged}
                 />
-                {(this.props.displayLoadingIndicator) ?
+                { this.store.displayLoadingIndicator === true ?
                     (
                         <View style={styles.loadingIndicator}>
                             <BallIndicator />
@@ -59,17 +53,17 @@ class MyVocabulary extends React.Component {
                     ) :
                     <FlatList
                         keyExtractor={keyExtractor}
-                        data={this.props.listOfWords} 
-                        renderItem={renderItem}
+                        data={this.store.listOfWords} 
+                        renderItem={this.renderItem}
                     />
                 }
-                <Overlay isVisible={this.props.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={onBackdropPress}>
+                <Overlay isVisible={this.store.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={this.onBackdropPress}>
                     <View>
-                        <Text>{this.props.vocabularyWord}</Text>
-                        <Text>Pronunciation: {this.props.vocabularyPronunciation}</Text>
-                        <Text>Frequency: {this.props.vocabularyFrequency}{'\n'}</Text>
+                        <Text>{this.store.vocabularyWord}</Text>
+                        <Text>Pronunciation: {this.store.vocabularyPronunciation}</Text>
+                        <Text>Frequency: {this.store.vocabularyFrequency}{'\n'}</Text>
                         <Text>Definitions{'\n'}</Text>
-                        {this.props.vocabularyDefinition.map((element, index, array) => {
+                        {this.store.vocabularyDefinition.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
@@ -96,10 +90,10 @@ class MyVocabulary extends React.Component {
 
 
     componentDidMount() {
-        store.dispatch(showLoadingIndicator())
+        this.store.showLoadingIndicator()
         this.props.navigation.setParams({
             showClearDoneToast: showClearDoneToast,
-            onSearchValueChanged: onSearchValueChanged,
+            onSearchValueChanged: this.onSearchValueChanged,
             getSearchBarValue: this.getSearchBarValue,
             showMultiDeletionOnToast: showMultiDeletionOnToast,
             showMultiDeletionOffToast: showMultiDeletionOffToast,
@@ -111,7 +105,7 @@ class MyVocabulary extends React.Component {
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
         this._didFocusSubscription = this.props.navigation.addListener("didFocus", () => {
-            onSearchValueChanged(this.props.searchBarValue)
+            this.onSearchValueChanged(this.store.searchBarValue)
             BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
           });
 
@@ -127,7 +121,7 @@ class MyVocabulary extends React.Component {
     }
 
     getSearchBarValue = () => {
-        return this.props.searchBarValue
+        return this.store.searchBarValue
     }
 
     onBackButtonPressAndroid = () => {
@@ -139,9 +133,76 @@ class MyVocabulary extends React.Component {
           return false;
         }
       };
+
+    itemPressed = (wordDetails, index) => {
+        if(!multiDeletionStatus)
+            this.store.displayVocabularyOverlay(wordDetails)
+        else {
+            this.deleteWordPressed(wordDetails, index)
+        }
+    }
+
+  onBackdropPress = () => {
+    this.store.hideVocabularyOverlay()
+  }
+
+  deleteWordPressed = (item, index) => {
+    userWordsDetailsCollection.doc(item.id).delete()
+    this.store.deleteWordInList(index)
+    ToastAndroid.show('deleted', ToastAndroid.SHORT)
+  }
+
+  onSearchValueChanged = (changedText) => {
+        this.store.showLoadingIndicator()
+        this.store.updateSearchValue(changedText)
+        if(changedText) {
+            let listOfWords = []
+            userWordsDetailsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                this.store.updateListOfWords(listOfWords)
+                this.store.updateSearchResults(changedText)
+            })
+        }
+        else {
+            let listOfWords = []
+            userWordsDetailsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                this.store.updateListOfWords(listOfWords)
+                if(listOfWords.length === 0) {
+                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
+                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
+                }    
+            })
+        }
+  }
+
+  renderItem = ({item, index}) => {
+    
+    let successPercentage = (item.numberOfRemembrances / item.numberOfAppearances) * 100
+    successPercentage = (successPercentage.toString()).substring(0, 5) + '%'
+
+        return(
+        <ListItem
+            title={item.word}
+            subtitle={item.partOfSpeech}
+            rightIcon= {<Icon name= 'delete' onPress={() => this.deleteWordPressed(item, index)}/>}
+            onPress= {() => this.itemPressed(item, index)}
+            rightTitle= {successPercentage}
+            rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
+        />
+        )
+  }
+
+
 }
 
-export default connect(mapStateToProps)(MyVocabulary)
+export default inject('store')(observer(MyVocabulary))
 
 const styles = StyleSheet.create({
     container: {
@@ -156,87 +217,7 @@ const styles = StyleSheet.create({
     }
   });
 
-function mapStateToProps(state) {
-    return {
-        vocabularyOverlayDisplay: state.vocabularyOverlayDisplay,
-        vocabularyWord: state.vocabularyWord,
-        vocabularyPartOfSpeech: state.vocabularyPartOfSpeech,
-        vocabularyDefinition: state.vocabularyDefinition,
-        vocabularyPronunciation: state.vocabularyPronunciation,
-        vocabularyFrequency: state.vocabularyFrequency,
-        listOfWords: state.listOfWords,
-        searchBarValue: state.searchBarValue,
-        displayLoadingIndicator: state.displayLoadingIndicator
-    }
-}
-
-
   const keyExtractor = (item, index) => index.toString();
-
-  const renderItem = ({item, index}) => {
-    
-    let successPercentage = (item.numberOfRemembrances / item.numberOfAppearances) * 100
-    successPercentage = (successPercentage.toString()).substring(0, 5) + '%'
-
-        return(
-        <ListItem
-            title={item.word}
-            subtitle={item.partOfSpeech}
-            rightIcon= {<Icon name= 'delete' onPress={() => deleteWordPressed(item, index)}/>}
-            onPress= {() => itemPressed(item, index)}
-            rightTitle= {successPercentage}
-            rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
-        />
-        )
-  }
-
-  const itemPressed = (wordDetails, index) => {
-        if(!multiDeletionStatus)
-            store.dispatch(displayVocabularyOverlay(wordDetails))
-        else {
-            deleteWordPressed(wordDetails, index)
-        }
-  }
-
-  const onBackdropPress = () => {
-    store.dispatch(hideVocabularyOverlay())
-  }
-
-  const deleteWordPressed = (item, index) => {
-    userWordsDetailsCollection.doc(item.id).delete()
-    store.dispatch(deleteWordInList(index))
-    ToastAndroid.show('deleted', ToastAndroid.SHORT)
-  }
-
-  const onSearchValueChanged = (changedText) => {
-        store.dispatch(showLoadingIndicator())
-        store.dispatch(updateSearchValue(changedText))
-        if(changedText) {
-            let listOfWords = []
-            userWordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                store.dispatch(updateListOfWords(listOfWords))
-                store.dispatch(updateSearchResults(changedText))
-            })
-        }
-        else {
-            let listOfWords = []
-            userWordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                store.dispatch(updateListOfWords(listOfWords))
-                if(listOfWords.length === 0) {
-                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
-                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
-                }    
-            })
-        }
-  }
 
   const showClearDoneToast = () => {
           ToastAndroid.show('vocabulary list cleared', ToastAndroid.SHORT)

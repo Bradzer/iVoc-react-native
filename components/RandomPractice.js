@@ -123,7 +123,7 @@ class RandomPractice extends React.Component {
                     if(apiUrl && apiUrl !== '') {
                         if(this.store.apiUrl !== apiUrl) {
                             this.store.updateApiUrl(apiUrl)
-                            this.updateApiRequest(this.store.apiUrl)
+                            updateApiRequest(this.store.apiUrl)
                         }
                     }
                     if(this.store.displayChangePrefsBtn === 'flex'){
@@ -145,12 +145,12 @@ class RandomPractice extends React.Component {
                     let settingsScreen = realm.objects('settingsScreen')
                     let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
                         this.store.updateApiUrl(apiUrl)
-                        this.updateApiRequest(this.store.apiUrl)
+                        updateApiRequest(this.store.apiUrl)
                 }
                 else{
                     realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                     this.store.updateApiUrl(AppConstants.RANDOM_URL)
-                    this.updateApiRequest(this.store.apiUrl)
+                    updateApiRequest(this.store.apiUrl)
                 }
             })
             this.goToNextRandomWord();
@@ -164,6 +164,16 @@ class RandomPractice extends React.Component {
         this.myAutorun()
     }
 
+    nextBtnClicked = () => {
+        this.goToNextRandomWord()
+    }
+    
+    addToVocabularyBtnClicked= () => {
+        addKnownWordToCloud(dataGoingToStore)
+        this.goToNextRandomWord()
+    }
+    
+
     goToNextRandomWord = () => {
         this.store.showLoadingIndicator()
         let definitions = ''
@@ -175,11 +185,11 @@ class RandomPractice extends React.Component {
             dataGoingToStore = {}
             if(apiResponse.results[0]){
                 if(apiResponse.results.length > 1) {
-                    definitions = this.getAllDefinitions(apiResponse, numberOfDefinitions)
-                    dataGoingToStore = this.createDataGoingToStore(apiResponse, definitions)
+                    definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
+                    dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
                 }
                 else {
-                    dataGoingToStore = this.createDataGoingToStore(apiResponse)
+                    dataGoingToStore = createDataGoingToStore(apiResponse)
                 }
                 this.store.addResponseData(dataGoingToStore)
             
@@ -195,75 +205,6 @@ class RandomPractice extends React.Component {
             ToastAndroid.show('Please change preferences in settings', ToastAndroid.SHORT)
         })
         .catch((error) => console.error(error))
-    }
-    
-    nextBtnClicked = () => {
-        this.goToNextRandomWord()
-    }
-    
-    addToVocabularyBtnClicked= () => {
-        this.addKnownWordToCloud(dataGoingToStore)
-        this.goToNextRandomWord()
-    }
-    
-    addKnownWordToCloud = (word) => {
-        userWordsDetailsCollection.add(word)
-        .then((docRef) => {
-            docRef.update({id: docRef.id, numberOfRemembrances: 1, numberOfAppearances: 1})
-        })
-    }
-    
-    updateApiRequest = (baseURL) => {
-        apiRequest = axios.create({
-            baseURL: baseURL,
-            headers: {
-                'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-    }
-    
-    createDataGoingToStore = (apiResponse, definitions= null) => {
-        if(definitions) {
-            let pronunciation = null
-    
-            if(_.hasIn(apiResponse, 'pronunciation.all'))
-                pronunciation = apiResponse.pronunciation.all
-            else pronunciation = apiResponse.pronunciation
-            return {
-                word: apiResponse.word,
-                partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-                pronunciation: (pronunciation ? pronunciation : 'empty'),
-                frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-                definition: definitions,    
-            }
-        }
-        let pronunciation = null
-    
-        if(_.hasIn(apiResponse, 'pronunciation.all'))
-            pronunciation = apiResponse.pronunciation.all
-        else pronunciation = apiResponse.pronunciation
-    
-        let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty')
-        let definition = apiResponse.results[0].definition
-        return {
-            word: apiResponse.word,
-            partOfSpeech,
-            pronunciation: (pronunciation ? pronunciation : 'empty'),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-            definition: [{partOfSpeech, definition}]
-        }
-    }
-    
-    getAllDefinitions = (apiResponse, numberOfDefinitions) => {
-        let definitions = []
-        for(let i= 0; i < numberOfDefinitions; i++) {
-            let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
-            let definition = apiResponse.results[i].definition
-            definitions.push({partOfSpeech, definition})
-        }
-        return definitions
     }
 }
 
@@ -286,3 +227,63 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 })
+
+const addKnownWordToCloud = (word) => {
+    userWordsDetailsCollection.add(word)
+    .then((docRef) => {
+        docRef.update({id: docRef.id, numberOfRemembrances: 1, numberOfAppearances: 1})
+    })
+}
+
+const updateApiRequest = (baseURL) => {
+    apiRequest = axios.create({
+        baseURL: baseURL,
+        headers: {
+            'X-Mashape-Key': AppConstants.WORDS_API_KEY,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
+const createDataGoingToStore = (apiResponse, definitions= null) => {
+    if(definitions) {
+        let pronunciation = null
+
+        if(_.hasIn(apiResponse, 'pronunciation.all'))
+            pronunciation = apiResponse.pronunciation.all
+        else pronunciation = apiResponse.pronunciation
+        return {
+            word: apiResponse.word,
+            partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
+            pronunciation: (pronunciation ? pronunciation : 'empty'),
+            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+            definition: definitions,    
+        }
+    }
+    let pronunciation = null
+
+    if(_.hasIn(apiResponse, 'pronunciation.all'))
+        pronunciation = apiResponse.pronunciation.all
+    else pronunciation = apiResponse.pronunciation
+
+    let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty')
+    let definition = apiResponse.results[0].definition
+    return {
+        word: apiResponse.word,
+        partOfSpeech,
+        pronunciation: (pronunciation ? pronunciation : 'empty'),
+        frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+        definition: [{partOfSpeech, definition}]
+    }
+}
+
+const getAllDefinitions = (apiResponse, numberOfDefinitions) => {
+    let definitions = []
+    for(let i= 0; i < numberOfDefinitions; i++) {
+        let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
+        let definition = apiResponse.results[i].definition
+        definitions.push({partOfSpeech, definition})
+    }
+    return definitions
+}

@@ -212,7 +212,6 @@ const reducer = (state = initialState, action) => {
                     vocabularyDefinition: action.data.definition,
                     vocabularyPronunciation: action.data.pronunciation,
                     vocabularyFrequency: action.data.frequency,
-                
                 })
 
             case HIDE_VOCABULARY_OVERLAY:

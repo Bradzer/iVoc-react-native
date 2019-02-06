@@ -201,6 +201,36 @@ class State {
     updateSpecificWordText = action((changedText) => {
         this.specificWordText= changedText
     })
+
+    displayVocabularyOverlay = action((wordDetails) => {
+        this.vocabularyOverlayDisplay= true
+        this.vocabularyWord= wordDetails.word
+        this.vocabularyPartOfSpeech= wordDetails.partOfSpeech
+        this.vocabularyDefinition= wordDetails.definition
+        this.vocabularyPronunciation= wordDetails.pronunciation
+        this.vocabularyFrequency= wordDetails.frequency
+    })
+
+    hideVocabularyOverlay = action(() => {
+        this.vocabularyOverlayDisplay= false
+    })
+
+    deleteWordInList = action((indexOfDeletion) => {
+        this.listOfWords= this.listOfWords.filter((value, index) => index !== indexOfDeletion)
+    })
+
+    updateSearchValue = action((changedText) => {
+        this.searchBarValue= changedText
+    })
+
+    updateListOfWords = action((listOfWords) => {
+        this.listOfWords= listOfWords
+        this.displayLoadingIndicator= false
+    })
+
+    updateSearchResults = action((changedText) => {
+        this.listOfWords= this.listOfWords.filter((value) => value.word.includes(changedText))
+    })
 }
 
 decorate(State, {
