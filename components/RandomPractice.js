@@ -1,22 +1,13 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
 import {  Button } from 'react-native-elements'
-// import { connect } from 'react-redux'
-// import store from '../reducers'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 
 import AppConstants from '../Constants'
-// import State from '../models/State'
 import reactotron from '../ReactotronConfig';
-// import { 
-//     addResponseData, 
-//     resetResponseData, 
-//     updateApiUrl, 
-//     displayUpdateChangePrefsBtn,
-//     showLoadingIndicator, } from '../actions'
 
 let firebaseAuth = null
 let userId = null
@@ -40,7 +31,6 @@ class RandomPractice extends React.Component {
     _didFocusSubscription = null;
 
     store = this.props.store
-    // store = State
 
     myAutorun = autorun(() => {
         reactotron.logImportant(this.store.itemDef)
@@ -59,29 +49,7 @@ class RandomPractice extends React.Component {
 
     goToPreferences = () => this.props.navigation.navigate('Settings')
 
-    // screenDidFocusListener = this.props.navigation.addListener('didFocus', () => {
-    //     Realm.open({})
-    //     .then((realm) => {
-    //         realm.write(() => {
-    //             let settingsScreen = realm.objects('settingsScreen')
-    //             let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-    //             if(apiUrl && apiUrl !== '') {
-    //                 if(this.store.apiUrl !== apiUrl) {
-    //                     this.store.updateApiUrl(apiUrl)
-    //                     this.updateApiRequest(this.store.apiUrl)
-    //                 }
-    //             }
-    //             if(this.store.displayChangePrefsBtn === 'flex'){
-    //                 this.goToNextRandomWord()
-    //             }
-    //             })
-    //         })
-    //     .catch((error) => console.log(error))
-    //     })
-
     render() {
-
-        // const store = this.props.store
 
         if(this.store.displayLoadingIndicator === true) {
             return (
@@ -318,130 +286,3 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 })
-
-// function mapStateToProps(state) {
-//     return {
-//         itemDef: state.itemDef,
-//         itemSynonyms: state.itemSynonyms,
-//         itemExamples: state.itemExamples,
-//         itemWord: state.itemWord,
-//         itemPartOfSpeech: state.itemPartOfSpeech,
-//         itemPronunciation: state.itemPronunciation,
-//         itemFrequency: state.itemFrequency,
-//         displayRandomWord: state.displayRandomWord,
-//         displayButtons: state.displayButtons,
-//         displayWordDefinition: state.displayWordDefinition,
-//         buttonRightIconName: state.buttonRightIconName,
-//         buttonRightIconType: state.buttonRightIconType,
-//         buttonRightTitle: state.buttonRightTitle,
-//         buttonLeftIconName: state.buttonLeftIconName,
-//         buttonLeftIconType: state.buttonLeftIconType,
-//         buttonLeftTitle: state.buttonLeftTitle,
-//         apiUrl: state.apiUrl,
-//         displayScrollView: state.displayScrollView,
-//         displayChangePrefsBtn: state.displayChangePrefsBtn,
-//         displayLoadingIndicator: state.displayLoadingIndicator
-//     }
-// }
-
-// function goToNextRandomWord(){
-//     store.showLoadingIndicator()
-//     let definitions = ''
-//     apiRequest.get()
-//     .then((response) => {
-
-//         apiResponse = response.data        
-//         numberOfDefinitions = apiResponse.results.length
-//         dataGoingToStore = {}
-//         if(apiResponse.results[0]){
-//             if(apiResponse.results.length > 1) {
-//                 definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
-//                 dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
-//             }
-//             else {
-//                 dataGoingToStore = createDataGoingToStore(apiResponse)
-//             }
-//             store.dispatch(addResponseData(dataGoingToStore)) 
-        
-//         }
-//         else {
-//             store.dispatch(displayUpdateChangePrefsBtn())
-//             ToastAndroid.show('No word/expression matching preferences found', ToastAndroid.SHORT)
-//             ToastAndroid.show('Please change preferences in settings', ToastAndroid.SHORT)
-//         }
-//     }, () => {
-//         store.dispatch(displayUpdateChangePrefsBtn())
-//         ToastAndroid.show('No word/expression matching preferences found', ToastAndroid.SHORT)
-//         ToastAndroid.show('Please change preferences in settings', ToastAndroid.SHORT)
-//     })
-//     .catch((error) => console.error(error))
-// }
-
-// function nextBtnClicked() {
-//     goToNextRandomWord()
-// }
-
-// function addToVocabularyBtnClicked() {
-//     addKnownWordToCloud(dataGoingToStore)
-//     goToNextRandomWord()
-// }
-
-// function addKnownWordToCloud(word){
-//     userWordsDetailsCollection.add(word)
-//     .then((docRef) => {
-//         docRef.update({id: docRef.id, numberOfRemembrances: 1, numberOfAppearances: 1})
-//     })
-// }
-
-// function updateApiRequest(baseURL) {
-//     apiRequest = axios.create({
-//         baseURL: baseURL,
-//         headers: {
-//             'X-Mashape-Key': AppConstants.WORDS_API_KEY,
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json'
-//         }
-//     })
-// }
-
-// function createDataGoingToStore(apiResponse, definitions= null) {
-//     if(definitions) {
-//         let pronunciation = null
-
-//         if(_.hasIn(apiResponse, 'pronunciation.all'))
-//             pronunciation = apiResponse.pronunciation.all
-//         else pronunciation = apiResponse.pronunciation
-//         return {
-//             word: apiResponse.word,
-//             partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-//             pronunciation: (pronunciation ? pronunciation : 'empty'),
-//             frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-//             definition: definitions,    
-//         }
-//     }
-//     let pronunciation = null
-
-//     if(_.hasIn(apiResponse, 'pronunciation.all'))
-//         pronunciation = apiResponse.pronunciation.all
-//     else pronunciation = apiResponse.pronunciation
-
-//     let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty')
-//     let definition = apiResponse.results[0].definition
-//     return {
-//         word: apiResponse.word,
-//         partOfSpeech,
-//         pronunciation: (pronunciation ? pronunciation : 'empty'),
-//         frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
-//         definition: [{partOfSpeech, definition}]
-//     }
-// }
-
-// function getAllDefinitions(apiResponse, numberOfDefinitions) {
-//     let definitions = []
-//     for(let i= 0; i < numberOfDefinitions; i++) {
-//         let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
-//         let definition = apiResponse.results[i].definition
-//         definitions.push({partOfSpeech, definition})
-//     }
-//     return definitions
-// }

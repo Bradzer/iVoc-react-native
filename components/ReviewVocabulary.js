@@ -2,24 +2,11 @@ import React from 'react';
 import { StyleSheet, View, Text, ToastAndroid, BackHandler, ScrollView } from 'react-native';
 import { Overlay, Button, Icon, Input } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
-// import { connect } from 'react-redux'
-// import store from '../reducers'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 
-// import State from '../models/State'
 import reactotron from '../ReactotronConfig';
-
-// import { 
-//     showLoadingIndicator,
-//     updateReviewContent, 
-//     showNoVocabulary, 
-//     resetReviewLayout, 
-//     showReviewOver, 
-//     hideReviewOverlay, 
-//     displayReviewOverlay, 
-//     updateReviewAnswerTextValue, } from '../actions'
 
 let listOfWords = []
 let randomWordOriginalId = ''
@@ -34,7 +21,6 @@ let _willBlurSubscription = null;
 class ReviewVocabulary extends React.Component {
 
     store = this.props.store
-    // store = State
 
     myAutorun = autorun(() => {
         reactotron.logImportant('review word : ', this.store.reviewWord)
@@ -286,82 +272,3 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 })
-
-// function mapStateToProps(state) {
-//     return {
-//         reviewIntroTextDisplay: state.reviewIntroTextDisplay,
-//         displayReviewContent: state.displayReviewContent,
-//         reviewWord: state.reviewWord,
-//         reviewLeftBtnTitle: state.reviewLeftBtnTitle,
-//         reviewLeftBtnIconName: state.reviewLeftBtnIconName,
-//         reviewLeftBtnIconType: state.reviewLeftBtnIconType,    
-//         reviewRightBtnTitle: state.reviewRightBtnTitle,
-//         reviewRightBtnIconName: state.reviewRightBtnIconName,
-//         reviewRightBtnIconType: state.reviewRightBtnIconType,
-//         reviewIntroText: state.reviewIntroText,
-//         reviewOverlayDisplay: state.reviewOverlayDisplay,
-//         reviewPronunciation: state.reviewPronunciation,
-//         reviewFrequency: state.reviewFrequency,
-//         reviewDefinition: state.reviewDefinition,
-//         reviewOriginalId: state.reviewOriginalId,
-//         displayLoadingIndicator: state.displayLoadingIndicator,
-//         reviewStartingLetter: state.reviewStartingLetter,
-//         reviewEndingLetter: state.reviewEndingLetter,
-//         currentRewiewDefinition: state.currentRewiewDefinition,
-//         reviewAnswerText: state.reviewAnswerText,
-//         showNoVocabulary: state.showNoVocabulary,
-//         showReviewOver: state.showReviewOver,
-//     }
-// }
-
-// const onBackdropPress = () => {
-//     store.dispatch(hideReviewOverlay())
-//     goToNextReviewWord()
-// }
-
-// function goToNextReviewWord() {
-//     if (listOfWords.length > 0) {
-//         if(listOfWords.length === 1) {
-//             let randomWord = listOfWords[0]
-//             randomWordOriginalId = randomWord.id
-//             let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
-//             store.dispatch(updateReviewContent(randomWord, randomDefIndex))
-//             listOfWords = listOfWords.filter((value, index) => index !== 0)
-//         }
-//         else {
-//             let randomIndex = Math.floor(Math.random() * listOfWords.length)
-//             let randomWord = listOfWords[randomIndex]
-//             randomWordOriginalId = randomWord.id
-//             let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
-//             store.dispatch(updateReviewContent(randomWord, randomDefIndex))
-//             listOfWords = listOfWords.filter((value, index) => index !== randomIndex)                
-//         }
-//     }
-//     else {
-//         store.dispatch(showReviewOver())
-//         ToastAndroid.show('Your vocabulary review is done', ToastAndroid.SHORT)
-//         _willBlurSubscription.remove()
-//     }
-// }
-
-// function updateNumberOfAppearances(originalId) {
-//     let numberOfAppearances = 0
-//     userWordsDetailsCollection.doc(originalId).get()
-//     .then((docRef) => {
-//         numberOfAppearances = (docRef.get('numberOfAppearances') + 1)
-//         userWordsDetailsCollection.doc(originalId).update({numberOfAppearances: numberOfAppearances})
-//     })
-// }
-
-// function updateNumberOfRemembrances(originalId) {
-//     let numberOfRemembrances = 0
-//     userWordsDetailsCollection.doc(originalId).get()
-//     .then((docRef) => {
-//         numberOfRemembrances = docRef.get('numberOfRemembrances') +1
-//         userWordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
-//     })
-// }
-
-// const onReviewAnswerTextChanged = (changedText) => {
-//     store.dispatch(updateReviewAnswerTextValue(changedText))
-// }
