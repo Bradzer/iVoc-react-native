@@ -98,6 +98,50 @@ class State {
         this.displayScrollView= 'none'
         this.displayLoadingIndicator= false
     })
+
+    showNoVocabulary = action(() => {
+        this.showNoVocabulary= true
+        this.displayLoadingIndicator= false
+    })
+
+    resetReviewLayout = action(() => {
+        this.reviewDefinition= []
+        this.reviewStartingLetter= ''
+        this.reviewEndingLetter= ''
+        this.currentRewiewDefinition= ''
+        this.reviewAnswerText= ''
+        this.showNoVocabulary= false
+        this.showReviewOver= false
+        this.displayReviewContent= 'none'
+    })
+
+    updateReviewContent = action((randomWord, randomDefIndex) => {
+        this.reviewStartingLetter= randomWord.word.charAt(0)
+        this.reviewEndingLetter= randomWord.word.charAt(randomWord.word.length - 1)
+        this.currentRewiewDefinition= randomWord.definition[randomDefIndex].definition
+        this.reviewWord= randomWord.word
+        this.reviewPronunciation= randomWord.pronunciation
+        this.reviewFrequency= randomWord.frequency
+        this.reviewDefinition= randomWord.definition
+        this.displayLoadingIndicator= false
+        this.displayReviewContent= 'flex'
+    })
+
+    displayReviewOverlay = action(() => {
+        this.reviewOverlayDisplay= true
+    })
+
+    hideReviewOverlay = action(() => {
+        this.reviewOverlayDisplay= false
+    })
+
+    showReviewOver = action(() => {
+        this.showReviewOver= true
+    })
+
+    updateReviewAnswerTextValue = action((changedText) => {
+        this.reviewAnswerText= changedText
+    })
 }
 
 decorate(State, {

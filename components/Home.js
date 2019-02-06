@@ -3,11 +3,21 @@ import { StyleSheet, View, BackHandler, } from 'react-native';
 import { Button, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
+import { autorun } from 'mobx'
 
 import {HomeOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
+import reactotron from '../ReactotronConfig';
 
 class Home extends React.Component {
+
+    store = this.props.store
+    // store = State
+
+    myAutorun = autorun(() => {
+        reactotron.logImportant('show no vocabulary : ', this.store.showNoVocabulary)
+    })
+
 
     _didFocusSubscription = null;
     _willBlurSubscription = null;
@@ -75,6 +85,7 @@ class Home extends React.Component {
         this._didFocusSubscription && this._didFocusSubscription.remove();
         this._willBlurSubscription && this._willBlurSubscription.remove();
         this._authStateListener()
+        this.myAutorun()
     }
 }
 

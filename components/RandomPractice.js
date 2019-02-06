@@ -6,8 +6,11 @@ import {  Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
+import { autorun } from 'mobx'
 
 import AppConstants from '../Constants'
+// import State from '../models/State'
+import reactotron from '../ReactotronConfig';
 // import { 
 //     addResponseData, 
 //     resetResponseData, 
@@ -37,6 +40,12 @@ class RandomPractice extends React.Component {
     _didFocusSubscription = null;
 
     store = this.props.store
+    // store = State
+
+    myAutorun = autorun(() => {
+        reactotron.logImportant(this.store.itemDef)
+    })
+
 
     static navigationOptions = ({navigation}) => {
         return {
@@ -74,7 +83,7 @@ class RandomPractice extends React.Component {
 
         // const store = this.props.store
 
-        if(this.store.displayLoadingIndicator) {
+        if(this.store.displayLoadingIndicator === true) {
             return (
                 <View style={styles.loadingIndicator}>
                     <BallIndicator />
@@ -184,6 +193,7 @@ class RandomPractice extends React.Component {
     componentWillUnmount() {
         this.store.resetResponseData()
         this._didFocusSubscription.remove()
+        this.myAutorun()
     }
 
     goToNextRandomWord = () => {
