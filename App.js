@@ -14,7 +14,7 @@ import RandomPractice from './components/RandomPractice'
 import ReviewVocabulary from './components/ReviewVocabulary'
 import AppConstants from './Constants'
 // import store from './reducers'
-import Test from './models/Test'
+import State from './models/State'
 
 const Realm = require('realm');
 const realm = new Realm()
@@ -45,7 +45,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Provider store={Test}>
+      <Provider store={State}>
         <MenuProvider>
           <AppContainer />
         </MenuProvider>

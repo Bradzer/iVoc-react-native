@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, BackHandler, Text, } from 'react-native';
+import { StyleSheet, View, BackHandler, } from 'react-native';
 import { Button, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
-import Test from '../models/Test'
 
 import {HomeOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
@@ -25,9 +24,6 @@ class Home extends React.Component {
     }
 
     render() {
-
-        const store = this.props.store
-
         return(
             <View style={styles.container}>
                 <View style={styles.buttonGroup}>
@@ -45,14 +41,6 @@ class Home extends React.Component {
                     title={AppConstants.STRING_REVIEW_MY_VOCABULARY}
                     onPress={() => this.props.navigation.navigate('ReviewVocabulary')}
                     />
-                    <Text>{store.myVar}</Text>
-                    <Button 
-                    titleStyle={{ fontSize: 24}} 
-                    buttonStyle={{maxWidth: 250}} 
-                    title= 'increase count'
-                    onPress={() => store.myVar++}
-                    />
-
                 </View>
             </View>
         )
