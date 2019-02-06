@@ -142,6 +142,65 @@ class State {
     updateReviewAnswerTextValue = action((changedText) => {
         this.reviewAnswerText= changedText
     })
+
+    updateSettingsPreferences = action((settingsPreferencesInRealm) => {
+        this.selectedIndex= settingsPreferencesInRealm.updatedIndex
+        this.startingLettersChecked= settingsPreferencesInRealm.startingLettersChecked
+        this.endingLettersChecked= settingsPreferencesInRealm.endingLettersChecked
+        this.partialLettersChecked= settingsPreferencesInRealm.partialLettersChecked
+        this.onlyPronunciationWordChecked= settingsPreferencesInRealm.onlyPronunciationWordChecked
+        this.startingLettersText= settingsPreferencesInRealm.startingLettersText
+        this.endingLettersText= settingsPreferencesInRealm.endingLettersText
+        this.partialLettersText= settingsPreferencesInRealm.partialLettersText
+        this.apiUrl= settingsPreferencesInRealm.apiUrl
+        this.specificWordChecked= settingsPreferencesInRealm.specificWordChecked
+        this.specificWordText= settingsPreferencesInRealm.specificWordText
+        this.randomWordPrefDisplay= settingsPreferencesInRealm.specificWordChecked ? 'none' : 'flex'
+    })
+
+    updateIndex = action((selectedIndex) => {
+        this.selectedIndex= selectedIndex
+    })
+
+    updateStartingLettersCheckBox = action((currentStatus) => {
+        this.startingLettersChecked= !currentStatus
+        this.specificWordChecked= false
+    })
+
+    updateEndingLettersCheckBox = action((currentStatus) => {
+        this.endingLettersChecked= !currentStatus
+        this.specificWordChecked= false
+    })
+
+    updateSpecificWordCheckBox = action((currentStatus) => {
+        this.specificWordChecked= !currentStatus
+        this.randomWordPrefDisplay= (currentStatus ? 'flex' : 'none')
+    })
+
+    updatePartialWordCheckbox = action((currentStatus) => {
+        this.partialLettersChecked= !currentStatus
+        this.specificWordChecked= false
+    })
+
+    updatePronunciationCheckbox = action((currentStatus) => {
+        this.onlyPronunciationWordChecked= !currentStatus
+    })
+
+    updateStartingLettersText = action((changedText) => {
+        this.startingLettersText= changedText
+    })
+
+    updateEndingLettersText = action((changedText) => {
+        this.endingLettersText= changedText
+    })
+
+    updatePartialLettersText = action((changedText) => {
+        this.partialLettersText= changedText
+    })
+
+    updateSpecificWordText = action((changedText) => {
+        this.specificWordText= changedText
+    })
 }
 
 decorate(State, {

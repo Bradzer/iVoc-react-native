@@ -140,7 +140,6 @@ class ReviewVocabulary extends React.Component {
                 queryResult.forEach((doc) => {
                     listOfWords.push(doc.data())
                 })
-                // reactotron.logImportant(listOfWords)
                 if(listOfWords.length === 0) {
                     this.store.showNoVocabulary()
                     _willBlurSubscription.remove()
@@ -148,13 +147,11 @@ class ReviewVocabulary extends React.Component {
                     ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
                 }
                 else {
-                    // reactotron.logImportant('case else')
                     let randomIndex = Math.floor(Math.random() * listOfWords.length)
                     let randomWord = listOfWords[randomIndex]
                     randomWordOriginalId = randomWord.id
                     let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
                     this.store.updateReviewContent(randomWord, randomDefIndex)
-                    // reactotron.logImportant(this.store.displayLoadingIndicator)
                     listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
                 }
             }) 
