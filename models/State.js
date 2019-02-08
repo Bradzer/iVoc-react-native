@@ -194,7 +194,6 @@ class State {
                 let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
                 
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
-                reactotron.logImportant('update index : ', realm.objects('settingsScreen').filtered('pk = 0'))
             })
         })
         .catch((error) => console.log(error))
@@ -213,7 +212,6 @@ class State {
                 let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
 
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
-                reactotron.logImportant('starting checked : ', realm.objects('settingsScreen').filtered('pk = 0'))
             })
         })
         .catch((error) => console.log(error))
@@ -301,14 +299,12 @@ class State {
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
-                // reactotron.logImportant('changed text is : ', changedText)
                 realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersText', changedText)
 
                 let settingsScreen = realm.objects('settingsScreen')
                 let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
 
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
-                // reactotron.logImportant('starting text changed : ', realm.objects('settingsScreen').filtered('pk = 0'))
             })
         })
         .catch((error) => console.log(error))

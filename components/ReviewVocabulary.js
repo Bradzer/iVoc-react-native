@@ -175,7 +175,6 @@ class ReviewVocabulary extends React.Component {
     }
 
     onConfirmAnswerPressed = (answer) => {
-        reactotron.logImportant('answer : ', answer)
         if(answer === this.store.reviewWord) {
             ToastAndroid.show('right answer ;)', ToastAndroid.SHORT)
             updateNumberOfAppearances(randomWordOriginalId)
