@@ -23,8 +23,6 @@ class ReviewVocabulary extends React.Component {
     store = this.props.store
 
     myAutorun = autorun(() => {
-        reactotron.logImportant('review word : ', this.store.reviewWord)
-        reactotron.logImportant('show no vocabulary : ', this.store.showNoVocabulary)
     })
 
     static navigationOptions = ({navigation}) => {
@@ -51,7 +49,7 @@ class ReviewVocabulary extends React.Component {
             )
         }
 
-        else if(this.store.showNoVocabulary === true) {
+        else if(this.store.isNoVocabulary === true) {
             return (
                 <View style={styles.loadingIndicator}>
                     <Text style={{fontSize: 24}}>Your vocabulary is empty</Text>
@@ -59,7 +57,7 @@ class ReviewVocabulary extends React.Component {
             )
         }
 
-        else if(this.store.showReviewOver === true) {
+        else if(this.store.isReviewOver === true) {
             return (
                 <View style={styles.loadingIndicator}>
                     <Text style={{fontSize: 24}}>The review is over</Text>
@@ -78,14 +76,16 @@ class ReviewVocabulary extends React.Component {
                         <Text style={{fontSize: 18, fontStyle: 'italic'}}>{this.store.currentRewiewDefinition}</Text>
                         <Input
                             placeholder= "What's the word ?"
-                            onChangeText= {() => this.onReviewAnswerTextChanged()}
+                            onChangeText= {this.onReviewAnswerTextChanged}
                             value={this.store.reviewAnswerText}
                             containerStyle={{marginBottom: 16,}}
                         />
                         <Button 
                             title='Confirm'
                             icon={<Icon name='check-circle' type='font-awesome'/>}
-                            onPress={() => this.onConfirmAnswerPressed(this.store.reviewAnswerText)}/>
+                            onPress={() => this.onConfirmAnswerPressed(this.store.reviewAnswerText)}
+                            // onPress={this.onConfirmAnswerPressed}
+                            />
                     </View>
                 </ScrollView>
 
@@ -175,6 +175,7 @@ class ReviewVocabulary extends React.Component {
     }
 
     onConfirmAnswerPressed = (answer) => {
+        reactotron.logImportant('answer : ', answer)
         if(answer === this.store.reviewWord) {
             ToastAndroid.show('right answer ;)', ToastAndroid.SHORT)
             updateNumberOfAppearances(randomWordOriginalId)

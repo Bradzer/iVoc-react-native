@@ -33,7 +33,7 @@ class RandomPractice extends React.Component {
     store = this.props.store
 
     myAutorun = autorun(() => {
-        reactotron.logImportant(this.store.itemDef)
+        reactotron.logImportant('url : ', this.store.apiUrl)
     })
 
 

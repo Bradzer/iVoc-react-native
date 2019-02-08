@@ -15,7 +15,7 @@ class Home extends React.Component {
     // store = State
 
     myAutorun = autorun(() => {
-        reactotron.logImportant('show no vocabulary : ', this.store.showNoVocabulary)
+        reactotron.logImportant('url : ', this.store.apiUrl)
     })
 
 
