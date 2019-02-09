@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import styles from "./style";
 import {Keyboard, Text, View, TextInput, TouchableWithoutFeedback, StyleSheet, KeyboardAvoidingView, ToastAndroid, } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, CheckBox } from 'react-native-elements';
 import firebase from 'react-native-firebase'
 import reactotron from "../ReactotronConfig";
 
@@ -11,11 +11,14 @@ const usersCollection = firebase.firestore().collection('users')
 
 let username = ''
 let password = ''
+let confirmPassword = ''
 
 export default class LoginScreen extends Component {
 
   state = {
-    displayComponent: 'none'
+    displayComponent: 'none',
+    signUpChecked: false,
+    loginButtonTitle: 'Login'
   }
   render() {
     return (
@@ -27,15 +30,22 @@ export default class LoginScreen extends Component {
             <Text style={styles.logoText}>iVoc</Text>
               <TextInput placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
               <TextInput placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
+              <TextInput placeholder="Confirm password" placeholderColor="#c4c3cb" style={[styles.loginFormTextInput, {display: this.state.signUpChecked ? 'flex' : 'none', paddingLeft: 10, marginHorizontal: 15, marginVertical: 5}]} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
               <Button
                 buttonStyle={styles.loginButton}
                 onPress={() => this.onLoginPress()}
-                title="Login"
+                title={this.state.signUpChecked ? 'Sign up' : "Login"}
               />
               <Button 
               containerStyle= {screenStyles.anonymousLogin}
               title='Login anonymously'
               onPress={() => this.anonymousLoginClicked()}
+              />
+              <CheckBox
+                title= 'Sign up'
+                containerStyle= {screenStyles.signUpChkBx}
+                checked= {this.state.signUpChecked}
+                onPress= {() => this.signUpPressed(this.state.signUpChecked)}
               />
             </View>
           </View>
@@ -50,16 +60,24 @@ export default class LoginScreen extends Component {
     else this.setState({displayComponent: 'flex'})
   }
 
+  signUpPressed(currentStatus) {
+    this.setState({ signUpChecked: !currentStatus})
+  }
   onLoginPress() {
-    if(username && password) {
-      firebaseAuth.createUserWithEmailAndPassword(username, password)
-      .then((credentials) => {
-        onLoginSuccessful(credentials)
-        this.props.navigation.navigate('Home')
-      }, 
-      (createUserError) => {
-        if(createUserError.code === 'auth/email-already-in-use') {
-          firebaseAuth.signInWithEmailAndPassword(username, password)
+    if(!this.state.signUpChecked) {
+      if(username && password) {
+        firebaseAuth.signInWithEmailAndPassword(username, password)
+        .then((credentials) => {
+          onLoginSuccessful(credentials)
+          this.props.navigation.navigate('Home')
+        },
+        (createUserError) => ToastAndroid.show(createUserError.code, ToastAndroid.SHORT))
+      }  
+    }
+    else {
+      if(username && password && confirmPassword)
+        if(password === confirmPassword) {
+          firebaseAuth.createUserWithEmailAndPassword(username, password)
           .then(credentials => {
             ToastAndroid.show('login successful', ToastAndroid.SHORT)
             this.props.navigation.navigate('Home')    
@@ -67,12 +85,9 @@ export default class LoginScreen extends Component {
           (signInError) => ToastAndroid.show(signInError.code, ToastAndroid.SHORT))
         }
         else {
-          ToastAndroid.show(createUserError.code, ToastAndroid.SHORT)
+          ToastAndroid.show("Both passwords don't match", ToastAndroid.SHORT)
+          ToastAndroid.show("Please enter same the password", ToastAndroid.SHORT)
         }
-      })  
-    }
-    else {
-      ToastAndroid.show('Please enter account details', ToastAndroid.SHORT)
     }
   }
 
@@ -101,6 +116,9 @@ const screenStyles = StyleSheet.create({
   },
   anonymousLogin: {
     marginVertical: 16
+  },
+  signUpChkBx: {
+    alignSelf: 'center'
   }
 })
 
@@ -110,6 +128,10 @@ const usernameChanged = (usernameText) => {
 
 const passwordChanged = (passwordText) => {
   password = passwordText
+}
+
+const confirmPasswordChanged = (confirmPasswordText) => {
+  confirmPassword = confirmPasswordText
 }
 
 const onLoginSuccessful = (credentials) => {
