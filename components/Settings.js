@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, ToastAndroid, ScrollView } from 'react-native';
-import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
+import { Icon, CheckBox, Input, ButtonGroup, Button, Divider } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
 
@@ -33,10 +33,10 @@ class Settings extends React.Component {
         }      
     }
 
-    partOfSpeechAll = () => <Text>All</Text>
-    partOfSpeechVerb = () => <Text>Verb</Text>
-    partOfSpeechNoun = () => <Text>Noun</Text>
-    partOfSpeechAdjective = () => <Text>Adjective</Text>
+    partOfSpeechAll = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 0 ? 'italic' : 'normal'}}>All</Text>
+    partOfSpeechVerb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 1 ? 'italic' : 'normal'}}>Verb</Text>
+    partOfSpeechNoun = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 2 ? 'italic' : 'normal'}}>Noun</Text>
+    partOfSpeechAdjective = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 3 ? 'italic' : 'normal'}}>Adjective</Text>
 
     navigationListener = this.props.navigation.addListener('didFocus', () => {
     })
@@ -47,68 +47,80 @@ class Settings extends React.Component {
         return(
             <View style={styles.container}>
             <ScrollView>
-                <View>
+                <View style={{ padding: 8, flex: 1, alignItems: 'flex-start'}}>
                     <View style={{alignSelf: 'stretch', display: this.store.randomWordPrefDisplay}}>
                         <CheckBox
-                            title= 'Words starting with'
+                            title= 'Starting letters'
                             checked= {this.store.startingLettersChecked}
+                            containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
                             onPress= {() => this.startingLettersPressed(this.store.startingLettersChecked)}
                         />
                         <Input
                             placeholder= 'Enter starting letters'
                             onChangeText= {this.onStartingLettersTextChanged}
                             value={this.store.startingLettersText}
-                            containerStyle={{marginBottom: 16, display: this.inputDisplay('startingLetters')}}
+                            containerStyle={{marginBottom: 8, display: this.inputDisplay('startingLetters')}}
                         />
+                        <Divider />
                         <CheckBox
-                            title= 'Words ending with'
+                            title= 'Ending letters'
                             checked= {this.store.endingLettersChecked}
+                            containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
                             onPress= {() => this.endingLettersPressed(this.store.endingLettersChecked)}
                         />
                         <Input
                             placeholder= 'Enter ending letters'
                             onChangeText={this.onEndingLettersTextChanged}
                             value={this.store.endingLettersText}
-                            containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
+                            containerStyle={{marginBottom: 8, display: this.inputDisplay('endingLetters')}}
                         />
+                        <Divider />
                         <CheckBox 
-                        title= 'Words containing part with'
+                        title= 'Containing letters'
                         checked= {this.store.partialLettersChecked}
+                        containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
                         onPress= {() => this.partialLettersPressed(this.store.partialLettersChecked)}
                         />
                         <Input
                         placeholder= 'Enter part of the word/expression' 
                         onChangeText= {this.onPartialLettersTextChanged}
                         value= {this.store.partialLettersText}
-                        containerStyle={{marginBottom: 16, display: this.inputDisplay('partialLetters')}}
+                        containerStyle={{marginBottom: 8, display: this.inputDisplay('partialLetters')}}
                         />
-                        <Text style={{marginBottom: 8}}>Part of speech</Text>
+                        <Divider />
+                        <Text style={{marginVertical: 8, paddingLeft: 8, fontWeight: 'bold',}}>Part of speech</Text>
                         <ButtonGroup
                             onPress={this.changeIndex}
                             buttons={buttons}
                             selectedIndex={this.store.selectedIndex}
                             containerStyle={{marginBottom: 16}}
                         />
+                        <Divider />
                         <CheckBox
                             title= 'Only word/expression with pronunciation'
                             checked= {this.store.onlyPronunciationWordChecked}
+                            containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
                             onPress= {() => this.onlyPronunciationWordPressed(this.store.onlyPronunciationWordChecked)}
                         />
+                        <Divider />
                     </View>
                     <CheckBox
                             title= 'Search for a specific word/expression'
                             checked= {this.store.specificWordChecked}
+                            containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
                             onPress= {() => this.specificWordPressed(this.store.specificWordChecked)}
                     />
                     <Input
                         placeholder= 'Enter the word/expression'
                         onChangeText= {this.onSpecificWordTextChanged}
                         value={this.store.specificWordText}
-                        containerStyle={{marginBottom: 16, display: this.inputDisplay('specificWord')}}
+                        containerStyle={{marginBottom: 8, display: this.inputDisplay('specificWord')}}
                     />
+                    <Divider style={{alignSelf: 'stretch'}}/>
                     <Button 
                         title='Clear vocabulary'
-                        icon={<Icon name='playlist-remove' type='material-community' color='red'/>}
+                        containerStyle={{marginTop: 8, alignSelf: 'center'}}
+                        icon={<Icon name='playlist-remove' type='material-community' color='red' containerStyle={{marginRight: 2}}/>}
                         onPress={() => this.clearVocabulary()}/>
                 </View>
             </ScrollView>
@@ -212,7 +224,6 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      padding: 8
     },
   });
 
