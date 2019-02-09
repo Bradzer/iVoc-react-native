@@ -12,10 +12,8 @@ import reactotron from '../ReactotronConfig';
 class Home extends React.Component {
 
     store = this.props.store
-    // store = State
 
     myAutorun = autorun(() => {
-        reactotron.logImportant('url : ', this.store.apiUrl)
     })
 
 

@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, ToastAndroid, ScrollView } from 'react-native';
 import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
-import { autorun } from 'mobx'
 
 import {SettingsOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
@@ -20,28 +19,6 @@ const _ = require('lodash')
 class Settings extends React.Component {
 
     store = this.props.store
-
-    // screenAutorun = autorun(() => {
-    //     reactotron.logImportant('autorun is running')
-    //     Realm.open({})
-    //     .then((realm) => {
-    //         realm.write(() => {
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('updatedIndex', this.store.selectedIndex)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersChecked', this.store.startingLettersChecked)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersChecked', this.store.endingLettersChecked)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersChecked', this.store.partialLettersChecked)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('onlyPronunciationWordChecked', this.store.onlyPronunciationWordChecked)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersText', this.store.startingLettersText)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', this.store.endingLettersText)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersText', this.store.partialLettersText)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', this.store.apiUrl)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('specificWordChecked', this.store.specificWordChecked)
-    //             realm.objects('settingsScreen').filtered('pk = 0').update('specificWordText', this.store.specificWordText)
-    //             reactotron.logImportant(realm.objects('settingsScreen').filtered('pk = 0'))        
-    //         })
-    //     })
-    //     .catch((error) => console.log(error))
-    // })
 
     static navigationOptions = ({navigation}) => {
         return{
