@@ -41,7 +41,7 @@ class MyVocabulary extends React.Component {
             <View style={styles.container}>
                 <SearchBar 
                 placeholder= 'Seach...'
-                containerStyle={{backgroundColor: 'white', borderWidth: 0}}
+                containerStyle={{backgroundColor: 'white',}}
                 value= {this.store.searchBarValue}
                 onChangeText= {this.onSearchValueChanged}
                 onClear= {this.onSearchValueCleared}
