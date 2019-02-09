@@ -168,11 +168,23 @@ class RandomPractice extends React.Component {
         this.goToNextRandomWord()
     }
     
-    addToVocabularyBtnClicked= () => {
-        addKnownWordToCloud(dataGoingToStore)
-        this.goToNextRandomWord()
+    addToVocabularyBtnClicked = () => {
+        this.checkWordAlreadyInVocabulary(dataGoingToStore)
     }
     
+    checkWordAlreadyInVocabulary = (wordObject) => {
+        userWordsDetailsCollection.where('word', '==', wordObject.word).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.empty) {
+                addKnownWordToCloud(wordObject)
+                this.goToNextRandomWord()
+            }
+            else {
+                ToastAndroid.show('Word/expression already in vocabulary', ToastAndroid.SHORT)
+            }
+        }, (error) => reactotron.logImportant('Error occured : ' + error))
+        .catch((error) => reactotron.logImportant('Error occured : ', error))
+    }
 
     goToNextRandomWord = () => {
         this.store.showLoadingIndicator()
