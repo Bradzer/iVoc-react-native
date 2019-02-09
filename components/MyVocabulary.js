@@ -40,7 +40,7 @@ class MyVocabulary extends React.Component {
         return(
             <View style={styles.container}>
                 <SearchBar 
-                placeHolder= 'Seach...'
+                placeholder= 'Seach...'
                 containerStyle={{backgroundColor: 'white', borderWidth: 0}}
                 value= {this.store.searchBarValue}
                 onChangeText= {this.onSearchValueChanged}
