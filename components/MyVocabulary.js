@@ -4,7 +4,6 @@ import { Icon, ListItem, Overlay, SearchBar } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
-import { autorun } from 'mobx'
 
 import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
@@ -42,8 +41,10 @@ class MyVocabulary extends React.Component {
             <View style={styles.container}>
                 <SearchBar 
                 placeHolder= 'Seach...'
+                containerStyle={{backgroundColor: 'white', borderWidth: 0}}
                 value= {this.store.searchBarValue}
                 onChangeText= {this.onSearchValueChanged}
+                onClear= {this.onSearchValueCleared}
                 />
                 { this.store.displayLoadingIndicator === true ?
                     (
@@ -152,34 +153,33 @@ class MyVocabulary extends React.Component {
     ToastAndroid.show('deleted', ToastAndroid.SHORT)
   }
 
+  onSearchValueCleared = () => {
+    this.store.showLoadingIndicator()
+    let listOfWords = []
+    userWordsDetailsCollection.get()
+    .then((queryResult) => {
+        queryResult.forEach((doc) => {
+            listOfWords.push(doc.data())
+        })
+        this.store.updateListOfWords(listOfWords)
+        if(listOfWords.length === 0) {
+            ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
+            ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
+        }    
+    })
+  }
   onSearchValueChanged = (changedText) => {
         this.store.showLoadingIndicator()
         this.store.updateSearchValue(changedText)
-        if(changedText) {
-            let listOfWords = []
-            userWordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                this.store.updateListOfWords(listOfWords)
-                this.store.updateSearchResults(changedText)
+        let listOfWords = []
+        userWordsDetailsCollection.get()
+        .then((queryResult) => {
+            queryResult.forEach((doc) => {
+                listOfWords.push(doc.data())
             })
-        }
-        else {
-            let listOfWords = []
-            userWordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                this.store.updateListOfWords(listOfWords)
-                if(listOfWords.length === 0) {
-                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
-                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
-                }    
-            })
-        }
+            this.store.updateListOfWords(listOfWords)
+            this.store.updateSearchResults(changedText)
+        })
   }
 
   renderItem = ({item, index}) => {
