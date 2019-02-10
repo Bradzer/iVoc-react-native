@@ -20,6 +20,7 @@ export default class LoginScreen extends Component {
     signUpChecked: false,
     loginButtonTitle: 'Login'
   }
+
   render() {
     return (
       <View style={[screenStyles.container, {display: this.state.displayComponent}]}>
@@ -28,9 +29,9 @@ export default class LoginScreen extends Component {
           <View style={styles.loginScreenContainer}>
             <View style={styles.loginFormView}>
             <Text style={styles.logoText}>iVoc</Text>
-              <TextInput placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
-              <TextInput placeholder="Password" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
-              <TextInput placeholder="Confirm password" placeholderColor="#c4c3cb" style={[styles.loginFormTextInput, {display: this.state.signUpChecked ? 'flex' : 'none', paddingLeft: 10, marginHorizontal: 15, marginVertical: 5}]} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
+              <TextInput ref={component => this._email = component} placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} returnKeyType='next' onSubmitEditing={(event) => this.focusPasswordInput()} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
+              <TextInput ref={component => this._passwordInput = component} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
+              <TextInput ref={component => this._confirmPasswordInput = component} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={[styles.loginFormTextInput, {display: this.state.signUpChecked ? 'flex' : 'none', paddingLeft: 10, marginHorizontal: 15, marginVertical: 5}]} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
               <Button
                 buttonStyle={styles.loginButton}
                 onPress={() => this.onLoginPress()}
@@ -62,6 +63,10 @@ export default class LoginScreen extends Component {
 
   signUpPressed(currentStatus) {
     this.setState({ signUpChecked: !currentStatus})
+    this._email.focus()
+    this._email.blur()
+    this._passwordInput.blur()
+    this._confirmPasswordInput.blur()
   }
   onLoginPress() {
     if(!this.state.signUpChecked) {
@@ -107,6 +112,14 @@ export default class LoginScreen extends Component {
       this.props.navigation.navigate('Home')
     }, 
     (error) => ToastAndroid.show(error.code, ToastAndroid.SHORT))
+  }
+
+  onPasswordSubmitted = (event) => {
+    if(this.state.signUpChecked) this.focusConfirmPasswordInput()
+    else this.onLoginPress()
+  }
+  onConfirmPasswordSubmitted = (event) => {
+    this.onLoginPress()
   }
 }
 
