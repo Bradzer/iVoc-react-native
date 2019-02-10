@@ -5,6 +5,7 @@ import {Keyboard, Text, View, TextInput, TouchableWithoutFeedback, StyleSheet, K
 import { Button, CheckBox } from 'react-native-elements';
 import firebase from 'react-native-firebase'
 import reactotron from "../ReactotronConfig";
+import { ScrollView } from "react-native-gesture-handler";
 
 const firebaseAuth = firebase.auth()
 const usersCollection = firebase.firestore().collection('users')
@@ -24,35 +25,37 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <View style={[screenStyles.container, {display: this.state.displayComponent}]}>
-        <KeyboardAvoidingView style={styles.containerView} behavior="padding">
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.loginScreenContainer}>
-            <View style={styles.loginFormView}>
-            <Text style={styles.logoText}>iVoc</Text>
-              <TextInput ref={component => this._email = component} placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} returnKeyType='next' onSubmitEditing={(event) => this.focusPasswordInput()} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
-              <TextInput ref={component => this._passwordInput = component} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
-              <TextInput ref={component => this._confirmPasswordInput = component} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={this.state.signUpChecked ? styles.loginFormTextInput : styles.hideLoginFormTextInput} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
-              <Button
-                buttonStyle={styles.loginButton}
-                containerStyle={{marginHorizontal: 8}}
-                onPress={() => this.onLoginPress()}
-                title={this.state.signUpChecked ? 'Sign up' : "Login"}
-              />
-              <Button 
-              containerStyle= {screenStyles.anonymousLogin}
-              title='Login anonymously'
-              onPress={() => this.anonymousLoginClicked()}
-              />
-              <CheckBox
-                title= 'Sign up'
-                containerStyle= {[screenStyles.signUpChkBx, {borderWidth: 0,}]}
-                checked= {this.state.signUpChecked}
-                onPress= {() => this.signUpPressed(this.state.signUpChecked)}
-              />
+        <ScrollView style={{flex: 1}}>
+          <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.loginScreenContainer}>
+              <View style={styles.loginFormView}>
+              <Text style={styles.logoText}>iVoc</Text>
+                <TextInput ref={component => this._email = component} placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} returnKeyType='next' onSubmitEditing={(event) => this.focusPasswordInput()} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
+                <TextInput ref={component => this._passwordInput = component} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
+                <TextInput ref={component => this._confirmPasswordInput = component} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={this.state.signUpChecked ? styles.loginFormTextInput : styles.hideLoginFormTextInput} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
+                <Button
+                  buttonStyle={styles.loginButton}
+                  containerStyle={{marginHorizontal: 8}}
+                  onPress={() => this.onLoginPress()}
+                  title={this.state.signUpChecked ? 'Sign up' : "Login"}
+                />
+                <Button 
+                containerStyle= {screenStyles.anonymousLogin}
+                title='Login anonymously'
+                onPress={() => this.anonymousLoginClicked()}
+                />
+                <CheckBox
+                  title= 'Sign up'
+                  containerStyle= {[screenStyles.signUpChkBx, {borderWidth: 0,}]}
+                  checked= {this.state.signUpChecked}
+                  onPress= {() => this.signUpPressed(this.state.signUpChecked)}
+                />
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </ScrollView>
       </View>
     );
   }
