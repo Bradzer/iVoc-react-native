@@ -66,9 +66,9 @@ class RandomPractice extends React.Component {
                 <View style={{display: this.store.displayRandomWord}}>
                     <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
                     <Text style={{fontSize: 18, color: 'black'}}>{this.store.itemPartOfSpeech}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>Pronunciation : {this.store.itemPronunciation}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>Frequency of : {this.store.itemFrequency}{'\n'}</Text>
-                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>Definitions{'\n'}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemPronunciation === 'empty' ? 'none' : 'flex'}}>Pronunciation : {this.store.itemPronunciation}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemFrequency === 'empty' ? 'none' : 'flex'}}>Frequency of : {this.store.itemFrequency}</Text>
+                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>{'\n'}Definitions{'\n'}</Text>
                     {this.store.itemDef.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
