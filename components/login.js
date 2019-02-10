@@ -31,9 +31,10 @@ export default class LoginScreen extends Component {
             <Text style={styles.logoText}>iVoc</Text>
               <TextInput ref={component => this._email = component} placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} returnKeyType='next' onSubmitEditing={(event) => this.focusPasswordInput()} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
               <TextInput ref={component => this._passwordInput = component} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
-              <TextInput ref={component => this._confirmPasswordInput = component} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={[styles.loginFormTextInput, {display: this.state.signUpChecked ? 'flex' : 'none', paddingLeft: 10, marginHorizontal: 15, marginVertical: 5}]} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
+              <TextInput ref={component => this._confirmPasswordInput = component} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={this.state.signUpChecked ? styles.loginFormTextInput : styles.hideLoginFormTextInput} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
               <Button
                 buttonStyle={styles.loginButton}
+                containerStyle={{marginHorizontal: 8}}
                 onPress={() => this.onLoginPress()}
                 title={this.state.signUpChecked ? 'Sign up' : "Login"}
               />
@@ -128,7 +129,8 @@ const screenStyles = StyleSheet.create({
     flex: 1,
   },
   anonymousLogin: {
-    marginVertical: 16
+    marginTop: 16,
+    marginHorizontal: 8
   },
   signUpChkBx: {
     alignSelf: 'center'

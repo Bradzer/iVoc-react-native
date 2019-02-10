@@ -34,6 +34,9 @@ loginFormTextInput: {
   marginBottom: 5,
 
 },
+hideLoginFormTextInput: {
+  display: 'none'
+},
 loginButton: {
   backgroundColor: '#3897f1',
   borderRadius: 5,
