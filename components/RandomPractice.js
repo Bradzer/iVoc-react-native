@@ -60,7 +60,7 @@ class RandomPractice extends React.Component {
         }
         return(
             <View style={styles.container}>
-            <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1, display: this.store.displayScrollView}}>
+            <ScrollView style={{marginBottom: 8, backgroundColor: 'yellow', flex: 0, maxHeight: 100, display: this.store.displayScrollView}} contentContainerStyle={{flex: 0, backgroundColor: 'blue'}}>
                 <View style={{display: this.store.displayRandomWord}}>
                     <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
                     <Text style={{fontSize: 18, color: 'black'}}>{this.store.itemPartOfSpeech}</Text>
@@ -225,13 +225,14 @@ export default inject('store')(observer(RandomPractice))
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        padding: 8
+        justifyContent: 'flex-end',
+        padding: 8,
+        backgroundColor: 'red'
     },
     buttonGroup: {
-        flexGrow: 1,
         flexDirection: 'row',
         justifyContent: 'center',
+        backgroundColor: 'white'
     },
     loadingIndicator: {
         flex: 1,
