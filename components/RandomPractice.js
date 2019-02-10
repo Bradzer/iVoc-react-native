@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, ToastAndroid, Dimensions } from 'react-native';
 import {  Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
@@ -25,6 +25,8 @@ let dataGoingToStore = {}
 
 let apiResponse = {};
 let numberOfDefinitions = 0;
+
+let {height, width} = Dimensions.get('window')
 
 class RandomPractice extends React.Component {
 
@@ -60,7 +62,7 @@ class RandomPractice extends React.Component {
         }
         return(
             <View style={styles.container}>
-            <ScrollView style={{marginBottom: 8, backgroundColor: 'yellow', flex: 0, maxHeight: 100, display: this.store.displayScrollView}} contentContainerStyle={{flex: 0, backgroundColor: 'blue'}}>
+            <ScrollView style={{marginBottom: 8, flex: 1, maxHeight: 250, display: this.store.displayScrollView}} contentContainerStyle={{flex: 0, justifyContent: 'flex-end'}}>
                 <View style={{display: this.store.displayRandomWord}}>
                     <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
                     <Text style={{fontSize: 18, color: 'black'}}>{this.store.itemPartOfSpeech}</Text>
@@ -225,14 +227,12 @@ export default inject('store')(observer(RandomPractice))
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         padding: 8,
-        backgroundColor: 'red'
     },
     buttonGroup: {
         flexDirection: 'row',
         justifyContent: 'center',
-        backgroundColor: 'white'
     },
     loadingIndicator: {
         flex: 1,
