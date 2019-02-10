@@ -44,7 +44,7 @@ export default class LoginScreen extends Component {
               />
               <CheckBox
                 title= 'Sign up'
-                containerStyle= {screenStyles.signUpChkBx}
+                containerStyle= {[screenStyles.signUpChkBx, {borderWidth: 0,}]}
                 checked= {this.state.signUpChecked}
                 onPress= {() => this.signUpPressed(this.state.signUpChecked)}
               />
