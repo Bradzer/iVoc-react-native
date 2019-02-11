@@ -140,8 +140,6 @@ class State {
         }
         else this.displayReviewHint = 'none'
 
-        // this.reviewStartingLetter= randomWord.word.charAt(0)
-        // this.reviewEndingLetter= randomWord.word.charAt(randomWord.word.length - 1)
         this.currentRewiewDefinition= randomWord.definition[randomDefIndex].definition
         this.reviewWord= randomWord.word
         this.reviewPronunciation= randomWord.pronunciation
