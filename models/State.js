@@ -489,18 +489,22 @@ function getPreferencesData(settingsScreen) {
                 switch(updatedIndex) {
 
                     case 1:
-                    customUrl += '?partOfSpeech=verb&'
+                        customUrl += '?partOfSpeech=verb&'
                         break
     
                     case 2:
-                    customUrl += '?partOfSpeech=noun&'
+                        customUrl += '?partOfSpeech=noun&'
                         break
                     case 3:
-                    customUrl += '?partOfSpeech=adjective&'
+                        customUrl += '?partOfSpeech=adjective&'
+                        break;
+
+                    case 4:
+                        customUrl += '?partOfSpeech=adverb&'
                         break;
                     
                     default:
-                    customUrl += '?'
+                        customUrl += '?'
                         break
                 }
     
@@ -514,18 +518,22 @@ function getPreferencesData(settingsScreen) {
                 switch(updatedIndex) {
 
                     case 1:
-                    customUrl += '?partOfSpeech=verb&'
+                        customUrl += '?partOfSpeech=verb&'
                         break
     
                     case 2:
-                    customUrl += '?partOfSpeech=noun&'
+                        customUrl += '?partOfSpeech=noun&'
                         break
                     case 3:
-                    customUrl += '?partOfSpeech=adjective&'
+                        customUrl += '?partOfSpeech=adjective&'
+                        break;
+
+                    case 4:
+                        customUrl += '?partOfSpeech=adverb&'
                         break;
                     
                     default:
-                    customUrl += '?'
+                        customUrl += '?'
                         break
                 }
     
@@ -540,18 +548,22 @@ function getPreferencesData(settingsScreen) {
             switch(updatedIndex) {
 
                 case 1:
-                customUrl += '?partOfSpeech=verb&'
+                    customUrl += '?partOfSpeech=verb&'
                     break
 
                 case 2:
-                customUrl += '?partOfSpeech=noun&'
+                    customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-                customUrl += '?partOfSpeech=adjective&'
+                    customUrl += '?partOfSpeech=adjective&'
+                    break;
+
+                case 4:
+                    customUrl += '?partOfSpeech=adverb&'
                     break;
                 
                 default:
-                customUrl += '?'
+                    customUrl += '?'
                     break
             }
 
@@ -566,18 +578,22 @@ function getPreferencesData(settingsScreen) {
             switch(updatedIndex) {
 
                 case 1:
-                customUrl += '?partOfSpeech=verb&'
+                    customUrl += '?partOfSpeech=verb&'
                     break
     
                 case 2:
-                customUrl += '?partOfSpeech=noun&'
+                    customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-                customUrl += '?partOfSpeech=adjective&'
+                    customUrl += '?partOfSpeech=adjective&'
                     break;
-                
+
+                case 4:
+                    customUrl += '?partOfSpeech=adverb&'
+                    break;
+
                 default:
-                customUrl += '?'
+                    customUrl += '?'
                     break
             }
 
@@ -591,18 +607,18 @@ function getPreferencesData(settingsScreen) {
             switch(updatedIndex) {
 
                 case 1:
-                customUrl += '?partOfSpeech=verb&'
+                    customUrl += '?partOfSpeech=verb&'
                     break
     
                 case 2:
-                customUrl += '?partOfSpeech=noun&'
+                    customUrl += '?partOfSpeech=noun&'
                     break
                 case 3:
-                customUrl += '?partOfSpeech=adjective&'
+                    customUrl += '?partOfSpeech=adjective&'
                     break;
                 
                 default:
-                customUrl += '?'
+                    customUrl += '?'
                     break
             }
     
@@ -615,18 +631,22 @@ function getPreferencesData(settingsScreen) {
         switch(updatedIndex) {
 
             case 1:
-            customUrl += '?partOfSpeech=verb&'
+                customUrl += '?partOfSpeech=verb&'
                 break
 
             case 2:
-            customUrl += '?partOfSpeech=noun&'
+                customUrl += '?partOfSpeech=noun&'
                 break
             case 3:
-            customUrl += '?partOfSpeech=adjective&'
+                customUrl += '?partOfSpeech=adjective&'
+                break;
+
+            case 4:
+                customUrl += '?partOfSpeech=adverb&'
                 break;
             
             default:
-            customUrl += '?'
+                customUrl += '?'
                 break
         }
         let partialLettersTextLower = partialLettersText.toLowerCase()
@@ -637,22 +657,26 @@ function getPreferencesData(settingsScreen) {
         switch(updatedIndex) {
 
             case 0:
-            customUrl += '?hasDetails=definitions&random=true'
+                customUrl += '?hasDetails=definitions&random=true'
                 break
 
             case 1:
-            customUrl += '?partOfSpeech=verb&hasDetails=definitions&random=true'
+                customUrl += '?partOfSpeech=verb&hasDetails=definitions&random=true'
                 break
 
             case 2:
-            customUrl += '?partOfSpeech=noun&hasDetails=definitions&random=true'
+                customUrl += '?partOfSpeech=noun&hasDetails=definitions&random=true'
                 break
             case 3:
-            customUrl += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
+                customUrl += '?partOfSpeech=adjective&hasDetails=definitions&random=true'
+                break;
+
+            case 4:
+                customUrl += '?partOfSpeech=adverb&hasDetails=definitions&random=true'
                 break;
             
             default:
-            customUrl += '?hasDetails=definitions&random=true'
+                customUrl += '?hasDetails=definitions&random=true'
                 break
         }
     }

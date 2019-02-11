@@ -37,12 +37,13 @@ class Settings extends React.Component {
     partOfSpeechVerb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 1 ? 'italic' : 'normal'}}>Verb</Text>
     partOfSpeechNoun = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 2 ? 'italic' : 'normal'}}>Noun</Text>
     partOfSpeechAdjective = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 3 ? 'italic' : 'normal'}}>Adjective</Text>
+    partOfSpeechAdverb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 4 ? 'italic' : 'normal'}}>Adverb</Text>
 
     navigationListener = this.props.navigation.addListener('didFocus', () => {
     })
 
     render() {
-        const buttons = [{ element: this.partOfSpeechAll }, { element: this.partOfSpeechVerb }, { element: this.partOfSpeechNoun }, { element: this.partOfSpeechAdjective }]
+        const buttons = [{ element: this.partOfSpeechAll }, { element: this.partOfSpeechVerb }, { element: this.partOfSpeechNoun }, { element: this.partOfSpeechAdjective }, { element: this.partOfSpeechAdverb }]
 
         return(
             <View style={styles.container}>
