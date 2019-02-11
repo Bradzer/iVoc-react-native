@@ -165,7 +165,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersText', settingsPreferencesInRealm.endingLettersText)
                 realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersText', settingsPreferencesInRealm.partialLettersText)
                 realm.objects('settingsScreen').filtered('pk = 0').update('specificWordText', settingsPreferencesInRealm.specificWordText)
-                realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', action.data.apiUrl)
+                realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', settingsPreferencesInRealm.apiUrl)
             })
         })
         .catch((error) => console.log(error))
@@ -246,7 +246,7 @@ class State {
                 let settingsScreen = realm.objects('settingsScreen')
                 let specificWordText = ((_.valuesIn(settingsScreen))[0].specificWordText).toLowerCase()
 
-                if(!(action.data) && specificWordText) {
+                if(!(currentStatus) && specificWordText) {
                     realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + specificWordText)
                 }
                 else {

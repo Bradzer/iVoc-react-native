@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, ToastAndroid, Dimensions } from 'react-native';
 import {  Button } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
@@ -25,6 +25,8 @@ let dataGoingToStore = {}
 
 let apiResponse = {};
 let numberOfDefinitions = 0;
+
+let {height, width} = Dimensions.get('window')
 
 class RandomPractice extends React.Component {
 
@@ -60,13 +62,13 @@ class RandomPractice extends React.Component {
         }
         return(
             <View style={styles.container}>
-            <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1, display: this.store.displayScrollView}}>
+            <ScrollView style={{marginBottom: 8, flex: 1, maxHeight: 250, display: this.store.displayScrollView}} contentContainerStyle={{flex: 0, justifyContent: 'flex-end'}}>
                 <View style={{display: this.store.displayRandomWord}}>
                     <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
                     <Text style={{fontSize: 18, color: 'black'}}>{this.store.itemPartOfSpeech}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>Pronunciation : {this.store.itemPronunciation}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>Frequency of : {this.store.itemFrequency}{'\n'}</Text>
-                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>Definitions{'\n'}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemPronunciation === 'empty' ? 'none' : 'flex'}}>Pronunciation : {this.store.itemPronunciation}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemFrequency === 'empty' ? 'none' : 'flex'}}>Frequency of : {this.store.itemFrequency}</Text>
+                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>{'\n'}Definitions{'\n'}</Text>
                     {this.store.itemDef.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
@@ -226,10 +228,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 8
+        padding: 8,
     },
     buttonGroup: {
-        flexGrow: 1,
         flexDirection: 'row',
         justifyContent: 'center',
     },
