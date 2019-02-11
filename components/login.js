@@ -22,6 +22,14 @@ export default class LoginScreen extends Component {
     loginButtonTitle: 'Login'
   }
 
+  focusPasswordInput = () => {
+    this._passwordInput.focus()
+  }
+
+  focusConfirmPasswordInput = () => {
+    this._confirmPasswordInput.focus()
+  }
+
   render() {
     return (
       <View style={[screenStyles.container, {display: this.state.displayComponent}]}>
