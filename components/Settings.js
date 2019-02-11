@@ -100,6 +100,7 @@ class Settings extends React.Component {
                             title= 'Only word/expression with pronunciation'
                             checked= {this.store.onlyPronunciationWordChecked}
                             containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
+                            textStyle={{marginRight: 16}}
                             onPress= {() => this.onlyPronunciationWordPressed(this.store.onlyPronunciationWordChecked)}
                         />
                         <Divider />
