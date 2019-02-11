@@ -1,18 +1,20 @@
 import React from 'react';
-import { StyleSheet, FlatList, View, Text, ToastAndroid, BackHandler } from 'react-native';
-import { Icon, ListItem, Overlay, SearchBar } from 'react-native-elements'
+import { StyleSheet, FlatList, View, Text, ToastAndroid, BackHandler, ScrollView } from 'react-native';
+import { Icon, ListItem, Overlay, SearchBar, Divider } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 
 import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
+import reactotron from '../ReactotronConfig';
 
     let firebaseAuth = null
     let userId = null
     let userWordsDetailsCollection = null
     let multiDeletionStatus = false
-        
+    let timer = null
+
 class MyVocabulary extends React.Component {
 
     _didFocusSubscription = null;
@@ -40,10 +42,9 @@ class MyVocabulary extends React.Component {
         return(
             <View style={styles.container}>
                 <SearchBar 
-                placeholder= 'Seach...'
-                containerStyle={{backgroundColor: 'white',}}
+                placeholder= 'Search...'
                 value= {this.store.searchBarValue}
-                onChangeText= {this.onSearchValueChanged}
+                onChangeText= {(changedText) => this.onSearchValueChanged(changedText, true)}
                 onClear= {this.onSearchValueCleared}
                 />
                 { this.store.displayLoadingIndicator === true ?
@@ -58,32 +59,33 @@ class MyVocabulary extends React.Component {
                         renderItem={this.renderItem}
                     />
                 }
-                <Overlay isVisible={this.store.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={this.onBackdropPress}>
+                <Overlay isVisible={this.store.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={this.onBackdropPress} overlayStyle={{maxHeight: 300, maxWidth: 300}}>
+                    <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
-                        <Text>{this.store.vocabularyWord}</Text>
-                        <Text>Pronunciation: {this.store.vocabularyPronunciation}</Text>
-                        <Text>Frequency: {this.store.vocabularyFrequency}{'\n'}</Text>
-                        <Text>Definitions{'\n'}</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.vocabularyWord}</Text>
+                        <Text style={{color: 'black', display: this.store.vocabularyPronunciation === 'empty' ? 'none' : 'flex'}}>Pronunciation: {this.store.vocabularyPronunciation}</Text>
+                        <Text style={{color: 'black', display: this.store.vocabularyFrequency === 'empty' ? 'none' : 'flex'}}>Frequency: {this.store.vocabularyFrequency}</Text>
+                        <Text style={{color: 'black', textDecorationLine: 'underline'}}>{'\n'}Definitions{'\n'}</Text>
                         {this.store.vocabularyDefinition.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
-                                <Text>{index + 1}.</Text>
-                                <Text>{element.partOfSpeech}</Text>
-                                <Text>{element.definition}{'\n'}</Text>
+                                <Text style={{fontWeight: 'bold'}}>{index + 1}.</Text>
+                                <Text style={{color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
                         )
                         else
                         return (
                             <View key={index}>
-                                <Text>{element.partOfSpeech}</Text>
-                                <Text>{element.definition}</Text>
+                                <Text style={{color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )
                     })}
-
                     </View>
+                    </ScrollView>
                 </Overlay>
             </View>
         )
@@ -106,7 +108,7 @@ class MyVocabulary extends React.Component {
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
         this._didFocusSubscription = this.props.navigation.addListener("didFocus", () => {
-            this.onSearchValueChanged(this.store.searchBarValue)
+            this.onSearchValueChanged(this.store.searchBarValue, false)
             BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
           });
 
@@ -154,6 +156,7 @@ class MyVocabulary extends React.Component {
   }
 
   onSearchValueCleared = () => {
+    if(timer) clearTimeout(timer)   
     this.store.showLoadingIndicator()
     let listOfWords = []
     userWordsDetailsCollection.get()
@@ -167,19 +170,37 @@ class MyVocabulary extends React.Component {
             ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
         }    
     })
-  }
-  onSearchValueChanged = (changedText) => {
-        this.store.showLoadingIndicator()
+}
+  onSearchValueChanged = (changedText, withTimer) => {
+      reactotron.logImportant('function called =>' + changedText + ' => ' + withTimer)
         this.store.updateSearchValue(changedText)
-        let listOfWords = []
-        userWordsDetailsCollection.get()
-        .then((queryResult) => {
-            queryResult.forEach((doc) => {
-                listOfWords.push(doc.data())
-            })
-            this.store.updateListOfWords(listOfWords)
-            this.store.updateSearchResults(changedText)
-        })
+        if(withTimer) {
+            clearTimeout(timer)
+            timer = setTimeout(() => {
+                this.store.showLoadingIndicator()
+                let listOfWords = []
+                userWordsDetailsCollection.get()
+                .then((queryResult) => {
+                    queryResult.forEach((doc) => {
+                        listOfWords.push(doc.data())
+                    })
+                    this.store.updateListOfWords(listOfWords)
+                    this.store.updateSearchResults(changedText)
+                })    
+            }, 1000)
+        }
+        else {
+            this.store.showLoadingIndicator()
+            let listOfWords = []
+            userWordsDetailsCollection.get()
+            .then((queryResult) => {
+                queryResult.forEach((doc) => {
+                    listOfWords.push(doc.data())
+                })
+                this.store.updateListOfWords(listOfWords)
+                this.store.updateSearchResults(changedText)
+            })    
+        }
   }
 
   renderItem = ({item, index}) => {
@@ -188,18 +209,19 @@ class MyVocabulary extends React.Component {
     successPercentage = (successPercentage.toString()).substring(0, 5) + '%'
 
         return(
-        <ListItem
-            title={item.word}
-            subtitle={item.partOfSpeech}
-            rightIcon= {<Icon name= 'delete' onPress={() => this.deleteWordPressed(item, index)}/>}
-            onPress= {() => this.itemPressed(item, index)}
-            rightTitle= {successPercentage}
-            rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
-        />
+            <View>
+                <ListItem
+                    title={item.word}
+                    subtitle={item.partOfSpeech}
+                    rightIcon= {<Icon name= 'delete' onPress={() => this.deleteWordPressed(item, index)}/>}
+                    onPress= {() => this.itemPressed(item, index)}
+                    rightTitle= {successPercentage}
+                    rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
+                />
+                <Divider />
+            </View>
         )
   }
-
-
 }
 
 export default inject('store')(observer(MyVocabulary))
