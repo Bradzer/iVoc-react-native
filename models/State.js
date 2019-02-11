@@ -51,6 +51,7 @@ class State {
     searchBarValue= ''
     reviewIntroTextDisplay= 'none'
     displayReviewContent= 'none'
+    displayReviewHint= 'none'
     reviewWord= ''
     reviewOverlayDisplay= false
     reviewPronunciation= ''
@@ -128,16 +129,25 @@ class State {
         this.isNoVocabulary= false
         this.showReviewOver= false
         this.displayReviewContent= 'none'
+        this.displayReviewHint= 'none'
     })
 
     updateReviewContent = action((randomWord, randomDefIndex) => {
-        this.reviewStartingLetter= randomWord.word.charAt(0)
-        this.reviewEndingLetter= randomWord.word.charAt(randomWord.word.length - 1)
+        if(getNumberOfLettersHint(randomWord.word.length) > 0) {
+            this.displayReviewHint = 'flex'
+            this.reviewStartingLetter= randomWord.word.substring(0, getNumberOfLettersHint(randomWord.word.length)/2)
+            this.reviewEndingLetter= randomWord.word.substring(randomWord.word.length - (getNumberOfLettersHint(randomWord.word.length)/2))
+        }
+        else this.displayReviewHint = 'none'
+
+        // this.reviewStartingLetter= randomWord.word.charAt(0)
+        // this.reviewEndingLetter= randomWord.word.charAt(randomWord.word.length - 1)
         this.currentRewiewDefinition= randomWord.definition[randomDefIndex].definition
         this.reviewWord= randomWord.word
         this.reviewPronunciation= randomWord.pronunciation
         this.reviewFrequency= randomWord.frequency
         this.reviewDefinition= randomWord.definition
+        this.reviewAnswerText = ''
         this.displayLoadingIndicator= false
         this.displayReviewContent= 'flex'
     })
@@ -690,4 +700,17 @@ function getPreferencesData(settingsScreen) {
     if(onlyPronunciationWordChecked) customUrl += '&pronunciationPattern=\\w'    
 
     return customUrl
+  }
+
+  function getNumberOfLettersHint(wordLength) {
+      let halfLength = Math.floor(wordLength/2)
+      let numberOfLettersToFind = wordLength - halfLength
+
+      if(halfLength === numberOfLettersToFind) return getPreviousEvenNumber(halfLength)
+      else if (halfLength < numberOfLettersToFind) return (halfLength%2 === 0 ? halfLength : getPreviousEvenNumber(halfLength))
+  }
+
+  function getPreviousEvenNumber(number) {
+      if(number%2 === 0) return (number-2)
+      else return (number-1)
   }
