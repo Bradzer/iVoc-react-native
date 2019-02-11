@@ -78,6 +78,7 @@ class State {
         this.itemPartOfSpeech= ''
         this.itemPronuncitation= ''
         this.itemFrequency= ''
+        this.practiceSpecificWordSearch=''
         this.itemDef= []
         this.displayRandomWord= 'none'
         this.displayButtons= 'none'

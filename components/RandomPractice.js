@@ -124,8 +124,9 @@ class RandomPractice extends React.Component {
     }
 
     componentDidMount() {
-
+        
         this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
+            this.store.updatePracticeSpecificWordSearch('')
             Realm.open({})
             .then((realm) => {
                 realm.write(() => {
