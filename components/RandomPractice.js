@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, ToastAndroid, Dimensions } from 'react-native';
-import {  Button } from 'react-native-elements'
+import {  Button, SearchBar } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
@@ -25,8 +25,6 @@ let dataGoingToStore = {}
 
 let apiResponse = {};
 let numberOfDefinitions = 0;
-
-let {height, width} = Dimensions.get('window')
 
 class RandomPractice extends React.Component {
 
@@ -53,15 +51,24 @@ class RandomPractice extends React.Component {
 
     render() {
 
-        if(this.store.displayLoadingIndicator === true) {
-            return (
-                <View style={styles.loadingIndicator}>
-                    <BallIndicator />
-                </View>
-            )
-        }
         return(
             <View style={styles.container}>
+                <SearchBar 
+                placeholder= 'Search specific word/expression...'
+                value= {this.store.practiceSpecificWordSearch}
+                onChangeText= {(changedText) => this.onSearchValueChanged(changedText)}
+                onClear= {this.onSearchValueCleared}
+                containerStyle={{marginBottom: 16}}
+                returnKeyType='go'
+                onSubmitEditing={this.onSearchSubmit}
+                />
+            {this.store.displayLoadingIndicator === true
+            ? 
+            <View style={styles.loadingIndicator}>
+                <BallIndicator />
+            </View>
+            :
+            <View style={{flex: 1}}>
             <ScrollView style={{marginBottom: 8, flex: 1, maxHeight: 250, display: this.store.displayScrollView}} contentContainerStyle={{flex: 0, justifyContent: 'flex-end'}}>
                 <View style={{display: this.store.displayRandomWord}}>
                     <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
@@ -110,6 +117,8 @@ class RandomPractice extends React.Component {
                     onPress={this.goToPreferences}
                     />
                 </View>
+                </View>
+}
             </View>
         )
     }
@@ -172,6 +181,20 @@ class RandomPractice extends React.Component {
     
     addToVocabularyBtnClicked = () => {
         this.checkWordAlreadyInVocabulary(dataGoingToStore)
+    }
+
+    onSearchValueChanged = (searchValue) => {
+        this.store.updatePracticeSpecificWordSearch(searchValue)
+    }
+
+    onSearchSubmit = () => {
+        updateApiRequest('https://wordsapiv1.p.mashape.com/words/' + this.store.practiceSpecificWordSearch)
+        this.goToNextRandomWord()
+    }
+
+    onSearchValueCleared = () => {
+        updateApiRequest(this.store.apiUrl)
+        this.goToNextRandomWord()
     }
     
     checkWordAlreadyInVocabulary = (wordObject) => {

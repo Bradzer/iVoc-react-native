@@ -12,6 +12,7 @@ const commonUrlpart = 'https://wordsapiv1.p.mashape.com/words/'
 class State {
 
     //attributes
+    practiceSpecificWordSearch= ''
     itemDef= []
     itemSynonyms= ''
     itemExamples= ''
@@ -85,6 +86,10 @@ class State {
 
     showLoadingIndicator = action(() => {
         this.displayLoadingIndicator = true
+    })
+
+    updatePracticeSpecificWordSearch = action((searchValue) => {
+        this.practiceSpecificWordSearch = searchValue
     })
 
     addResponseData = action((dataGoingToStore) => {
@@ -391,6 +396,7 @@ class State {
 }
 
 decorate(State, {
+    practiceSpecificWordSearch: observable,
     itemDef: observable,
     itemSynonyms: observable,
     itemExamples: observable,

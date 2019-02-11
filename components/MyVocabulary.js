@@ -172,7 +172,6 @@ class MyVocabulary extends React.Component {
     })
 }
   onSearchValueChanged = (changedText, withTimer) => {
-      reactotron.logImportant('function called =>' + changedText + ' => ' + withTimer)
         this.store.updateSearchValue(changedText)
         if(withTimer) {
             clearTimeout(timer)
