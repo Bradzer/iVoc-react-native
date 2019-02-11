@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid, ScrollView, Dimensions } from 'react-native';
 import { Icon, CheckBox, Input, ButtonGroup, Button, Divider } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
@@ -46,7 +46,7 @@ class Settings extends React.Component {
 
         return(
             <View style={styles.container}>
-            <ScrollView>
+            <ScrollView style={{maxWidth: getWidth()}}>
                 <View style={{ padding: 8, flex: 1, alignItems: 'flex-start'}}>
                     <View style={{alignSelf: 'stretch', display: this.store.randomWordPrefDisplay}}>
                         <CheckBox
@@ -241,4 +241,8 @@ const styles = StyleSheet.create({
     let apiUrl = (_.valuesIn(settingsScreenRealmData))[0].apiUrl
 
     return { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
+}
+
+function getWidth() {
+    return Dimensions.get('window').width
 }
