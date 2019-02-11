@@ -84,36 +84,37 @@ class ReviewVocabulary extends React.Component {
                             title='Confirm'
                             icon={<Icon name='check-circle' type='font-awesome'/>}
                             onPress={() => this.onConfirmAnswerPressed(this.store.reviewAnswerText)}
-                            // onPress={this.onConfirmAnswerPressed}
                             />
                     </View>
                 </ScrollView>
 
-                <Overlay isVisible={this.store.reviewOverlayDisplay} width='auto' height='auto' onBackdropPress={() => this.onBackdropPress()}>
+                <Overlay isVisible={this.store.reviewOverlayDisplay} width='auto' height='auto' onBackdropPress={() => this.onBackdropPress()} overlayStyle={{maxHeight: 300, maxWidth: 300}}>
+                <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
-                        <Text>{this.store.reviewWord}</Text>
-                        <Text>Pronunciation: {this.store.reviewPronunciation}</Text>
-                        <Text>Frequency: {this.store.reviewFrequency}{'\n'}</Text>
-                        <Text>Definitions{'\n'}</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.reviewWord}</Text>
+                        <Text style={{color: 'black', display: this.store.reviewPronunciation === 'empty' ? 'none' : 'flex'}}>Pronunciation: {this.store.reviewPronunciation}</Text>
+                        <Text style={{color: 'black', display: this.store.reviewFrequency === 'empty' ? 'none' : 'flex'}}>Frequency: {this.store.reviewFrequency}</Text>
+                        <Text style={{color: 'black', textDecorationLine: 'underline'}}>{'\n'}Definitions{'\n'}</Text>
                         {this.store.reviewDefinition.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
-                                <Text>{index + 1}.</Text>
-                                <Text>{element.partOfSpeech}</Text>
-                                <Text>{element.definition}{'\n'}</Text>
+                                <Text style={{fontWeight: 'bold'}}>{index + 1}.</Text>
+                                <Text style={{color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
                         )
                         else
                         return (
                             <View key={index}>
-                                <Text>{element.partOfSpeech}</Text>
-                                <Text>{element.definition}</Text>
+                                <Text style={{color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )
                     })}
                     </View>
+                </ScrollView>
                 </Overlay>
 
             </View>
