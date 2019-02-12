@@ -39,7 +39,7 @@ class RandomPractice extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: 'Practice',
+            headerTitle: AppConstants.STRING_PRACTICE,
         }
     }
 
@@ -47,7 +47,7 @@ class RandomPractice extends React.Component {
 
     displayFrequency = 'none';
 
-    goToPreferences = () => this.props.navigation.navigate('Settings')
+    goToPreferences = () => this.props.navigation.navigate(AppConstants.STRING_SETTINGS)
 
     render() {
 
@@ -74,7 +74,7 @@ class RandomPractice extends React.Component {
                     <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
                     <Text style={{fontSize: 18, color: 'black'}}>{this.store.itemPartOfSpeech}</Text>
                     <Text style={{fontSize: 18, color: 'black', display: this.store.itemPronunciation === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.itemPronunciation}</Text>
-                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY_OF} {this.store.itemFrequency}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.itemFrequency}</Text>
                     <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
                     {this.store.itemDef.map((element, index, array) => {
                         if(array.length !== 1)

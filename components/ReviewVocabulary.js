@@ -5,8 +5,7 @@ import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
-
-import reactotron from '../ReactotronConfig';
+import AppConstants from '../Constants';
 
 let listOfWords = []
 let randomWordOriginalId = ''
@@ -27,11 +26,11 @@ class ReviewVocabulary extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: 'Review',
+            headerTitle: AppConstants.STRING_REVIEW,
             headerLeft: <Icon name='arrow-back' color='white' underlayColor='#367b38' onPress={() => {
                 let removeWillBlurSub = navigation.getParam('removeWillBlurSub')
                 removeWillBlurSub()
-                navigation.navigate('Home')
+                navigation.navigate(AppConstants.STRING_HOME)
             }}/>,
             headerLeftContainerStyle: {
                 marginLeft: 16
@@ -52,7 +51,7 @@ class ReviewVocabulary extends React.Component {
         else if(this.store.isNoVocabulary === true) {
             return (
                 <View style={styles.loadingIndicator}>
-                    <Text style={{fontSize: 24}}>Your vocabulary is empty</Text>
+                    <Text style={{fontSize: 24}}>{AppConstants.STRING_VOC_EMPTY}</Text>
                 </View>
             )
         }
@@ -60,7 +59,7 @@ class ReviewVocabulary extends React.Component {
         else if(this.store.isReviewOver === true) {
             return (
                 <View style={styles.loadingIndicator}>
-                    <Text style={{fontSize: 24}}>The review is over</Text>
+                    <Text style={{fontSize: 24}}>{AppConstants.STRING_REVIEW_OVER}</Text>
                 </View>
             )
         }
@@ -69,15 +68,15 @@ class ReviewVocabulary extends React.Component {
                 <ScrollView style={{flex: 1, flexGrow: 1}}>
                     <View style={styles.container}>
                         <View style={{alignItems: 'center', display: this.store.displayReviewHint}}>
-                            <Text style={{fontSize: 24, color: 'black'}}>The word/expression starts with letters</Text>
+                            <Text style={{fontSize: 24, color: 'black'}}>{AppConstants.STRING_WORD_STARTS_WITH_LETTERS}</Text>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewStartingLetter}{'\''}{'\n'}</Text>
-                            <Text style={{fontSize: 24, color: 'black'}}>And ends with letters</Text>
+                            <Text style={{fontSize: 24, color: 'black'}}>{AppConstants.STRING_WORD_ENDS_WITH_LETTERS}</Text>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewEndingLetter}{'\''}</Text>
                         </View>
-                        <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>{'\n'}Definition</Text>
+                        <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>{'\n'}{AppConstants.STRING_DEFINITION}</Text>
                         <Text style={{fontSize: 18, fontStyle: 'italic'}}>{this.store.currentRewiewDefinition}</Text>
                         <Input
-                            placeholder= "What's the word ?"
+                            placeholder= {AppConstants.STRING_WHATS_THE_WORD}
                             onChangeText= {this.onReviewAnswerTextChanged}
                             value={this.store.reviewAnswerText}
                             containerStyle={{marginBottom: 16,}}
@@ -85,7 +84,7 @@ class ReviewVocabulary extends React.Component {
                             onSubmitEditing={() => this.onConfirmAnswerPressed(this.store.reviewAnswerText)}
                         />
                         <Button 
-                            title='Confirm'
+                            title={AppConstants.STRING_CONFIRM}
                             icon={<Icon name='check-circle' type='font-awesome'/>}
                             onPress={() => this.onConfirmAnswerPressed(this.store.reviewAnswerText)}
                             titleStyle={{paddingLeft: 4}}
@@ -97,8 +96,8 @@ class ReviewVocabulary extends React.Component {
                 <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
                         <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.reviewWord}</Text>
-                        <Text style={{color: 'black', display: this.store.reviewPronunciation === 'empty' ? 'none' : 'flex'}}>Pronunciation: {this.store.reviewPronunciation}</Text>
-                        <Text style={{color: 'black', display: this.store.reviewFrequency === 'empty' ? 'none' : 'flex'}}>Frequency: {this.store.reviewFrequency}</Text>
+                        <Text style={{color: 'black', display: this.store.reviewPronunciation === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.reviewPronunciation}</Text>
+                        <Text style={{color: 'black', display: this.store.reviewFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.reviewFrequency}</Text>
                         <Text style={{color: 'black', textDecorationLine: 'underline'}}>{'\n'}Definitions{'\n'}</Text>
                         {this.store.reviewDefinition.map((element, index, array) => {
                         if(array.length !== 1)
@@ -149,8 +148,8 @@ class ReviewVocabulary extends React.Component {
                 if(listOfWords.length === 0) {
                     this.store.showNoVocabulary()
                     _willBlurSubscription.remove()
-                    ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
-                    ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
+                    ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
+                    ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
                 }
                 else {
                     let randomIndex = Math.floor(Math.random() * listOfWords.length)
@@ -164,8 +163,8 @@ class ReviewVocabulary extends React.Component {
             });
     
         _willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
-            ToastAndroid.show('You unexpectedlty left the review', ToastAndroid.SHORT)
-            ToastAndroid.show('The word will be supposed not remembered', ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_UNEXPECTED_LEAVE, ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_WORD_NOT_REMEMBERED, ToastAndroid.SHORT)
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
         updateNumberOfAppearances(randomWordOriginalId)
         });
@@ -182,13 +181,13 @@ class ReviewVocabulary extends React.Component {
 
     onConfirmAnswerPressed = (answer) => {
         if(answer === this.store.reviewWord) {
-            ToastAndroid.show('right answer ;)', ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_RIGHT_ANSWER, ToastAndroid.SHORT)
             updateNumberOfAppearances(randomWordOriginalId)
             updateNumberOfRemembrances(randomWordOriginalId)        
             this.goToNextReviewWord()
         }
         else {
-            ToastAndroid.show('You got it wrong :(', ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_WRONG_ANSWER, ToastAndroid.SHORT)
             updateNumberOfAppearances(randomWordOriginalId)
             this.store.displayReviewOverlay()
         }
@@ -228,7 +227,7 @@ class ReviewVocabulary extends React.Component {
         }
         else {
             this.store.showReviewOver()
-            ToastAndroid.show('Your vocabulary review is done', ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_REVIEW_DONE, ToastAndroid.SHORT)
             _willBlurSubscription.remove()
         }
     }

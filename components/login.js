@@ -28,7 +28,7 @@ export default class LoginScreen extends Component {
   state = {
     displayComponent: 'none',
     signUpChecked: false,
-    loginButtonTitle: 'Login',
+    loginButtonTitle: AppConstants.STRING_LOG_IN,
     paddingTop: undefined
   }
 
@@ -85,7 +85,7 @@ export default class LoginScreen extends Component {
   }
 
   componentDidMount() {
-    if(firebaseAuth.currentUser) this.props.navigation.navigate('Home')
+    if(firebaseAuth.currentUser) this.props.navigation.navigate(AppConstants.STRING_HOME)
     else this.setState({displayComponent: 'flex'})
   }
 
@@ -102,7 +102,7 @@ export default class LoginScreen extends Component {
         firebaseAuth.signInWithEmailAndPassword(username, password)
         .then((credentials) => {
           onLoginSuccessful(credentials)
-          this.props.navigation.navigate('Home')
+          this.props.navigation.navigate(AppConstants.STRING_HOME)
         },
         (createUserError) => ToastAndroid.show(createUserError.code, ToastAndroid.SHORT))
       }  
@@ -113,7 +113,7 @@ export default class LoginScreen extends Component {
           firebaseAuth.createUserWithEmailAndPassword(username, password)
           .then(credentials => {
             ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT)
-            this.props.navigation.navigate('Home')    
+            this.props.navigation.navigate(AppConstants.STRING_HOME)    
           },
           (signInError) => ToastAndroid.show(signInError.code, ToastAndroid.SHORT))
         }
@@ -136,7 +136,7 @@ export default class LoginScreen extends Component {
       })
       .then(docRef => docRef.update({id: docRef.id}))
       ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT)
-      this.props.navigation.navigate('Home')
+      this.props.navigation.navigate(AppConstants.STRING_HOME)
     }, 
     (error) => ToastAndroid.show(error.code, ToastAndroid.SHORT))
   }
