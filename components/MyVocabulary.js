@@ -203,6 +203,11 @@ class MyVocabulary extends React.Component {
         }
   }
 
+  itemLongPressed = () => {
+      showMultiDeletionOnToast()
+      setMultiDeletionStatus(true)
+  }
+
   renderItem = ({item, index}) => {
     
     let successPercentage = (item.numberOfRemembrances / item.numberOfAppearances) * 100
@@ -217,6 +222,7 @@ class MyVocabulary extends React.Component {
                     onPress= {() => this.itemPressed(item, index)}
                     rightTitle= {successPercentage}
                     rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
+                    onLongPress={() => this.itemLongPressed()}
                 />
                 <Divider />
             </View>
