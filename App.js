@@ -12,6 +12,7 @@ import MyVocabulary from './components/MyVocabulary'
 import Settings from './components/Settings'
 import RandomPractice from './components/RandomPractice'
 import ReviewVocabulary from './components/ReviewVocabulary'
+import About from './components/About'
 import AppConstants from './Constants'
 // import store from './reducers'
 import State from './models/State'
@@ -61,7 +62,8 @@ const HomeTabStackNavigator = createStackNavigator({
   },
   ReviewVocabulary: {
     screen: ReviewVocabulary
-  }
+  },
+  About,
 },
 {
   defaultNavigationOptions: {
@@ -82,6 +84,7 @@ const MyVocabularyStackAppNavigator = createStackNavigator({
 
 const SettingsStackAppNavigator = createStackNavigator({
   Settings,
+  About
 },
 {
   initialRouteName: 'Settings'
