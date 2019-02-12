@@ -9,7 +9,6 @@ import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 
 import AppConstants from '../Constants'
-import reactotron from '../ReactotronConfig';
 
 let firebaseAuth = null
 let userId = null
@@ -35,7 +34,6 @@ class RandomPractice extends React.Component {
     store = this.props.store
 
     myAutorun = autorun(() => {
-        reactotron.logImportant('url : ', this.store.apiUrl)
     })
 
 
