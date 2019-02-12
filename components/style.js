@@ -13,7 +13,7 @@ loginScreenContainer: {
 logoText: {
   fontSize: 40,
   fontWeight: "800",
-  marginTop: 150,
+  // marginTop: 150,
   marginBottom: 30,
   textAlign: 'center',
 },
