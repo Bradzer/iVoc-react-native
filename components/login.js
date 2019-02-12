@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import styles from "./style";
-import {Keyboard, Text, View, TextInput, TouchableWithoutFeedback, StyleSheet, KeyboardAvoidingView, ToastAndroid, } from 'react-native';
+import {Keyboard, Text, View, TextInput, TouchableWithoutFeedback, StyleSheet, KeyboardAvoidingView, ToastAndroid, Dimensions} from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
 import firebase from 'react-native-firebase'
 import reactotron from "../ReactotronConfig";
@@ -19,7 +19,8 @@ export default class LoginScreen extends Component {
   state = {
     displayComponent: 'none',
     signUpChecked: false,
-    loginButtonTitle: 'Login'
+    loginButtonTitle: 'Login',
+    paddingTop: undefined
   }
 
   focusPasswordInput = () => {
@@ -33,11 +34,10 @@ export default class LoginScreen extends Component {
   render() {
     return (
       <View style={[screenStyles.container, {display: this.state.displayComponent}]}>
-        <ScrollView style={{flex: 1}}>
-          <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+        <ScrollView style={{flex: 1}} contentContainerStyle={{paddingTop: this.state.paddingTop}}>
+          <KeyboardAvoidingView style={styles.containerView} behavior="padding" onLayout={this.onLayout}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.loginScreenContainer}>
-              <View style={styles.loginFormView}>
               <Text style={styles.logoText}>iVoc</Text>
                 <TextInput ref={component => this._email = component} placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} returnKeyType='next' onSubmitEditing={(event) => this.focusPasswordInput()} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
                 <TextInput ref={component => this._passwordInput = component} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
@@ -59,13 +59,20 @@ export default class LoginScreen extends Component {
                   checked= {this.state.signUpChecked}
                   onPress= {() => this.signUpPressed(this.state.signUpChecked)}
                 />
-              </View>
             </View>
           </TouchableWithoutFeedback>
           </KeyboardAvoidingView>
         </ScrollView>
       </View>
     );
+  }
+
+  onLayout = (event) => {
+    if(this.state.marginTop) return
+    let { height } = event.nativeEvent.layout
+    let parentHeight = Dimensions.get('window').height
+    let paddingTop = (parentHeight - height)/2
+    this.setState({paddingTop})
   }
 
   componentDidMount() {
