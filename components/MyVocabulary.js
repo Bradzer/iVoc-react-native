@@ -1,3 +1,5 @@
+/* global setTimeout clearTimeout */
+
 import React from 'react';
 import { StyleSheet, FlatList, View, Text, ToastAndroid, BackHandler, ScrollView } from 'react-native';
 import { Icon, ListItem, Overlay, SearchBar, Divider } from 'react-native-elements'
@@ -7,7 +9,6 @@ import { inject, observer } from 'mobx-react'
 
 import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
-import reactotron from '../ReactotronConfig';
 
     let firebaseAuth = null
     let userId = null
@@ -24,7 +25,7 @@ class MyVocabulary extends React.Component {
     
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: 'Vocabulary',
+            headerTitle: AppConstants.STRING_VOCABULARY,
             tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
             tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>,
             headerStyle: {
@@ -42,7 +43,7 @@ class MyVocabulary extends React.Component {
         return(
             <View style={styles.container}>
                 <SearchBar 
-                placeholder= 'Search...'
+                placeholder= {AppConstants.STRING_SEARCH}
                 value= {this.store.searchBarValue}
                 onChangeText= {(changedText) => this.onSearchValueChanged(changedText, true)}
                 onClear= {this.onSearchValueCleared}
@@ -63,9 +64,9 @@ class MyVocabulary extends React.Component {
                     <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
                         <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.vocabularyWord}</Text>
-                        <Text style={{color: 'black', display: this.store.vocabularyPronunciation === 'empty' ? 'none' : 'flex'}}>Pronunciation: {this.store.vocabularyPronunciation}</Text>
-                        <Text style={{color: 'black', display: this.store.vocabularyFrequency === 'empty' ? 'none' : 'flex'}}>Frequency: {this.store.vocabularyFrequency}</Text>
-                        <Text style={{color: 'black', textDecorationLine: 'underline'}}>{'\n'}Definitions{'\n'}</Text>
+                        <Text style={{color: 'black', display: this.store.vocabularyPronunciation === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.vocabularyPronunciation}</Text>
+                        <Text style={{color: 'black', display: this.store.vocabularyFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.vocabularyFrequency}</Text>
+                        <Text style={{color: 'black', textDecorationLine: 'underline'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
                         {this.store.vocabularyDefinition.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
@@ -152,7 +153,7 @@ class MyVocabulary extends React.Component {
   deleteWordPressed = (item, index) => {
     userWordsDetailsCollection.doc(item.id).delete()
     this.store.deleteWordInList(index)
-    ToastAndroid.show('deleted', ToastAndroid.SHORT)
+    ToastAndroid.show(AppConstants.TOAST_DELETED, ToastAndroid.SHORT)
   }
 
   onSearchValueCleared = () => {
@@ -166,8 +167,8 @@ class MyVocabulary extends React.Component {
         })
         this.store.updateListOfWords(listOfWords)
         if(listOfWords.length === 0) {
-            ToastAndroid.show('You have no vocabulary', ToastAndroid.SHORT)
-            ToastAndroid.show('Please add some words/expressions to your vocabulary', ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
         }    
     })
 }
@@ -241,15 +242,15 @@ const styles = StyleSheet.create({
   const keyExtractor = (item, index) => index.toString();
 
   const showClearDoneToast = () => {
-          ToastAndroid.show('vocabulary list cleared', ToastAndroid.SHORT)
+          ToastAndroid.show(AppConstants.TOAST_VOC_LIST_CLEARED, ToastAndroid.SHORT)
   }
 
   const showMultiDeletionOnToast = () => {
-      ToastAndroid.show('Multi deletion is on', ToastAndroid.SHORT)
+      ToastAndroid.show(AppConstants.TOAST_MULTI_DEL_ON, ToastAndroid.SHORT)
   }
 
   const showMultiDeletionOffToast = () => {
-      ToastAndroid.show('Multi deletion is off', ToastAndroid.SHORT)
+      ToastAndroid.show(AppConstants.TOAST_MULTI_DEL_OFF, ToastAndroid.SHORT)
   }
 
   const getMultiDeletionStatus = () => {

@@ -7,7 +7,6 @@ import { autorun } from 'mobx'
 
 import {HomeOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
-import reactotron from '../ReactotronConfig';
 
 class Home extends React.Component {
 
