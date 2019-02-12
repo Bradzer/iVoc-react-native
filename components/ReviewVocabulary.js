@@ -68,11 +68,11 @@ class ReviewVocabulary extends React.Component {
             <View style={[styles.container, {display: this.store.displayReviewContent}]}>
                 <ScrollView style={{flex: 1, flexGrow: 1}}>
                     <View style={styles.container}>
-                        <View style={{display: this.store.displayReviewHint}}>
-                        <Text style={{fontSize: 24, color: 'black'}}>The word/expression starts with letters</Text>
-                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewStartingLetter}{'\''}{'\n'}</Text>
-                        <Text style={{fontSize: 24, color: 'black'}}>And ends with letters</Text>
-                        <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewEndingLetter}{'\''}</Text>
+                        <View style={{alignItems: 'center', display: this.store.displayReviewHint}}>
+                            <Text style={{fontSize: 24, color: 'black'}}>The word/expression starts with letters</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewStartingLetter}{'\''}{'\n'}</Text>
+                            <Text style={{fontSize: 24, color: 'black'}}>And ends with letters</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewEndingLetter}{'\''}</Text>
                         </View>
                         <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>{'\n'}Definition</Text>
                         <Text style={{fontSize: 18, fontStyle: 'italic'}}>{this.store.currentRewiewDefinition}</Text>
@@ -88,6 +88,7 @@ class ReviewVocabulary extends React.Component {
                             title='Confirm'
                             icon={<Icon name='check-circle' type='font-awesome'/>}
                             onPress={() => this.onConfirmAnswerPressed(this.store.reviewAnswerText)}
+                            titleStyle={{paddingLeft: 4}}
                             />
                     </View>
                 </ScrollView>
