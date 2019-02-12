@@ -127,7 +127,7 @@ class State {
         this.currentRewiewDefinition= ''
         this.reviewAnswerText= ''
         this.isNoVocabulary= false
-        this.showReviewOver= false
+        this.isReviewOver= false
         this.displayReviewContent= 'none'
         this.displayReviewHint= 'none'
     })
