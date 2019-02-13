@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, BackHandler } from 'react-native';
 import { Button, } from 'react-native-elements'
+import { StackActions, NavigationActions } from 'react-navigation'
 
 import AppConstants from '../Constants'
 
@@ -97,7 +98,7 @@ class About extends React.Component {
             this.setState({displayLibraries: false})
             return true;
         } else {
-          return false;
+        StackActions.pop()
         }
       };
 
