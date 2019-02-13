@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, BackHandler } from 'react-native';
 import { Button, } from 'react-native-elements'
-import { StackActions, NavigationActions } from 'react-navigation'
+import { StackActions } from 'react-navigation'
 
 import AppConstants from '../Constants'
 
