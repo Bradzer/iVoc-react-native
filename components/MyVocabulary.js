@@ -64,15 +64,15 @@ class MyVocabulary extends React.Component {
                     <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
                         <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.vocabularyWord}</Text>
-                        <Text style={{color: 'black', display: this.store.vocabularyPronunciation === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.vocabularyPronunciation}</Text>
-                        <Text style={{color: 'black', display: this.store.vocabularyFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.vocabularyFrequency}</Text>
+                        <Text style={{color: 'black', display: this.store.vocabularyPronunciation === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.vocabularyPronunciation}</Text>
+                        <Text style={{color: 'black', display: this.store.vocabularyFrequency === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.vocabularyFrequency}</Text>
                         <Text style={{color: 'black', textDecorationLine: 'underline', display: this.store.vocabularyDefinition.length > 0 ? 'flex' : 'none'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
                         { this.store.vocabularyDefinition.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
                                 <Text style={{fontWeight: 'bold'}}>{index + 1}.</Text>
-                                <Text style={{color: 'black', display: element.partOfSpeech === 'empty' ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
@@ -80,7 +80,7 @@ class MyVocabulary extends React.Component {
                         else
                         return (
                             <View key={index}>
-                                <Text style={{color: 'black', display: element.partOfSpeech === 'empty' ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )
