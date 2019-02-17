@@ -75,16 +75,16 @@ class RandomPractice extends React.Component {
             <ScrollView style={{marginBottom: 8, flex: 1, maxHeight: 250, display: this.store.displayScrollView}} contentContainerStyle={{flex: 0, justifyContent: 'flex-end'}}>
                 <View style={{display: this.store.displayRandomWord}}>
                     <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
-                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemPartOfSpeech === 'empty' ? 'none' : 'flex'}}>{this.store.itemPartOfSpeech}</Text>
-                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemPronunciation === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.itemPronunciation}</Text>
-                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.itemFrequency}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemPartOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{this.store.itemPartOfSpeech}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemPronunciation === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.itemPronunciation}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemFrequency === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.itemFrequency}</Text>
                     <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline', display: this.store.itemDef.length > 0 ? 'flex' : 'none'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
                     { this.store.itemDef.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
                                 <Text style={{fontSize: 18, fontWeight: 'bold'}}>{index + 1}.</Text>
-                                <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === 'empty' ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
@@ -92,7 +92,7 @@ class RandomPractice extends React.Component {
                         else
                         return (
                             <View key={index}>
-                                <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === 'empty' ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )

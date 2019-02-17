@@ -96,15 +96,15 @@ class ReviewVocabulary extends React.Component {
                 <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
                         <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.reviewWord}</Text>
-                        <Text style={{color: 'black', display: this.store.reviewPronunciation === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.reviewPronunciation}</Text>
-                        <Text style={{color: 'black', display: this.store.reviewFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.reviewFrequency}</Text>
+                        <Text style={{color: 'black', display: this.store.reviewPronunciation === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.reviewPronunciation}</Text>
+                        <Text style={{color: 'black', display: this.store.reviewFrequency === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.reviewFrequency}</Text>
                         <Text style={{color: 'black', textDecorationLine: 'underline', display: this.store.reviewDefinition.length > 0 ? 'flex' : 'none'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
                         {this.store.reviewDefinition.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
                                 <Text style={{fontWeight: 'bold'}}>{index + 1}.</Text>
-                                <Text style={{color: 'black', display: element.partOfSpeech === 'empty' ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
@@ -112,7 +112,7 @@ class ReviewVocabulary extends React.Component {
                         else
                         return (
                             <View key={index}>
-                                <Text style={{color: 'black', display: element.partOfSpeech === 'empty' ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )

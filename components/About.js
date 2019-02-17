@@ -48,6 +48,7 @@ class About extends React.Component {
                         <Text style={{fontSize: 18}}>{AppConstants.STRING_KONRAD}</Text>
                         <Text style={{fontSize: 18}}>{AppConstants.STRING_ROLAND}</Text>
                         <Text style={{fontSize: 18}}>{AppConstants.STRING_STEEVE}</Text>
+                        <Text style={{fontSize: 18}}>{AppConstants.STRING_BICAS}</Text>
                     </View>
                     )
                     :
