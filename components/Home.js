@@ -1,12 +1,20 @@
 import React from 'react';
 import { StyleSheet, View, BackHandler, } from 'react-native';
-import { Button, Icon } from 'react-native-elements'
+import { Button, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
+import { inject, observer } from 'mobx-react'
+import { autorun } from 'mobx'
 
 import {HomeOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
 
-export default class Home extends React.Component {
+class Home extends React.Component {
+
+    store = this.props.store
+
+    myAutorun = autorun(() => {
+    })
+
 
     _didFocusSubscription = null;
     _willBlurSubscription = null;
@@ -74,8 +82,11 @@ export default class Home extends React.Component {
         this._didFocusSubscription && this._didFocusSubscription.remove();
         this._willBlurSubscription && this._willBlurSubscription.remove();
         this._authStateListener()
+        this.myAutorun()
     }
 }
+
+export default inject('store')(observer(Home))
 
 const styles = StyleSheet.create({
     container: {

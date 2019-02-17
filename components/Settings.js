@@ -1,24 +1,13 @@
+/* global require */
+
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid, ScrollView } from 'react-native';
-import { connect } from 'react-redux'
-import store from '../reducers'
-import { Icon, CheckBox, Input, ButtonGroup, Button } from 'react-native-elements'
+import { StyleSheet, View, Text, ToastAndroid, ScrollView, Dimensions } from 'react-native';
+import { Icon, CheckBox, Input, ButtonGroup, Button, Divider } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
+import { inject, observer } from 'mobx-react'
 
 import {SettingsOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
-import { 
-    updateIndex, 
-    updateStartingLettersCheckBox, 
-    updateEndingLettersCheckBox, 
-    updateSpecificWordCheckBox, 
-    updateStartingLettersText, 
-    updateEndingLettersText, 
-    updateSpecificWordText, 
-    updateSettingsPreferences,
-    updatePartialWordCheckbox,
-    updatePartialLettersText, 
-    updatePronunciationCheckbox, } from '../actions'
 
 let firebaseAuth = null
 let userId = null
@@ -30,9 +19,11 @@ const _ = require('lodash')
 
 class Settings extends React.Component {
 
+    store = this.props.store
+
     static navigationOptions = ({navigation}) => {
         return{
-            headerTitle: 'Settings',
+            headerTitle: AppConstants.STRING_SETTINGS,
             tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
             tabBarIcon: <Icon name= 'settings' />,
             headerStyle: {
@@ -43,84 +34,97 @@ class Settings extends React.Component {
         }      
     }
 
-    partOfSpeechAll = () => <Text>All</Text>
-    partOfSpeechVerb = () => <Text>Verb</Text>
-    partOfSpeechNoun = () => <Text>Noun</Text>
-    partOfSpeechAdjective = () => <Text>Adjective</Text>
+    partOfSpeechAll = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 0 ? 'italic' : 'normal'}}>{AppConstants.STRING_ALL}</Text>
+    partOfSpeechVerb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 1 ? 'italic' : 'normal'}}>{AppConstants.STRING_VERB}</Text>
+    partOfSpeechNoun = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 2 ? 'italic' : 'normal'}}>{AppConstants.STRING_NOUN}</Text>
+    partOfSpeechAdjective = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 3 ? 'italic' : 'normal'}}>{AppConstants.STRING_ADJECTIVE}</Text>
+    partOfSpeechAdverb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 4 ? 'italic' : 'normal'}}>{AppConstants.STRING_ADVERB}</Text>
 
     navigationListener = this.props.navigation.addListener('didFocus', () => {
     })
 
     render() {
-        const buttons = [{ element: this.partOfSpeechAll }, { element: this.partOfSpeechVerb }, { element: this.partOfSpeechNoun }, { element: this.partOfSpeechAdjective }]
-        const { selectedIndex } = this.props
+        const buttons = [{ element: this.partOfSpeechAll }, { element: this.partOfSpeechVerb }, { element: this.partOfSpeechNoun }, { element: this.partOfSpeechAdjective }, { element: this.partOfSpeechAdverb }]
 
         return(
             <View style={styles.container}>
-            <ScrollView>
-                <View>
-                    <View style={{alignSelf: 'stretch', display: this.props.randomWordPrefDisplay}}>
+            <ScrollView style={{maxWidth: getWidth()}}>
+                <View style={{ padding: 8, flex: 1, alignItems: 'flex-start'}}>
+                    <View style={{alignSelf: 'stretch', display: this.store.randomWordPrefDisplay}}>
                         <CheckBox
-                            title= 'Words starting with'
-                            checked= {this.props.startingLettersChecked}
-                            onPress= {() => startingLettersPressed(this.props.startingLettersChecked)}
+                            title= {AppConstants.STRING_STARTING_LETTERS}
+                            checked= {this.store.startingLettersChecked}
+                            containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
+                            onPress= {() => this.startingLettersPressed(this.store.startingLettersChecked)}
                         />
                         <Input
-                            placeholder= 'Enter starting letters'
-                            onChangeText= {onStartingLettersTextChanged}
-                            value={this.props.startingLettersText}
-                            containerStyle={{marginBottom: 16, display: this.inputDisplay('startingLetters')}}
+                            placeholder= {AppConstants.STRING_ENTER_STARTING_LETTERS}
+                            onChangeText= {this.onStartingLettersTextChanged}
+                            value={this.store.startingLettersText}
+                            containerStyle={{marginBottom: 8, display: this.inputDisplay(AppConstants.STRING_STARTING_LETTERS)}}
                         />
+                        <Divider />
                         <CheckBox
-                            title= 'Words ending with'
-                            checked= {this.props.endingLettersChecked}
-                            onPress= {() => endingLettersPressed(this.props.endingLettersChecked)}
+                            title= {AppConstants.STRING_ENDING_LETTERS}
+                            checked= {this.store.endingLettersChecked}
+                            containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
+                            onPress= {() => this.endingLettersPressed(this.store.endingLettersChecked)}
                         />
                         <Input
-                            placeholder= 'Enter ending letters'
-                            onChangeText={onEndingLettersTextChanged}
-                            value={this.props.endingLettersText}
-                            containerStyle={{marginBottom: 16, display: this.inputDisplay('endingLetters')}}
+                            placeholder= {AppConstants.STRING_ENTER_ENDING_LETTERS}
+                            onChangeText={this.onEndingLettersTextChanged}
+                            value={this.store.endingLettersText}
+                            containerStyle={{marginBottom: 8, display: this.inputDisplay(AppConstants.STRING_ENDING_LETTERS)}}
                         />
+                        <Divider />
                         <CheckBox 
-                        title= 'Words containing part with'
-                        checked= {this.props.partialLettersChecked}
-                        onPress= {() => partialLettersPressed(this.props.partialLettersChecked)}
+                        title= {AppConstants.STRING_CONTAINING_LETTERS}
+                        checked= {this.store.partialLettersChecked}
+                        containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
+                        onPress= {() => this.partialLettersPressed(this.store.partialLettersChecked)}
                         />
                         <Input
-                        placeholder= 'Enter part of the word/expression' 
-                        onChangeText= {onPartialLettersTextChanged}
-                        value= {this.props.partialLettersText}
-                        containerStyle={{marginBottom: 16, display: this.inputDisplay('partialLetters')}}
+                        placeholder= {AppConstants.STRING_ENTER_CONTAINING_LETTERS} 
+                        onChangeText= {this.onPartialLettersTextChanged}
+                        value= {this.store.partialLettersText}
+                        containerStyle={{marginBottom: 8, display: this.inputDisplay(AppConstants.STRING_CONTAINING_LETTERS)}}
                         />
-                        <Text style={{marginBottom: 8}}>Part of speech</Text>
+                        <Divider />
+                        <Text style={{marginVertical: 8, paddingLeft: 8, fontWeight: 'bold',}}>Part of speech</Text>
                         <ButtonGroup
-                            onPress={changeIndex}
+                            onPress={this.changeIndex}
                             buttons={buttons}
-                            selectedIndex={selectedIndex}
+                            selectedIndex={this.store.selectedIndex}
                             containerStyle={{marginBottom: 16}}
                         />
+                        <Divider />
                         <CheckBox
-                            title= 'Only word/expression with pronunciation'
-                            checked= {this.props.onlyPronunciationWordChecked}
-                            onPress= {() => onlyPronunciationWordPressed(this.props.onlyPronunciationWordChecked)}
+                            title= {AppConstants.STRING_ONLY_PRONUNCIATION}
+                            checked= {this.store.onlyPronunciationWordChecked}
+                            containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
+                            textStyle={{marginRight: 16}}
+                            onPress= {() => this.onlyPronunciationWordPressed(this.store.onlyPronunciationWordChecked)}
                         />
+                        <Divider />
                     </View>
                     <CheckBox
-                            title= 'Search for a specific word/expression'
-                            checked= {this.props.specificWordChecked}
-                            onPress= {() => specificWordPressed(this.props.specificWordChecked)}
+                            title= {AppConstants.STRING_SPECIFIC_WORD}
+                            checked= {this.store.specificWordChecked}
+                            containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
+                            onPress= {() => this.specificWordPressed(this.store.specificWordChecked)}
                     />
                     <Input
-                        placeholder= 'Enter the word/expression'
-                        onChangeText= {onSpecificWordTextChanged}
-                        value={this.props.specificWordText}
-                        containerStyle={{marginBottom: 16, display: this.inputDisplay('specificWord')}}
+                        placeholder= {AppConstants.STRING_ENTER_SPECIFIC_WORD}
+                        onChangeText= {this.onSpecificWordTextChanged}
+                        value={this.store.specificWordText}
+                        containerStyle={{marginBottom: 8, display: this.inputDisplay(AppConstants.STRING_SPECIFIC_WORD)}}
                     />
+                    <Divider style={{alignSelf: 'stretch'}}/>
                     <Button 
-                        title='Clear vocabulary'
-                        icon={<Icon name='playlist-remove' type='material-community' color='red'/>}
-                        onPress={clearVocabulary}/>
+                        title={AppConstants.STRING_CLEAR_VOC}
+                        containerStyle={{marginTop: 8, alignSelf: 'center'}}
+                        icon={<Icon name='playlist-remove' type='material-community' color='red' containerStyle={{marginRight: 2}}/>}
+                        onPress={() => this.clearVocabulary()}/>
                 </View>
             </ScrollView>
             </View>
@@ -131,45 +135,91 @@ class Settings extends React.Component {
         
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
-        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+        userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + userId + AppConstants.STRING_USER_WORDS_DETAILS)
 
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
-                if(!(realm.objects('settingsScreen').isEmpty())) {
-                    let settingsScreen = realm.objects('settingsScreen')
+                if(!(realm.objects(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH).isEmpty())) {
+                    let settingsScreen = realm.objects(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH)
                     let settingsPreferencesInRealm = getSettingsPreferencesInRealm(settingsScreen)
-                    store.dispatch(updateSettingsPreferences(settingsPreferencesInRealm))
+                    this.store.updateSettingsPreferences(settingsPreferencesInRealm)
                 }
                 else{
-                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    realm.create(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH, { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                 }
             })
         })
-        .catch((error) => console.log(error))
+        .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     inputDisplay = (checkBoxType) => {
         switch(checkBoxType) {
-            case 'startingLetters':
-                return (this.props.startingLettersChecked ? 'flex' : 'none')
+            case AppConstants.STRING_STARTING_LETTERS:
+                return (this.store.startingLettersChecked ? 'flex' : 'none')
             
-            case 'endingLetters':
-                return (this.props.endingLettersChecked ? 'flex' : 'none')
+            case AppConstants.STRING_ENDING_LETTERS:
+                return (this.store.endingLettersChecked ? 'flex' : 'none')
 
-            case 'partialLetters':
-                return (this.props.partialLettersChecked ? 'flex' : 'none')
+            case AppConstants.STRING_CONTAINING_LETTERS:
+                return (this.store.partialLettersChecked ? 'flex' : 'none')
 
-            case 'specificWord':
-                return (this.props.specificWordChecked ? 'flex' : 'none')
+            case AppConstants.STRING_SPECIFIC_WORD:
+                return (this.store.specificWordChecked ? 'flex' : 'none')
 
             default:
                 return 'none'
         }
     }
+
+    clearVocabulary = () => {
+        userWordsDetailsCollection.get()
+          .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+          ToastAndroid.show(AppConstants.TOAST_VOC_LIST_CLEARED, ToastAndroid.SHORT)
+    }
+    
+    changeIndex = (selectedIndex) => {
+        this.store.updateIndex(selectedIndex)
+    }
+    
+    startingLettersPressed = (currentStatus) => {
+        this.store.updateStartingLettersCheckBox(currentStatus)
+    }
+    
+    endingLettersPressed = (currentStatus) => {
+        this.store.updateEndingLettersCheckBox(currentStatus)
+    }
+    
+    specificWordPressed = (currentStatus) => {
+        this.store.updateSpecificWordCheckBox(currentStatus)
+    }
+    
+    partialLettersPressed = (currentStatus) => {
+        this.store.updatePartialWordCheckbox(currentStatus)
+    }
+    
+    onlyPronunciationWordPressed = (currentStatus) => {
+        this.store.updatePronunciationCheckbox(currentStatus)
+    }
+    
+    onStartingLettersTextChanged = (changedText) => {
+        this.store.updateStartingLettersText(changedText)
+    }
+    
+    onEndingLettersTextChanged = (changedText) => {
+        this.store.updateEndingLettersText(changedText)
+    }
+    
+    onPartialLettersTextChanged = (changedText) => {
+        this.store.updatePartialLettersText(changedText)
+    }
+    
+    onSpecificWordTextChanged = (changedText) => {
+        this.store.updateSpecificWordText(changedText)
+    }
 }
 
-export default connect(mapStateToProps)(Settings)
+export default inject('store')(observer(Settings))
 
 const styles = StyleSheet.create({
     container: {
@@ -177,74 +227,10 @@ const styles = StyleSheet.create({
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      padding: 8
     },
   });
-  
-  function mapStateToProps(state) {
-      return {
-        selectedIndex: state.selectedIndex,
-        startingLettersChecked: state.startingLettersChecked,
-        endingLettersChecked: state.endingLettersChecked,
-        realm: state.realm,
-        startingLettersText: state.startingLettersText,
-        endingLettersText: state.endingLettersText,
-        specificWordChecked: state.specificWordChecked,
-        specificWordText: state.specificWordText,
-        randomWordPrefDisplay: state.randomWordPrefDisplay,
-        partialLettersChecked: state.partialLettersChecked,
-        partialLettersText: state.partialLettersText,
-        onlyPronunciationWordChecked: state.onlyPronunciationWordChecked,
-      }
-  }
 
-  function clearVocabulary() {
-    userWordsDetailsCollection.get()
-      .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error))
-      ToastAndroid.show('vocabulary list cleared', ToastAndroid.SHORT)
-  }
-
-const changeIndex = (selectedIndex) => {
-    store.dispatch(updateIndex(selectedIndex))
-}
-
-const startingLettersPressed = (currentStatus) => {
-    store.dispatch(updateStartingLettersCheckBox(currentStatus))
-}
-
-const endingLettersPressed = (currentStatus) => {
-    store.dispatch(updateEndingLettersCheckBox(currentStatus))
-}
-
-const specificWordPressed = (currentStatus) => {
-    store.dispatch(updateSpecificWordCheckBox(currentStatus))
-}
-
-const partialLettersPressed = (currentStatus) => {
-    store.dispatch(updatePartialWordCheckbox(currentStatus))
-}
-
-const onlyPronunciationWordPressed = (currentStatus) => {
-    store.dispatch(updatePronunciationCheckbox(currentStatus))
-}
-
-const onStartingLettersTextChanged = (changedText) => {
-    store.dispatch(updateStartingLettersText(changedText))
-}
-
-const onEndingLettersTextChanged = (changedText) => {
-    store.dispatch(updateEndingLettersText(changedText))
-}
-
-const onPartialLettersTextChanged = (changedText) => {
-    store.dispatch(updatePartialLettersText(changedText))
-}
-
-const onSpecificWordTextChanged = (changedText) => {
-    store.dispatch(updateSpecificWordText(changedText))
-}
-
-const getSettingsPreferencesInRealm = (settingsScreenRealmData) => {
+  function getSettingsPreferencesInRealm(settingsScreenRealmData) {
     let updatedIndex = (_.valuesIn(settingsScreenRealmData))[0].updatedIndex
     let startingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].startingLettersChecked
     let endingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].endingLettersChecked
@@ -258,4 +244,8 @@ const getSettingsPreferencesInRealm = (settingsScreenRealmData) => {
     let apiUrl = (_.valuesIn(settingsScreenRealmData))[0].apiUrl
 
     return { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
+}
+
+function getWidth() {
+    return Dimensions.get('window').width
 }

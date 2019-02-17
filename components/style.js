@@ -13,7 +13,7 @@ loginScreenContainer: {
 logoText: {
   fontSize: 40,
   fontWeight: "800",
-  marginTop: 150,
+  // marginTop: 150,
   marginBottom: 30,
   textAlign: 'center',
 },
@@ -33,6 +33,9 @@ loginFormTextInput: {
   marginTop: 5,
   marginBottom: 5,
 
+},
+hideLoginFormTextInput: {
+  display: 'none'
 },
 loginButton: {
   backgroundColor: '#3897f1',

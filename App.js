@@ -3,7 +3,8 @@ import { createStackNavigator, createAppContainer, createSwitchNavigator } from 
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { MenuProvider, } from 'react-native-popup-menu';
 import { Icon } from 'react-native-elements'
-import { Provider } from 'react-redux'
+// import { Provider } from 'react-redux'
+import { Provider } from 'mobx-react'
 
 import LoginScreen from './components/login'
 import Home from './components/Home'
@@ -11,8 +12,10 @@ import MyVocabulary from './components/MyVocabulary'
 import Settings from './components/Settings'
 import RandomPractice from './components/RandomPractice'
 import ReviewVocabulary from './components/ReviewVocabulary'
+import About from './components/About'
 import AppConstants from './Constants'
-import store from './reducers'
+// import store from './reducers'
+import State from './models/State'
 
 const Realm = require('realm');
 const realm = new Realm()
@@ -43,7 +46,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Provider store={store}>
+      <Provider store={State}>
         <MenuProvider>
           <AppContainer />
         </MenuProvider>
@@ -59,7 +62,8 @@ const HomeTabStackNavigator = createStackNavigator({
   },
   ReviewVocabulary: {
     screen: ReviewVocabulary
-  }
+  },
+  About,
 },
 {
   defaultNavigationOptions: {
@@ -80,6 +84,7 @@ const MyVocabularyStackAppNavigator = createStackNavigator({
 
 const SettingsStackAppNavigator = createStackNavigator({
   Settings,
+  About
 },
 {
   initialRouteName: 'Settings'

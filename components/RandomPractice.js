@@ -1,18 +1,14 @@
+/* global require */
+
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
-import {  Button } from 'react-native-elements'
-import { connect } from 'react-redux'
-import store from '../reducers'
+import { StyleSheet, ScrollView, View, Text, ToastAndroid, } from 'react-native';
+import {  Button, SearchBar } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
+import { inject, observer } from 'mobx-react'
+import { autorun } from 'mobx'
 
 import AppConstants from '../Constants'
-import { 
-    addResponseData, 
-    resetResponseData, 
-    updateApiUrl, 
-    displayUpdateChangePrefsBtn,
-    showLoadingIndicator, } from '../actions'
 
 let firebaseAuth = null
 let userId = null
@@ -33,9 +29,17 @@ let numberOfDefinitions = 0;
 
 class RandomPractice extends React.Component {
 
+    _didFocusSubscription = null;
+
+    store = this.props.store
+
+    myAutorun = autorun(() => {
+    })
+
+
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: 'Practice',
+            headerTitle: AppConstants.STRING_PRACTICE,
         }
     }
 
@@ -43,47 +47,36 @@ class RandomPractice extends React.Component {
 
     displayFrequency = 'none';
 
-    goToPreferences = () => this.props.navigation.navigate('Settings')
-
-    screenDidFocusListener = this.props.navigation.addListener('didFocus', () => {
-        Realm.open({})
-        .then((realm) => {
-            realm.write(() => {
-                let settingsScreen = realm.objects('settingsScreen')
-                let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-                if(apiUrl && apiUrl !== '') {
-                    if(this.props.apiUrl !== apiUrl) {
-                        store.dispatch(updateApiUrl(apiUrl))
-                        updateApiRequest(this.props.apiUrl)
-                    }
-                }
-                if(this.props.displayChangePrefsBtn === 'flex'){
-                    goToNextRandomWord()
-                }
-                })
-            })
-        .catch((error) => console.log(error))
-        })
+    goToPreferences = () => this.props.navigation.navigate(AppConstants.STRING_SETTINGS)
 
     render() {
 
-        if(this.props.displayLoadingIndicator) {
-            return (
-                <View style={styles.loadingIndicator}>
-                    <BallIndicator />
-                </View>
-            )
-        }
         return(
             <View style={styles.container}>
-            <ScrollView style={{marginBottom: 8, flexGrow: 1, flex: 1, display: this.props.displayScrollView}}>
-                <View style={{display: this.props.displayRandomWord}}>
-                    <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.props.itemWord}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>{this.props.itemPartOfSpeech}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>Pronunciation : {this.props.itemPronunciation}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>Frequency of : {this.props.itemFrequency}{'\n'}</Text>
-                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>Definitions{'\n'}</Text>
-                    {this.props.itemDef.map((element, index, array) => {
+                <SearchBar 
+                placeholder= {AppConstants.STRING_SEARCH}
+                value= {this.store.practiceSpecificWordSearch}
+                onChangeText= {(changedText) => this.onSearchValueChanged(changedText)}
+                onClear= {this.onSearchValueCleared}
+                containerStyle={{marginBottom: 16}}
+                returnKeyType='go'
+                onSubmitEditing={this.onSearchSubmit}
+                />
+            {this.store.displayLoadingIndicator === true
+            ? 
+            <View style={styles.loadingIndicator}>
+                <BallIndicator />
+            </View>
+            :
+            <View style={{flex: 1}}>
+            <ScrollView style={{marginBottom: 8, flex: 1, maxHeight: 250, display: this.store.displayScrollView}} contentContainerStyle={{flex: 0, justifyContent: 'flex-end'}}>
+                <View style={{display: this.store.displayRandomWord}}>
+                    <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
+                    <Text style={{fontSize: 18, color: 'black'}}>{this.store.itemPartOfSpeech}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemPronunciation === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.itemPronunciation}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.itemFrequency}</Text>
+                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
+                    {this.store.itemDef.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
@@ -103,71 +96,165 @@ class RandomPractice extends React.Component {
                     })}
                 </View>
             </ScrollView>
-                <View style={[styles.buttonGroup, {display: this.props.displayButtons}]}>
+                <View style={[styles.buttonGroup, {display: this.store.displayButtons}]}>
                     <Button
-                    icon={{name: this.props.buttonLeftIconName, type: this.props.buttonLeftIconType}}
-                    title= {this.props.buttonLeftTitle}
+                    icon={{name: this.store.buttonLeftIconName, type: this.store.buttonLeftIconType}}
+                    title= {this.store.buttonLeftTitle}
                     containerStyle={{marginHorizontal: 16}}
-                    onPress={addToVocabularyBtnClicked}
+                    onPress={() => this.addToVocabularyBtnClicked()}
                     />
                     <Button
-                    icon={{name: this.props.buttonRightIconName, type: this.props.buttonRightIconType}}
-                    title= {this.props.buttonRightTitle}
+                    icon={{name: this.store.buttonRightIconName, type: this.store.buttonRightIconType}}
+                    title= {this.store.buttonRightTitle}
                     containerStyle={{marginHorizontal: 16}}
-                    onPress={nextBtnClicked}
-                    onLongPress={addToVocabularyBtnClicked}
+                    onPress={() => this.nextBtnClicked()}
+                    onLongPress={() => this.addToVocabularyBtnClicked()}
                     />
                 </View>
-                <View style={[styles.buttonGroup, {display: this.props.displayChangePrefsBtn}]}>
+                <View style={[styles.buttonGroup, {display: this.store.displayChangePrefsBtn}]}>
                 <Button
-                    title= 'CHANGE RANDOM PRACTICE PREFERENCES'
+                    title= {AppConstants.STRING_CHANGE_PREFS}
                     onPress={this.goToPreferences}
                     />
                 </View>
+                </View>
+}
             </View>
         )
     }
 
     componentDidMount() {
+        
+        this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
+            this.store.updatePracticeSpecificWordSearch('')
+            Realm.open({})
+            .then((realm) => {
+                realm.write(() => {
+                    let settingsScreen = realm.objects(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH)
+                    let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                    if(apiUrl && apiUrl !== '') {
+                        if(this.store.apiUrl !== apiUrl) {
+                            this.store.updateApiUrl(apiUrl)
+                            updateApiRequest(this.store.apiUrl)
+                        }
+                    }
+                    if(this.store.displayChangePrefsBtn === 'flex'){
+                        this.goToNextRandomWord()
+                    }
+                    })
+                })
+            .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+            })
+    
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
-        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+        userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + userId + AppConstants.STRING_USER_WORDS_DETAILS)
 
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
-                if(!(realm.objects('settingsScreen').isEmpty())) {
-                    let settingsScreen = realm.objects('settingsScreen')
+                if(!(realm.objects(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH).isEmpty())) {
+                    let settingsScreen = realm.objects(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH)
                     let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-                        store.dispatch(updateApiUrl(apiUrl))
-                        updateApiRequest(this.props.apiUrl)
+                        this.store.updateApiUrl(apiUrl)
+                        updateApiRequest(this.store.apiUrl)
                 }
                 else{
-                    realm.create('settingsScreen', { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
-                    store.dispatch(updateApiUrl(AppConstants.RANDOM_URL))
-                    updateApiRequest(this.props.apiUrl)
+                    realm.create(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH, { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    this.store.updateApiUrl(AppConstants.RANDOM_URL)
+                    updateApiRequest(this.store.apiUrl)
                 }
             })
-            goToNextRandomWord();
+            this.goToNextRandomWord();
         })
-        .catch((error) => console.log(error))
+        .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     componentWillUnmount() {
-        store.dispatch(resetResponseData())
+        this.store.resetResponseData()
+        this._didFocusSubscription.remove()
+        this.myAutorun()
+    }
+
+    nextBtnClicked = () => {
+        this.goToNextRandomWord()
+    }
+    
+    addToVocabularyBtnClicked = () => {
+        this.checkWordAlreadyInVocabulary(dataGoingToStore)
+    }
+
+    onSearchValueChanged = (searchValue) => {
+        this.store.updatePracticeSpecificWordSearch(searchValue)
+    }
+
+    onSearchSubmit = () => {
+        updateApiRequest(AppConstants.STRING_COMMON_URL + this.store.practiceSpecificWordSearch)
+        this.goToNextRandomWord()
+    }
+
+    onSearchValueCleared = () => {
+        updateApiRequest(this.store.apiUrl)
+        this.goToNextRandomWord()
+    }
+    
+    checkWordAlreadyInVocabulary = (wordObject) => {
+        userWordsDetailsCollection.where(AppConstants.STRING_WORD, '==', wordObject.word).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.empty) {
+                addKnownWordToCloud(wordObject)
+                this.goToNextRandomWord()
+            }
+            else {
+                ToastAndroid.show(AppConstants.TOAST_ALREADY_IN_VOC, ToastAndroid.SHORT)
+            }
+        }, (error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+    }
+
+    goToNextRandomWord = () => {
+        this.store.showLoadingIndicator()
+        let definitions = ''
+        apiRequest.get()
+        .then((response) => {
+    
+            apiResponse = response.data        
+            numberOfDefinitions = apiResponse.results.length
+            dataGoingToStore = {}
+            if(apiResponse.results[0]){
+                if(apiResponse.results.length > 1) {
+                    definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
+                    dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
+                }
+                else {
+                    dataGoingToStore = createDataGoingToStore(apiResponse)
+                }
+                this.store.addResponseData(dataGoingToStore)
+            
+            }
+            else {
+                this.store.displayUpdateChangePrefsBtn()
+                ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
+                ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
+            }
+        }, () => {
+            this.store.displayUpdateChangePrefsBtn()
+            ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
+    })
+        .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 }
 
-export default connect(mapStateToProps)(RandomPractice)
+export default inject('store')(observer(RandomPractice))
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 8
+        padding: 8,
     },
     buttonGroup: {
-        flexGrow: 1,
         flexDirection: 'row',
         justifyContent: 'center',
     },
@@ -178,81 +265,14 @@ const styles = StyleSheet.create({
     }
 })
 
-function mapStateToProps(state) {
-    return {
-        itemDef: state.itemDef,
-        itemSynonyms: state.itemSynonyms,
-        itemExamples: state.itemExamples,
-        itemWord: state.itemWord,
-        itemPartOfSpeech: state.itemPartOfSpeech,
-        itemPronunciation: state.itemPronunciation,
-        itemFrequency: state.itemFrequency,
-        displayRandomWord: state.displayRandomWord,
-        displayButtons: state.displayButtons,
-        displayWordDefinition: state.displayWordDefinition,
-        buttonRightIconName: state.buttonRightIconName,
-        buttonRightIconType: state.buttonRightIconType,
-        buttonRightTitle: state.buttonRightTitle,
-        buttonLeftIconName: state.buttonLeftIconName,
-        buttonLeftIconType: state.buttonLeftIconType,
-        buttonLeftTitle: state.buttonLeftTitle,
-        apiUrl: state.apiUrl,
-        displayScrollView: state.displayScrollView,
-        displayChangePrefsBtn: state.displayChangePrefsBtn,
-        displayLoadingIndicator: state.displayLoadingIndicator
-    }
-}
-
-function goToNextRandomWord(){
-    store.dispatch(showLoadingIndicator())
-    let definitions = ''
-    apiRequest.get()
-    .then((response) => {
-
-        apiResponse = response.data        
-        numberOfDefinitions = apiResponse.results.length
-        dataGoingToStore = {}
-        if(apiResponse.results[0]){
-            if(apiResponse.results.length > 1) {
-                definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
-                dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
-            }
-            else {
-                dataGoingToStore = createDataGoingToStore(apiResponse)
-            }
-            store.dispatch(addResponseData(dataGoingToStore)) 
-        
-        }
-        else {
-            store.dispatch(displayUpdateChangePrefsBtn())
-            ToastAndroid.show('No word/expression matching preferences found', ToastAndroid.SHORT)
-            ToastAndroid.show('Please change preferences in settings', ToastAndroid.SHORT)
-        }
-    }, () => {
-        store.dispatch(displayUpdateChangePrefsBtn())
-        ToastAndroid.show('No word/expression matching preferences found', ToastAndroid.SHORT)
-        ToastAndroid.show('Please change preferences in settings', ToastAndroid.SHORT)
-    })
-    .catch((error) => console.error(error))
-}
-
-function nextBtnClicked() {
-    goToNextRandomWord()
-}
-
-function addToVocabularyBtnClicked() {
-    addKnownWordToCloud(dataGoingToStore)
-    goToNextRandomWord()
-}
-
-function addKnownWordToCloud(word){
+const addKnownWordToCloud = (word) => {
     userWordsDetailsCollection.add(word)
     .then((docRef) => {
         docRef.update({id: docRef.id, numberOfRemembrances: 1, numberOfAppearances: 1})
     })
 }
 
-function updateApiRequest(baseURL) {
+const updateApiRequest = (baseURL) => {
     apiRequest = axios.create({
         baseURL: baseURL,
         headers: {
@@ -263,7 +283,7 @@ function updateApiRequest(baseURL) {
     })
 }
 
-function createDataGoingToStore(apiResponse, definitions= null) {
+const createDataGoingToStore = (apiResponse, definitions= null) => {
     if(definitions) {
         let pronunciation = null
 
@@ -272,9 +292,9 @@ function createDataGoingToStore(apiResponse, definitions= null) {
         else pronunciation = apiResponse.pronunciation
         return {
             word: apiResponse.word,
-            partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty'),
-            pronunciation: (pronunciation ? pronunciation : 'empty'),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+            partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY),
+            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
             definition: definitions,    
         }
     }
@@ -284,21 +304,21 @@ function createDataGoingToStore(apiResponse, definitions= null) {
         pronunciation = apiResponse.pronunciation.all
     else pronunciation = apiResponse.pronunciation
 
-    let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : 'empty')
+    let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY)
     let definition = apiResponse.results[0].definition
     return {
         word: apiResponse.word,
         partOfSpeech,
-        pronunciation: (pronunciation ? pronunciation : 'empty'),
-        frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : 'empty'),
+        pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+        frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
         definition: [{partOfSpeech, definition}]
     }
 }
 
-function getAllDefinitions(apiResponse, numberOfDefinitions) {
+const getAllDefinitions = (apiResponse, numberOfDefinitions) => {
     let definitions = []
     for(let i= 0; i < numberOfDefinitions; i++) {
-        let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : 'empty')
+        let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : AppConstants.STRING_EMPTY)
         let definition = apiResponse.results[i].definition
         definitions.push({partOfSpeech, definition})
     }
