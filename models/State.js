@@ -82,10 +82,10 @@ class State {
         this.itemPronuncitation= ''
         this.itemFrequency= ''
         this.practiceSpecificWordSearch=''
-        this.itemDef= []
         this.displayRandomWord= 'none'
         this.displayButtons= 'none'
         this.displayWordDefinition= 'none'
+        this.displayChangePrefsBtn = 'none'
     })
 
     showLoadingIndicator = action(() => {
