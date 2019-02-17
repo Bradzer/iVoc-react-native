@@ -223,6 +223,7 @@ class MyVocabulary extends React.Component {
                     rightTitle= {successPercentage}
                     rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
                     onLongPress={() => this.itemLongPressed()}
+                    subtitleStyle={{display: item.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}
                 />
                 <Divider />
             </View>
