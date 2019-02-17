@@ -31,9 +31,12 @@ class RandomPractice extends React.Component {
 
     _didFocusSubscription = null;
 
+    hasComponentMounted = false;
+
     store = this.props.store
 
     myAutorun = autorun(() => {
+        if(this.store.itemDef.length === 0 && this.hasComponentMounted) ToastAndroid.show('No definition found', ToastAndroid.SHORT)
     })
 
 
@@ -72,16 +75,16 @@ class RandomPractice extends React.Component {
             <ScrollView style={{marginBottom: 8, flex: 1, maxHeight: 250, display: this.store.displayScrollView}} contentContainerStyle={{flex: 0, justifyContent: 'flex-end'}}>
                 <View style={{display: this.store.displayRandomWord}}>
                     <Text style={{fontSize: 24, fontWeight: 'bold', color: 'black'}}>{this.store.itemWord}</Text>
-                    <Text style={{fontSize: 18, color: 'black'}}>{this.store.itemPartOfSpeech}</Text>
+                    <Text style={{fontSize: 18, color: 'black', display: this.store.itemPartOfSpeech === 'empty' ? 'none' : 'flex'}}>{this.store.itemPartOfSpeech}</Text>
                     <Text style={{fontSize: 18, color: 'black', display: this.store.itemPronunciation === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.itemPronunciation}</Text>
                     <Text style={{fontSize: 18, color: 'black', display: this.store.itemFrequency === 'empty' ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.itemFrequency}</Text>
-                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
-                    {this.store.itemDef.map((element, index, array) => {
+                    <Text style={{fontSize: 18, color: 'black', textDecorationLine: 'underline', display: this.store.itemDef.length > 0 ? 'flex' : 'none'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
+                    { this.store.itemDef.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
                                 <Text style={{fontSize: 18, fontWeight: 'bold'}}>{index + 1}.</Text>
-                                <Text style={{fontSize: 18, color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === 'empty' ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
@@ -89,7 +92,7 @@ class RandomPractice extends React.Component {
                         else
                         return (
                             <View key={index}>
-                                <Text style={{fontSize: 18, color: 'black'}}>{element.partOfSpeech}</Text>
+                                <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === 'empty' ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )
@@ -125,8 +128,9 @@ class RandomPractice extends React.Component {
 
     componentDidMount() {
         
+        this.hasComponentMounted = true
+
         this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
-            this.store.updatePracticeSpecificWordSearch('')
             Realm.open({})
             .then((realm) => {
                 realm.write(() => {
@@ -215,28 +219,34 @@ class RandomPractice extends React.Component {
     goToNextRandomWord = () => {
         this.store.showLoadingIndicator()
         let definitions = ''
+        dataGoingToStore = {}
         apiRequest.get()
         .then((response) => {
     
-            apiResponse = response.data        
-            numberOfDefinitions = apiResponse.results.length
-            dataGoingToStore = {}
-            if(apiResponse.results[0]){
-                if(apiResponse.results.length > 1) {
-                    definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
-                    dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
+            apiResponse = response.data
+            if(_.hasIn(apiResponse, 'results')) {
+                numberOfDefinitions = apiResponse.results.length
+                if(apiResponse.results[0]){
+                    if(apiResponse.results.length > 1) {
+                        definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
+                        dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
+                    }
+                    else {
+                        dataGoingToStore = createDataGoingToStore(apiResponse)
+                    }
+                    this.store.addResponseData(dataGoingToStore)
+                
                 }
                 else {
-                    dataGoingToStore = createDataGoingToStore(apiResponse)
-                }
-                this.store.addResponseData(dataGoingToStore)
-            
+                    this.store.displayUpdateChangePrefsBtn()
+                    ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
+                    ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
+                }    
             }
             else {
-                this.store.displayUpdateChangePrefsBtn()
-                ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
-                ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
-            }
+                dataGoingToStore = createDataGoingToStore(apiResponse)
+                this.store.addResponseData(dataGoingToStore)
+            }      
         }, () => {
             this.store.displayUpdateChangePrefsBtn()
             ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
@@ -304,14 +314,25 @@ const createDataGoingToStore = (apiResponse, definitions= null) => {
         pronunciation = apiResponse.pronunciation.all
     else pronunciation = apiResponse.pronunciation
 
-    let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY)
-    let definition = apiResponse.results[0].definition
-    return {
-        word: apiResponse.word,
-        partOfSpeech,
-        pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
-        frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
-        definition: [{partOfSpeech, definition}]
+    if(_.hasIn(apiResponse, 'results')) {
+        let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY)
+        let definition = apiResponse.results[0].definition
+        return {
+            word: apiResponse.word,
+            partOfSpeech,
+            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
+            definition: [{partOfSpeech, definition}]
+        }    
+    }
+    else {
+        return {
+            word: apiResponse.word,
+            partOfSpeech: AppConstants.STRING_EMPTY,
+            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
+            definition: []
+        }    
     }
 }
 
