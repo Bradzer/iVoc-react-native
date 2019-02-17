@@ -23,6 +23,5 @@
     "realm": "^2.22.0"
   },
   "devDependencies": {
-    "reactotron-react-native": "^2.1.4"
   }
 }
