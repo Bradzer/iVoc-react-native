@@ -60,7 +60,7 @@ class MyVocabulary extends React.Component {
                         renderItem={this.renderItem}
                     />
                 }
-                <Overlay isVisible={this.store.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={this.onBackdropPress} overlayStyle={{maxHeight: 300, maxWidth: 300}}>
+                <Overlay isVisible={this.store.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={this.onBackdropPress} overlayStyle={{maxHeight: 300, maxWidth: 300, minHeight: 300, minWidth: 300}}>
                     <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
                         <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.vocabularyWord}</Text>
