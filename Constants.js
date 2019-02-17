@@ -91,6 +91,7 @@ Object.defineProperty(AppConstants, 'STRING_AMIROL', {value: '- Amirol Zoclanclo
 Object.defineProperty(AppConstants, 'STRING_KONRAD', {value: '- Konrad Doutetien'})
 Object.defineProperty(AppConstants, 'STRING_ROLAND', {value: '- Roland Houndji'})
 Object.defineProperty(AppConstants, 'STRING_STEEVE', {value: '- Steeve Mamavi'})
+Object.defineProperty(AppConstants, 'STRING_BICAS', {value: '- Bicas Kodja'})
 Object.defineProperty(AppConstants, 'STRING_AXIOS', {value: 'Axios'})
 Object.defineProperty(AppConstants, 'STRING_AXIOS_LINK', {value: 'https://github.com/axios/axios'})
 Object.defineProperty(AppConstants, 'STRING_MOBX', {value: 'MobX'})
