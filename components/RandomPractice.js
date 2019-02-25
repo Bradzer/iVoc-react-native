@@ -9,6 +9,7 @@ import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 
 import AppConstants from '../Constants'
+import reactotron from '../ReactotronConfig'
 
 let firebaseAuth = null
 let userId = null
@@ -19,7 +20,7 @@ const axios = require('axios');
 let apiRequest = null
 
 const Realm = require('realm');
-
+const R = require('ramda');
 const _ = require('lodash')
 
 let dataGoingToStore = {}
@@ -338,10 +339,10 @@ const createDataGoingToStore = (apiResponse, definitions= null) => {
 
 const getAllDefinitions = (apiResponse, numberOfDefinitions) => {
     let definitions = []
-    for(let i= 0; i < numberOfDefinitions; i++) {
-        let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : AppConstants.STRING_EMPTY)
-        let definition = apiResponse.results[i].definition
+    R.forEachObjIndexed((value) => {
+        let partOfSpeech = (value.partOfSpeech ? value.partOfSpeech : AppConstants.STRING_EMPTY)
+        let definition = value.definition
         definitions.push({partOfSpeech, definition})
-    }
+    }, apiResponse.results)
     return definitions
 }
