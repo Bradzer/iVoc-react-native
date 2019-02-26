@@ -181,6 +181,13 @@ class RandomPractice extends React.Component {
         this.myAutorun()
     }
 
+    showNowWordFound = () => R.pipe(
+        this.store.displayUpdateChangePrefsBtn,
+        () => ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT),
+        () => ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
+    )
+    
+
     nextBtnClicked = () => {
         this.goToNextRandomWord()
     }
@@ -219,40 +226,33 @@ class RandomPractice extends React.Component {
 
     goToNextRandomWord = () => {
         this.store.showLoadingIndicator()
-        let definitions = ''
         dataGoingToStore = {}
         apiRequest.get()
         .then((response) => {
     
             apiResponse = response.data
-            if(_.hasIn(apiResponse, 'results')) {
-                numberOfDefinitions = apiResponse.results.length
-                if(apiResponse.results[0]){
-                    if(apiResponse.results.length > 1) {
-                        definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
-                        dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
-                    }
-                    else {
-                        dataGoingToStore = createDataGoingToStore(apiResponse)
-                    }
-                    this.store.addResponseData(dataGoingToStore)
-                
-                }
-                else {
-                    this.store.displayUpdateChangePrefsBtn()
-                    ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
-                    ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
-                }    
-            }
-            else {
-                dataGoingToStore = createDataGoingToStore(apiResponse)
-                this.store.addResponseData(dataGoingToStore)
-            }      
-        }, () => {
-            this.store.displayUpdateChangePrefsBtn()
-            ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
-            ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
-    })
+            R.ifElse(
+                R.hasPath(['results']),
+                () => R.pipe(
+                    () => numberOfDefinitions = apiResponse.results.length,
+                    () => R.ifElse(
+                        R.isEmpty,
+                        this.showNowWordFound(),
+                        () => R.pipe(
+                            (() => R.ifElse(
+                                R.lt(1),
+                                () => R.pipe(getAllDefinitions, R.flip(createDataGoingToStore))(apiResponse, numberOfDefinitions)(apiResponse),
+                                () => createDataGoingToStore(apiResponse, null)
+                            )(apiResponse.results.length)), 
+                            this.store.addResponseData)()
+                    )(apiResponse.results)),
+                () => R.pipe(
+                    createDataGoingToStore,
+                    this.store.addResponseData
+                )(apiResponse, null)
+            )(apiResponse)()
+        }, 
+        this.showNowWordFound())
         .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 }
@@ -294,7 +294,9 @@ const updateApiRequest = (baseURL) => {
     })
 }
 
-const createDataGoingToStore = (apiResponse, definitions= null) => {
+const createDataGoingToStore = R.curry((apiResponse, definitions) => {
+    reactotron.logImportant('defs', definitions)
+    reactotron.logImportant('apires', apiResponse)
     if(definitions) {
         let pronunciation = null
 
@@ -335,7 +337,7 @@ const createDataGoingToStore = (apiResponse, definitions= null) => {
             definition: []
         }    
     }
-}
+})
 
 const getAllDefinitions = (apiResponse, numberOfDefinitions) => {
     let definitions = []
