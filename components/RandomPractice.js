@@ -9,6 +9,7 @@ import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 
 import AppConstants from '../Constants'
+import reactotron from '../ReactotronConfig'
 
 let firebaseAuth = null
 let userId = null
@@ -19,7 +20,7 @@ const axios = require('axios');
 let apiRequest = null
 
 const Realm = require('realm');
-
+const R = require('ramda');
 const _ = require('lodash')
 
 let dataGoingToStore = {}
@@ -180,6 +181,13 @@ class RandomPractice extends React.Component {
         this.myAutorun()
     }
 
+    showNowWordFound = () => R.pipe(
+        this.store.displayUpdateChangePrefsBtn,
+        () => ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT),
+        () => ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
+    )
+    
+
     nextBtnClicked = () => {
         this.goToNextRandomWord()
     }
@@ -218,40 +226,33 @@ class RandomPractice extends React.Component {
 
     goToNextRandomWord = () => {
         this.store.showLoadingIndicator()
-        let definitions = ''
         dataGoingToStore = {}
         apiRequest.get()
         .then((response) => {
     
             apiResponse = response.data
-            if(_.hasIn(apiResponse, 'results')) {
-                numberOfDefinitions = apiResponse.results.length
-                if(apiResponse.results[0]){
-                    if(apiResponse.results.length > 1) {
-                        definitions = getAllDefinitions(apiResponse, numberOfDefinitions)
-                        dataGoingToStore = createDataGoingToStore(apiResponse, definitions)
-                    }
-                    else {
-                        dataGoingToStore = createDataGoingToStore(apiResponse)
-                    }
-                    this.store.addResponseData(dataGoingToStore)
-                
-                }
-                else {
-                    this.store.displayUpdateChangePrefsBtn()
-                    ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
-                    ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
-                }    
-            }
-            else {
-                dataGoingToStore = createDataGoingToStore(apiResponse)
-                this.store.addResponseData(dataGoingToStore)
-            }      
-        }, () => {
-            this.store.displayUpdateChangePrefsBtn()
-            ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
-            ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
-    })
+            R.ifElse(
+                R.hasPath(['results']),
+                () => R.pipe(
+                    () => numberOfDefinitions = apiResponse.results.length,
+                    () => R.ifElse(
+                        R.isEmpty,
+                        this.showNowWordFound(),
+                        () => R.pipe(
+                            (() => R.ifElse(
+                                R.lt(1),
+                                () => R.pipe(getAllDefinitions, R.flip(createDataGoingToStore))(apiResponse)(apiResponse),
+                                () => createDataGoingToStore(apiResponse, null)
+                            )(apiResponse.results.length)), 
+                            this.store.addResponseData)()
+                    )(apiResponse.results)),
+                () => R.pipe(
+                    createDataGoingToStore,
+                    this.store.addResponseData
+                )(apiResponse, null)
+            )(apiResponse)()
+        }, 
+        this.showNowWordFound())
         .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 }
@@ -275,6 +276,12 @@ const styles = StyleSheet.create({
     }
 })
 
+const getWordPronunciation = (apiResponse) => R.ifElse(
+    R.hasPath(['pronunciation', 'all']),
+    () => R.identity(apiResponse.pronunciation.all),
+    () => R.identity(apiResponse.pronunciation)
+)(apiResponse)
+
 const addKnownWordToCloud = (word) => {
     userWordsDetailsCollection.add(word)
     .then((docRef) => {
@@ -293,55 +300,53 @@ const updateApiRequest = (baseURL) => {
     })
 }
 
-const createDataGoingToStore = (apiResponse, definitions= null) => {
+const createDataGoingToStore = R.curry((apiResponse, definitions) => {
+
+    let pronunciation, partOfSpeech, definition = null
+
     if(definitions) {
-        let pronunciation = null
-
-        if(_.hasIn(apiResponse, 'pronunciation.all'))
-            pronunciation = apiResponse.pronunciation.all
-        else pronunciation = apiResponse.pronunciation
-        return {
-            word: apiResponse.word,
-            partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY),
-            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
-            definition: definitions,    
-        }
+        return R.pipe(
+            () => pronunciation = getWordPronunciation(apiResponse),
+            () => R.identity({
+                word: apiResponse.word,
+                partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY),
+                pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+                frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
+                definition: definitions,    
+            })
+        )()
     }
-    let pronunciation = null
 
-    if(_.hasIn(apiResponse, 'pronunciation.all'))
-        pronunciation = apiResponse.pronunciation.all
-    else pronunciation = apiResponse.pronunciation
+    return R.pipe(
+        () => pronunciation = getWordPronunciation(apiResponse),
+        () => R.ifElse(
+            R.hasPath(['results']),
+            () => R.pipe(
+                () => partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY),
+                () => definition = apiResponse.results[0].definition,
+                () => R.identity({
+                    word: apiResponse.word,
+                    partOfSpeech,
+                    pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+                    frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
+                    definition: [{partOfSpeech, definition}]}))(),
+            () => R.identity({
+                word: apiResponse.word,
+                partOfSpeech: AppConstants.STRING_EMPTY,
+                pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+                frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
+                definition: []    
+            })
+        )(apiResponse)
+    )()
+})
 
-    if(_.hasIn(apiResponse, 'results')) {
-        let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY)
-        let definition = apiResponse.results[0].definition
-        return {
-            word: apiResponse.word,
-            partOfSpeech,
-            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
-            definition: [{partOfSpeech, definition}]
-        }    
-    }
-    else {
-        return {
-            word: apiResponse.word,
-            partOfSpeech: AppConstants.STRING_EMPTY,
-            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
-            definition: []
-        }    
-    }
-}
-
-const getAllDefinitions = (apiResponse, numberOfDefinitions) => {
+const getAllDefinitions = (apiResponse) => {
     let definitions = []
-    for(let i= 0; i < numberOfDefinitions; i++) {
-        let partOfSpeech = (apiResponse.results[i].partOfSpeech ? apiResponse.results[i].partOfSpeech : AppConstants.STRING_EMPTY)
-        let definition = apiResponse.results[i].definition
+    R.forEachObjIndexed((value) => {
+        let partOfSpeech = (value.partOfSpeech ? value.partOfSpeech : AppConstants.STRING_EMPTY)
+        let definition = value.definition
         definitions.push({partOfSpeech, definition})
-    }
+    }, apiResponse.results)
     return definitions
 }
