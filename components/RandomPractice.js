@@ -241,7 +241,7 @@ class RandomPractice extends React.Component {
                         () => R.pipe(
                             (() => R.ifElse(
                                 R.lt(1),
-                                () => R.pipe(getAllDefinitions, R.flip(createDataGoingToStore))(apiResponse, numberOfDefinitions)(apiResponse),
+                                () => R.pipe(getAllDefinitions, R.flip(createDataGoingToStore))(apiResponse)(apiResponse),
                                 () => createDataGoingToStore(apiResponse, null)
                             )(apiResponse.results.length)), 
                             this.store.addResponseData)()
@@ -276,6 +276,12 @@ const styles = StyleSheet.create({
     }
 })
 
+const getWordPronunciation = (apiResponse) => R.ifElse(
+    R.hasPath(['pronunciation', 'all']),
+    () => R.identity(apiResponse.pronunciation.all),
+    () => R.identity(apiResponse.pronunciation)
+)(apiResponse)
+
 const addKnownWordToCloud = (word) => {
     userWordsDetailsCollection.add(word)
     .then((docRef) => {
@@ -295,51 +301,47 @@ const updateApiRequest = (baseURL) => {
 }
 
 const createDataGoingToStore = R.curry((apiResponse, definitions) => {
-    reactotron.logImportant('defs', definitions)
-    reactotron.logImportant('apires', apiResponse)
+
+    let pronunciation, partOfSpeech, definition = null
+
     if(definitions) {
-        let pronunciation = null
-
-        if(_.hasIn(apiResponse, 'pronunciation.all'))
-            pronunciation = apiResponse.pronunciation.all
-        else pronunciation = apiResponse.pronunciation
-        return {
-            word: apiResponse.word,
-            partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY),
-            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
-            definition: definitions,    
-        }
+        return R.pipe(
+            () => pronunciation = getWordPronunciation(apiResponse),
+            () => R.identity({
+                word: apiResponse.word,
+                partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY),
+                pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+                frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
+                definition: definitions,    
+            })
+        )()
     }
-    let pronunciation = null
 
-    if(_.hasIn(apiResponse, 'pronunciation.all'))
-        pronunciation = apiResponse.pronunciation.all
-    else pronunciation = apiResponse.pronunciation
-
-    if(_.hasIn(apiResponse, 'results')) {
-        let partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY)
-        let definition = apiResponse.results[0].definition
-        return {
-            word: apiResponse.word,
-            partOfSpeech,
-            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
-            definition: [{partOfSpeech, definition}]
-        }    
-    }
-    else {
-        return {
-            word: apiResponse.word,
-            partOfSpeech: AppConstants.STRING_EMPTY,
-            pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
-            frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
-            definition: []
-        }    
-    }
+    return R.pipe(
+        () => pronunciation = getWordPronunciation(apiResponse),
+        () => R.ifElse(
+            R.hasPath(['results']),
+            () => R.pipe(
+                () => partOfSpeech = (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY),
+                () => definition = apiResponse.results[0].definition,
+                () => R.identity({
+                    word: apiResponse.word,
+                    partOfSpeech,
+                    pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+                    frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
+                    definition: [{partOfSpeech, definition}]}))(),
+            () => R.identity({
+                word: apiResponse.word,
+                partOfSpeech: AppConstants.STRING_EMPTY,
+                pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
+                frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
+                definition: []    
+            })
+        )(apiResponse)
+    )()
 })
 
-const getAllDefinitions = (apiResponse, numberOfDefinitions) => {
+const getAllDefinitions = (apiResponse) => {
     let definitions = []
     R.forEachObjIndexed((value) => {
         let partOfSpeech = (value.partOfSpeech ? value.partOfSpeech : AppConstants.STRING_EMPTY)
