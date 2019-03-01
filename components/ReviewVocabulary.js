@@ -1,11 +1,13 @@
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid, BackHandler, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid, BackHandler, ScrollView, ViewPagerAndroid } from 'react-native';
 import { Overlay, Button, Icon, Input } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
+
 import AppConstants from '../Constants';
+import reactotron from '../ReactotronConfig'
 
 let listOfWords = []
 let randomWordOriginalId = ''
@@ -22,6 +24,11 @@ class ReviewVocabulary extends React.Component {
     store = this.props.store
 
     myAutorun = autorun(() => {
+        // const reviewDefinition = Object.keys(this.store.reviewDefinition).map((element, index, array) => {
+        //     this.store.reviewDefinition[element]
+        // })
+        // reactotron.logImportant(reviewDefinition)
+        reactotron.logImportant(this.store.reviewDefinition)
     })
 
     static navigationOptions = ({navigation}) => {
@@ -73,8 +80,25 @@ class ReviewVocabulary extends React.Component {
                             <Text style={{fontSize: 24, color: 'black'}}>{AppConstants.STRING_WORD_ENDS_WITH_LETTERS}</Text>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewEndingLetter}{'\''}</Text>
                         </View>
-                        <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>{'\n'}{AppConstants.STRING_DEFINITION}</Text>
-                        <Text style={{fontSize: 18, fontStyle: 'italic'}}>{this.store.currentRewiewDefinition}</Text>
+                        <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}</Text>
+                        <View style={{alignSelf: 'flex-start'}}>
+                            {this.store.reviewDefinition.map((element, index, array) => {
+                                if(array.length !== 1)
+                                    return(
+                                        <View  key={index}>
+                                            <Text style={{fontSize: 18, fontWeight: 'bold'}}>{index + 1}.</Text>
+                                            <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                            <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
+                                        </View>        
+                                    )
+                                return(
+                                    <View key={index}>
+                                        <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                        <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}</Text>
+                                    </View>
+                                )
+                            })}
+                        </View>
                         <Input
                             placeholder= {AppConstants.STRING_WHATS_THE_WORD}
                             onChangeText= {this.onReviewAnswerTextChanged}
