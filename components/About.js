@@ -14,25 +14,17 @@ export default class About extends React.Component {
         headerTintColor: AppConstants.COLOR_WHITE,
     }
 
-    state = {
-        displayLibraries: false
-    }
-
     render() {
         return (
             <View style={styles.container}>
                 <ScrollView style={{flex: 1}}>
                     <View style={{flex: 1, alignItems: 'center'}}>
-                        {this.state.displayLibraries ? this.renderLibraries() : this.renderAbout()}
+                        {this.displayLibraries ? this.renderLibraries() : this.renderAbout()}
                     </View>
                 </ScrollView>
                 <NavigationEvents
-                    onDidFocus={() => {
-                        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-                    }}
-                    onWillBlur={() => {
-                        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-                    }}
+                    onDidFocus={() => BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)}
+                    onWillBlur={() => BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)}
                 />
             </View>
         )
@@ -88,16 +80,19 @@ export default class About extends React.Component {
     }
 
     onBackButtonPressAndroid = () => {
-        if (this.state.displayLibraries) {
-            this.setState({displayLibraries: false})
-            return true;
+        if (this.displayLibraries) {
+            this.props.navigation.setParams({displayLibraries: false})
         } else {
             this.props.navigation.pop()
         }
-      };
+    };
 
     showLibrariesPressed = () => {
-        this.setState({displayLibraries: true})
+        this.props.navigation.setParams({displayLibraries: true})
+    }
+
+    get displayLibraries() {
+        return this.props.navigation.getParam('displayLibraries', false);
     }
 }
 
