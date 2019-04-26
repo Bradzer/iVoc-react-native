@@ -7,6 +7,9 @@ import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
+import axios from 'axios'
+import Realm from 'realm'
+import _ from 'lodash'
 
 import AppConstants from '../Constants'
 
@@ -14,13 +17,7 @@ let firebaseAuth = null
 let userId = null
 let userWordsDetailsCollection = null
 
-const axios = require('axios');
-
 let apiRequest = null
-
-const Realm = require('realm');
-
-const _ = require('lodash')
 
 let dataGoingToStore = {}
 
@@ -56,7 +53,7 @@ class RandomPractice extends React.Component {
 
         return(
             <View style={styles.container}>
-                <SearchBar 
+                <SearchBar
                 placeholder= {AppConstants.STRING_SEARCH}
                 value= {this.store.practiceSpecificWordSearch}
                 onChangeText= {(changedText) => this.onSearchValueChanged(changedText)}
@@ -66,7 +63,7 @@ class RandomPractice extends React.Component {
                 onSubmitEditing={this.onSearchSubmit}
                 />
             {this.store.displayLoadingIndicator === true
-            ? 
+            ?
             <View style={styles.loadingIndicator}>
                 <BallIndicator />
             </View>
@@ -127,7 +124,7 @@ class RandomPractice extends React.Component {
     }
 
     componentDidMount() {
-        
+
         this.hasComponentMounted = true
 
         this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
@@ -149,7 +146,7 @@ class RandomPractice extends React.Component {
                 })
             .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
             })
-    
+
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + userId + AppConstants.STRING_USER_WORDS_DETAILS)
@@ -183,7 +180,7 @@ class RandomPractice extends React.Component {
     nextBtnClicked = () => {
         this.goToNextRandomWord()
     }
-    
+
     addToVocabularyBtnClicked = () => {
         this.checkWordAlreadyInVocabulary(dataGoingToStore)
     }
@@ -201,7 +198,7 @@ class RandomPractice extends React.Component {
         updateApiRequest(this.store.apiUrl)
         this.goToNextRandomWord()
     }
-    
+
     checkWordAlreadyInVocabulary = (wordObject) => {
         userWordsDetailsCollection.where(AppConstants.STRING_WORD, '==', wordObject.word).get()
         .then((querySnapshot) => {
@@ -222,7 +219,7 @@ class RandomPractice extends React.Component {
         dataGoingToStore = {}
         apiRequest.get()
         .then((response) => {
-    
+
             apiResponse = response.data
             if(_.hasIn(apiResponse, 'results')) {
                 numberOfDefinitions = apiResponse.results.length
@@ -235,18 +232,18 @@ class RandomPractice extends React.Component {
                         dataGoingToStore = createDataGoingToStore(apiResponse)
                     }
                     this.store.addResponseData(dataGoingToStore)
-                
+
                 }
                 else {
                     this.store.displayUpdateChangePrefsBtn()
                     ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
                     ToastAndroid.show(AppConstants.TOAST_CHANGE_PREFS, ToastAndroid.SHORT)
-                }    
+                }
             }
             else {
                 dataGoingToStore = createDataGoingToStore(apiResponse)
                 this.store.addResponseData(dataGoingToStore)
-            }      
+            }
         }, () => {
             this.store.displayUpdateChangePrefsBtn()
             ToastAndroid.show(AppConstants.TOAST_NO_WORD_FOUND, ToastAndroid.SHORT)
@@ -305,7 +302,7 @@ const createDataGoingToStore = (apiResponse, definitions= null) => {
             partOfSpeech: (apiResponse.results[0].partOfSpeech ? apiResponse.results[0].partOfSpeech : AppConstants.STRING_EMPTY),
             pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
             frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
-            definition: definitions,    
+            definition: definitions,
         }
     }
     let pronunciation = null
@@ -323,7 +320,7 @@ const createDataGoingToStore = (apiResponse, definitions= null) => {
             pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
             frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
             definition: [{partOfSpeech, definition}]
-        }    
+        }
     }
     else {
         return {
@@ -332,7 +329,7 @@ const createDataGoingToStore = (apiResponse, definitions= null) => {
             pronunciation: (pronunciation ? pronunciation : AppConstants.STRING_EMPTY),
             frequency: (apiResponse.frequency ? apiResponse.frequency.toString() : AppConstants.STRING_EMPTY),
             definition: []
-        }    
+        }
     }
 }
 
