@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import {
-  Keyboard, 
-  Text, 
-  View, 
-  TextInput, 
-  TouchableWithoutFeedback, 
-  StyleSheet, 
-  KeyboardAvoidingView, 
-  ToastAndroid, 
-  Dimensions, 
+  Keyboard,
+  Text,
+  View,
+  TextInput,
+  TouchableWithoutFeedback,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ToastAndroid,
+  Dimensions,
   ScrollView } from 'react-native';
 import { Button, CheckBox } from 'react-native-elements';
 import firebase from 'react-native-firebase'
@@ -49,15 +49,15 @@ export default class LoginScreen extends Component {
             <View style={styles.loginScreenContainer}>
               <Text style={styles.logoText}>{AppConstants.APP_NAME}</Text>
                 <TextInput ref={component => this._email = component} placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} returnKeyType='next' onSubmitEditing={(event) => this.focusPasswordInput()} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
-                <TextInput ref={component => this._passwordInput = component} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
-                <TextInput ref={component => this._confirmPasswordInput = component} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={this.state.signUpChecked ? styles.loginFormTextInput : styles.hideLoginFormTextInput} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
+                <TextInput ref={component => this._passwordInput = component} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry onChangeText={(passwordText) => passwordChanged(passwordText)}/>
+                <TextInput ref={component => this._confirmPasswordInput = component} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={this.state.signUpChecked ? styles.loginFormTextInput : styles.hideLoginFormTextInput} secureTextEntry onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
                 <Button
                   buttonStyle={styles.loginButton}
                   containerStyle={{marginHorizontal: 8}}
                   onPress={() => this.onLoginPress()}
                   title={this.state.signUpChecked ? AppConstants.STRING_SIGN_UP : AppConstants.STRING_LOG_IN}
                 />
-                <Button 
+                <Button
                 containerStyle= {screenStyles.anonymousLogin}
                 title={AppConstants.STRING_LOGIN_ANONYMOUSLY}
                 onPress={() => this.anonymousLoginClicked()}
@@ -105,7 +105,7 @@ export default class LoginScreen extends Component {
           this.props.navigation.navigate(AppConstants.STRING_HOME)
         },
         (createUserError) => ToastAndroid.show(createUserError.code, ToastAndroid.SHORT))
-      }  
+      }
     }
     else {
       if(username && password && confirmPassword)
@@ -113,7 +113,7 @@ export default class LoginScreen extends Component {
           firebaseAuth.createUserWithEmailAndPassword(username, password)
           .then(credentials => {
             ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT)
-            this.props.navigation.navigate(AppConstants.STRING_HOME)    
+            this.props.navigation.navigate(AppConstants.STRING_HOME)
           },
           (signInError) => ToastAndroid.show(signInError.code, ToastAndroid.SHORT))
         }
@@ -128,16 +128,16 @@ export default class LoginScreen extends Component {
     firebaseAuth.signInAnonymously()
     .then((credentials) => {
       usersCollection.add({
-        uid: credentials.user.uid, 
-        email: credentials.user.email, 
-        password: null, 
-        isAnonymous: credentials.user.isAnonymous, 
+        uid: credentials.user.uid,
+        email: credentials.user.email,
+        password: null,
+        isAnonymous: credentials.user.isAnonymous,
         providerId: credentials.user.providerId
       })
       .then(docRef => docRef.update({id: docRef.id}))
       ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT)
       this.props.navigation.navigate(AppConstants.STRING_HOME)
-    }, 
+    },
     (error) => ToastAndroid.show(error.code, ToastAndroid.SHORT))
   }
 
@@ -177,9 +177,9 @@ const confirmPasswordChanged = (confirmPasswordText) => {
 
 const onLoginSuccessful = (credentials) => {
   usersCollection.add({
-    uid: credentials.user.uid, 
-    email: credentials.user.email, 
-    isAnonymous: credentials.user.isAnonymous, 
+    uid: credentials.user.uid,
+    email: credentials.user.email,
+    isAnonymous: credentials.user.isAnonymous,
     providerId: credentials.user.providerId
   })
   .then(docRef => docRef.update({id: docRef.id}))
