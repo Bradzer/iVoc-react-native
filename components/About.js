@@ -10,14 +10,12 @@ class About extends React.Component {
     _didFocusSubscription = null;
     _willBlurSubscription = null;
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            headerTitle: AppConstants.STRING_ABOUT,
-            headerStyle: {
-                backgroundColor: AppConstants.APP_PRIMARY_COLOR
-              },
-              headerTintColor: AppConstants.COLOR_WHITE,
-            }
+    static navigationOptions = {
+        headerTitle: AppConstants.STRING_ABOUT,
+        headerStyle: {
+            backgroundColor: AppConstants.APP_PRIMARY_COLOR
+        },
+        headerTintColor: AppConstants.COLOR_WHITE,
     }
 
     state = {

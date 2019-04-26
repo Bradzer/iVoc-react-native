@@ -37,15 +37,9 @@ class RandomPractice extends React.Component {
     })
 
 
-    static navigationOptions = ({navigation}) => {
-        return {
-            headerTitle: AppConstants.STRING_PRACTICE,
-        }
+    static navigationOptions = {
+        headerTitle: AppConstants.STRING_PRACTICE,
     }
-
-    url = ''
-
-    displayFrequency = 'none';
 
     goToPreferences = () => this.props.navigation.navigate(AppConstants.STRING_SETTINGS)
 
