@@ -1,114 +1,109 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, BackHandler } from 'react-native';
 import { Button, } from 'react-native-elements'
-import { StackActions } from 'react-navigation'
+import { NavigationEvents } from 'react-navigation'
 
 import AppConstants from '../Constants'
 
-class About extends React.Component {
-
-    _didFocusSubscription = null;
-    _willBlurSubscription = null;
-
-    static navigationOptions = ({navigation}) => {
-        return {
-            headerTitle: AppConstants.STRING_ABOUT,
-            headerStyle: {
-                backgroundColor: AppConstants.APP_PRIMARY_COLOR
-              },
-              headerTintColor: AppConstants.COLOR_WHITE,
-            }
-    }
-
-    state = {
-        displayLibraries: false
+export default class About extends React.Component {
+    static navigationOptions = {
+        headerTitle: AppConstants.STRING_ABOUT,
+        headerStyle: {
+            backgroundColor: AppConstants.APP_PRIMARY_COLOR
+        },
+        headerTintColor: AppConstants.COLOR_WHITE,
     }
 
     render() {
         return (
             <View style={styles.container}>
                 <ScrollView style={{flex: 1}}>
-                    {this.state.displayLibraries === false
-                    ?
-                    (
                     <View style={{flex: 1, alignItems: 'center'}}>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', fontSize: 18}}>{AppConstants.APP_NAME}</Text>
-                        <Text style={{fontSize: 18}}>version {AppConstants.APP_VERSION}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_DEVELOPER}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_DEVELOPER_NAME}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_EMAIL}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_EMAIL_VALUE}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_PROJECT_REPO}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_PROJECT_REPO_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_DEVELOPER_GITHUB}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_DEVELOPER_GITHUB_LINK}</Text>
-                        <Button title={AppConstants.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_BIG_THANKS}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_AMIROL}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_KONRAD}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_ROLAND}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_STEEVE}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_BICAS}</Text>
+                        {this.displayLibraries ? this.renderLibraries() : this.renderAbout()}
                     </View>
-                    )
-                    :
-                    (
-                    <View style={{flex: 1, alignItems: 'center'}}>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_AXIOS}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_AXIOS_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_MOBX}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_MOBX_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_ELEMENTS}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_ELEMENTS_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_FIREBASE}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_FIREBASE_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_INDICATORS}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_INDICATORS_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_POPUP_MENU}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_POPUP_MENU_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NAVIGATION}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_REACT_NAVIGATION_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REALM}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_REALM_LINK}</Text>
-                    </View>
-                    )}
                 </ScrollView>
+                <NavigationEvents
+                    onDidFocus={() => BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)}
+                    onWillBlur={() => BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)}
+                />
             </View>
         )
     }
 
-    componentDidMount() {
-        this._didFocusSubscription = this.props.navigation.addListener("didFocus", () => {
-            BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-          });
-
-        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () =>
-            BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        );
+    renderAbout() {
+        return (
+            <React.Fragment>
+                <Label style={{textDecorationLine: 'none'}}>{AppConstants.APP_NAME}</Label>
+                <Value>version {AppConstants.APP_VERSION}</Value>
+                <Label>{AppConstants.STRING_DEVELOPER}</Label>
+                <Value>{AppConstants.STRING_DEVELOPER_NAME}</Value>
+                <Label>{AppConstants.STRING_EMAIL}</Label>
+                <Value>{AppConstants.STRING_EMAIL_VALUE}</Value>
+                <Label>{AppConstants.STRING_PROJECT_REPO}</Label>
+                <Value>{AppConstants.STRING_PROJECT_REPO_LINK}</Value>
+                <Label>{AppConstants.STRING_DEVELOPER_GITHUB}</Label>
+                <Value>{AppConstants.STRING_DEVELOPER_GITHUB_LINK}</Value>
+                <Button title={AppConstants.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
+                <Label>{AppConstants.STRING_BIG_THANKS}</Label>
+                <Value>{AppConstants.STRING_AMIROL}</Value>
+                <Value>{AppConstants.STRING_KONRAD}</Value>
+                <Value>{AppConstants.STRING_ROLAND}</Value>
+                <Value>{AppConstants.STRING_STEEVE}</Value>
+                <Value>{AppConstants.STRING_BICAS}</Value>
+            </React.Fragment>
+        )
     }
 
-    componentWillUnmount() {
-        this._didFocusSubscription && this._didFocusSubscription.remove();
-        this._willBlurSubscription && this._willBlurSubscription.remove();
+    renderLibraries() {
+        return (
+            <React.Fragment>
+                <Label>{AppConstants.STRING_AXIOS}</Label>
+                <Value>{AppConstants.STRING_AXIOS_LINK}</Value>
+                <Label>{AppConstants.STRING_MOBX}</Label>
+                <Value>{AppConstants.STRING_MOBX_LINK}</Value>
+                <Label>{AppConstants.STRING_REACT_NATIVE_ELEMENTS}</Label>
+                <Value>{AppConstants.STRING_REACT_NATIVE_ELEMENTS_LINK}</Value>
+                <Label>{AppConstants.STRING_REACT_NATIVE_FIREBASE}</Label>
+                <Value>{AppConstants.STRING_REACT_NATIVE_FIREBASE_LINK}</Value>
+                <Label>{AppConstants.STRING_REACT_NATIVE_INDICATORS}</Label>
+                <Value>{AppConstants.STRING_REACT_NATIVE_INDICATORS_LINK}</Value>
+                <Label>{AppConstants.STRING_REACT_NATIVE_POPUP_MENU}</Label>
+                <Value>{AppConstants.STRING_REACT_NATIVE_POPUP_MENU_LINK}</Value>
+                <Label>{AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS}</Label>
+                <Value>{AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS_LINK}</Value>
+                <Label>{AppConstants.STRING_REACT_NAVIGATION}</Label>
+                <Value>{AppConstants.STRING_REACT_NAVIGATION_LINK}</Value>
+                <Label>{AppConstants.STRING_REALM}</Label>
+                <Value>{AppConstants.STRING_REALM_LINK}</Value>
+            </React.Fragment>
+        )
     }
 
     onBackButtonPressAndroid = () => {
-        if (this.state.displayLibraries) {
-            this.setState({displayLibraries: false})
-            return true;
+        if (this.displayLibraries) {
+            this.props.navigation.setParams({displayLibraries: false})
         } else {
-        StackActions.pop()
+            this.props.navigation.pop()
         }
-      };
+    };
 
     showLibrariesPressed = () => {
-        this.setState({displayLibraries: true})
+        this.props.navigation.setParams({displayLibraries: true})
+    }
+
+    get displayLibraries() {
+        return this.props.navigation.getParam('displayLibraries', false);
     }
 }
 
-export default About
+function Label({style, ...props}) {
+    style = style ? [styles.label, style] : styles.label;
+    return <Text {...props} style={style} />;
+}
+
+function Value(props) {
+    return <Text {...props} style={styles.value} />;
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -116,5 +111,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 8,
     },
+    label: {
+        marginTop: 16,
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
+        fontSize: 18,
+    },
+    value: {
+        fontSize: 18,
+    }
 })
 

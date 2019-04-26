@@ -5,6 +5,8 @@ import { StyleSheet, View, Text, ToastAndroid, ScrollView, Dimensions } from 're
 import { Icon, CheckBox, Input, ButtonGroup, Button, Divider } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
+import Realm from 'realm'
+import _ from 'lodash'
 
 import {SettingsOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
@@ -12,10 +14,6 @@ import AppConstants from '../Constants'
 let firebaseAuth = null
 let userId = null
 let userWordsDetailsCollection = null
-
-const Realm = require('realm');
-
-const _ = require('lodash')
 
 class Settings extends React.Component {
 
@@ -30,8 +28,8 @@ class Settings extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <SettingsOverflowMenu navigation={navigation} />    
-        }      
+              headerRight: <SettingsOverflowMenu navigation={navigation} />
+        }
     }
 
     partOfSpeechAll = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 0 ? 'italic' : 'normal'}}>{AppConstants.STRING_ALL}</Text>
@@ -77,14 +75,14 @@ class Settings extends React.Component {
                             containerStyle={{marginBottom: 8, display: this.inputDisplay(AppConstants.STRING_ENDING_LETTERS)}}
                         />
                         <Divider />
-                        <CheckBox 
+                        <CheckBox
                         title= {AppConstants.STRING_CONTAINING_LETTERS}
                         checked= {this.store.partialLettersChecked}
                         containerStyle={{alignSelf: 'flex-start', borderWidth: 0, backgroundColor: 'white'}}
                         onPress= {() => this.partialLettersPressed(this.store.partialLettersChecked)}
                         />
                         <Input
-                        placeholder= {AppConstants.STRING_ENTER_CONTAINING_LETTERS} 
+                        placeholder= {AppConstants.STRING_ENTER_CONTAINING_LETTERS}
                         onChangeText= {this.onPartialLettersTextChanged}
                         value= {this.store.partialLettersText}
                         containerStyle={{marginBottom: 8, display: this.inputDisplay(AppConstants.STRING_CONTAINING_LETTERS)}}
@@ -120,7 +118,7 @@ class Settings extends React.Component {
                         containerStyle={{marginBottom: 8, display: this.inputDisplay(AppConstants.STRING_SPECIFIC_WORD)}}
                     />
                     <Divider style={{alignSelf: 'stretch'}}/>
-                    <Button 
+                    <Button
                         title={AppConstants.STRING_CLEAR_VOC}
                         containerStyle={{marginTop: 8, alignSelf: 'center'}}
                         icon={<Icon name='playlist-remove' type='material-community' color='red' containerStyle={{marginRight: 2}}/>}
@@ -132,7 +130,7 @@ class Settings extends React.Component {
     }
 
     componentDidMount() {
-        
+
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + userId + AppConstants.STRING_USER_WORDS_DETAILS)
@@ -157,7 +155,7 @@ class Settings extends React.Component {
         switch(checkBoxType) {
             case AppConstants.STRING_STARTING_LETTERS:
                 return (this.store.startingLettersChecked ? 'flex' : 'none')
-            
+
             case AppConstants.STRING_ENDING_LETTERS:
                 return (this.store.endingLettersChecked ? 'flex' : 'none')
 
@@ -177,43 +175,43 @@ class Settings extends React.Component {
           .then((querySnapshot) => querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
           ToastAndroid.show(AppConstants.TOAST_VOC_LIST_CLEARED, ToastAndroid.SHORT)
     }
-    
+
     changeIndex = (selectedIndex) => {
         this.store.updateIndex(selectedIndex)
     }
-    
+
     startingLettersPressed = (currentStatus) => {
         this.store.updateStartingLettersCheckBox(currentStatus)
     }
-    
+
     endingLettersPressed = (currentStatus) => {
         this.store.updateEndingLettersCheckBox(currentStatus)
     }
-    
+
     specificWordPressed = (currentStatus) => {
         this.store.updateSpecificWordCheckBox(currentStatus)
     }
-    
+
     partialLettersPressed = (currentStatus) => {
         this.store.updatePartialWordCheckbox(currentStatus)
     }
-    
+
     onlyPronunciationWordPressed = (currentStatus) => {
         this.store.updatePronunciationCheckbox(currentStatus)
     }
-    
+
     onStartingLettersTextChanged = (changedText) => {
         this.store.updateStartingLettersText(changedText)
     }
-    
+
     onEndingLettersTextChanged = (changedText) => {
         this.store.updateEndingLettersText(changedText)
     }
-    
+
     onPartialLettersTextChanged = (changedText) => {
         this.store.updatePartialLettersText(changedText)
     }
-    
+
     onSpecificWordTextChanged = (changedText) => {
         this.store.updateSpecificWordText(changedText)
     }

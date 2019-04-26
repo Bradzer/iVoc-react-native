@@ -22,7 +22,7 @@ class MyVocabulary extends React.Component {
     _willBlurSubscription = null;
 
     store = this.props.store
-    
+
     static navigationOptions = ({navigation}) => {
         return {
             headerTitle: AppConstants.STRING_VOCABULARY,
@@ -32,17 +32,15 @@ class MyVocabulary extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <MyVocabularyOverflowMenu navigation={navigation} />          
+              headerRight: <MyVocabularyOverflowMenu navigation={navigation} />
         }
     }
 
-    listOfWords = []
-
-    render() {   
+    render() {
 
         return(
             <View style={styles.container}>
-                <SearchBar 
+                <SearchBar
                 placeholder= {AppConstants.STRING_SEARCH}
                 value= {this.store.searchBarValue}
                 onChangeText= {(changedText) => this.onSearchValueChanged(changedText, true)}
@@ -56,7 +54,7 @@ class MyVocabulary extends React.Component {
                     ) :
                     <FlatList
                         keyExtractor={keyExtractor}
-                        data={this.store.listOfWords} 
+                        data={this.store.listOfWords}
                         renderItem={this.renderItem}
                     />
                 }
@@ -116,7 +114,7 @@ class MyVocabulary extends React.Component {
         this._willBlurSubscription = this.props.navigation.addListener('willBlur', () =>
             BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
         );
-  
+
     }
 
     componentWillUnmount() {
@@ -157,7 +155,7 @@ class MyVocabulary extends React.Component {
   }
 
   onSearchValueCleared = () => {
-    if(timer) clearTimeout(timer)   
+    if(timer) clearTimeout(timer)
     this.store.showLoadingIndicator()
     let listOfWords = []
     userWordsDetailsCollection.get()
@@ -169,7 +167,7 @@ class MyVocabulary extends React.Component {
         if(listOfWords.length === 0) {
             ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
             ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
-        }    
+        }
     })
 }
   onSearchValueChanged = (changedText, withTimer) => {
@@ -186,7 +184,7 @@ class MyVocabulary extends React.Component {
                     })
                     this.store.updateListOfWords(listOfWords)
                     this.store.updateSearchResults(changedText)
-                })    
+                })
             }, 1000)
         }
         else {
@@ -199,7 +197,7 @@ class MyVocabulary extends React.Component {
                 })
                 this.store.updateListOfWords(listOfWords)
                 this.store.updateSearchResults(changedText)
-            })    
+            })
         }
   }
 
@@ -209,7 +207,7 @@ class MyVocabulary extends React.Component {
   }
 
   renderItem = ({item, index}) => {
-    
+
     let successPercentage = (item.numberOfRemembrances / item.numberOfAppearances) * 100
     successPercentage = (successPercentage.toString()).substring(0, 5) + '%'
 
@@ -267,4 +265,3 @@ const styles = StyleSheet.create({
   const setMultiDeletionStatus = (status) => {
       multiDeletionStatus = status
   }
-  
