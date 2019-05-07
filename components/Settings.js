@@ -34,11 +34,11 @@ class Settings extends React.Component {
         }      
     }
 
-    partOfSpeechAll = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 0 ? 'italic' : 'normal'}}>{AppConstants.STRING_ALL}</Text>
-    partOfSpeechVerb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 1 ? 'italic' : 'normal'}}>{AppConstants.STRING_VERB}</Text>
-    partOfSpeechNoun = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 2 ? 'italic' : 'normal'}}>{AppConstants.STRING_NOUN}</Text>
-    partOfSpeechAdjective = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 3 ? 'italic' : 'normal'}}>{AppConstants.STRING_ADJECTIVE}</Text>
-    partOfSpeechAdverb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === 4 ? 'italic' : 'normal'}}>{AppConstants.STRING_ADVERB}</Text>
+    partOfSpeechAll = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_ALL_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ALL}</Text>
+    partOfSpeechVerb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_VERB_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_VERB}</Text>
+    partOfSpeechNoun = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_NOUN_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_NOUN}</Text>
+    partOfSpeechAdjective = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_ADJECTIVE_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ADJECTIVE}</Text>
+    partOfSpeechAdverb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_ADVERB_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ADVERB}</Text>
 
     navigationListener = this.props.navigation.addListener('didFocus', () => {
     })
