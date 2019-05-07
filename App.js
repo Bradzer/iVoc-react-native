@@ -31,7 +31,7 @@ const settingsScreenSchema = {
       partialLettersChecked: 'bool?',
       specificWordChecked: 'bool?',
       onlyPronunciationWordChecked: 'bool?',
-      updatedIndex: 'int?',
+      partOfSpeechIndex: 'int?',
       startingLettersText: 'string?',
       endingLettersText: 'string?',
       partialLettersText: 'string?',

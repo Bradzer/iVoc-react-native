@@ -33,7 +33,7 @@ class State {
     buttonLeftIconType='entypo'
     buttonLeftTitle="Add to vocabulary"
     displayChangePrefsBtn= 'none'
-    selectedIndex= 0
+    selectedPartOfSpeechIndex= 0
     startingLettersChecked= false
     endingLettersChecked= false
     realm= null
@@ -172,7 +172,7 @@ class State {
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
-                realm.objects('settingsScreen').filtered('pk = 0').update('updatedIndex', settingsPreferencesInRealm.updatedIndex)
+                realm.objects('settingsScreen').filtered('pk = 0').update('partOfSpeechIndex', settingsPreferencesInRealm.partOfSpeechIndex)
                 realm.objects('settingsScreen').filtered('pk = 0').update('startingLettersChecked', settingsPreferencesInRealm.startingLettersChecked)
                 realm.objects('settingsScreen').filtered('pk = 0').update('endingLettersChecked', settingsPreferencesInRealm.endingLettersChecked)
                 realm.objects('settingsScreen').filtered('pk = 0').update('partialLettersChecked', settingsPreferencesInRealm.partialLettersChecked)
@@ -186,7 +186,7 @@ class State {
         })
         .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
 
-        this.selectedIndex= settingsPreferencesInRealm.updatedIndex
+        this.selectedPartOfSpeechIndex= settingsPreferencesInRealm.partOfSpeechIndex
         this.startingLettersChecked= settingsPreferencesInRealm.startingLettersChecked
         this.endingLettersChecked= settingsPreferencesInRealm.endingLettersChecked
         this.partialLettersChecked= settingsPreferencesInRealm.partialLettersChecked
@@ -200,11 +200,11 @@ class State {
         this.randomWordPrefDisplay= settingsPreferencesInRealm.specificWordChecked ? 'none' : 'flex'
     })
 
-    updateIndex = action((selectedIndex) => {
+    updateIndex = action((selectedPartOfSpeechIndex) => {
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
-                realm.objects('settingsScreen').filtered('pk = 0').update('updatedIndex', selectedIndex)
+                realm.objects('settingsScreen').filtered('pk = 0').update('partOfSpeechIndex', selectedPartOfSpeechIndex)
     
                 let settingsScreen = realm.objects('settingsScreen')
                 let customUrl = getCustomUrlPart(getPreferencesData(settingsScreen))
@@ -214,7 +214,7 @@ class State {
         })
         .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     
-        this.selectedIndex= selectedIndex
+        this.selectedPartOfSpeechIndex= selectedPartOfSpeechIndex
     })
 
     updateStartingLettersCheckBox = action((currentStatus) => {
@@ -426,7 +426,7 @@ decorate(State, {
     buttonLeftIconType: observable,
     buttonLeftTitle: observable,
     displayChangePrefsBtn: observable,
-    selectedIndex: observable,
+    selectedPartOfSpeechIndex: observable,
     startingLettersChecked: observable,
     endingLettersChecked: observable,
     realm: observable,
@@ -469,7 +469,7 @@ export default store
 
 function getPreferencesData(settingsScreen) {
 
-    let updatedIndex = (_.valuesIn(settingsScreen))[0].updatedIndex
+    let partOfSpeechIndex = (_.valuesIn(settingsScreen))[0].partOfSpeechIndex
     let startingLettersChecked = (_.valuesIn(settingsScreen))[0].startingLettersChecked
     let endingLettersChecked = (_.valuesIn(settingsScreen))[0].endingLettersChecked
     let partialLettersChecked = (_.valuesIn(settingsScreen))[0].partialLettersChecked
@@ -483,7 +483,7 @@ function getPreferencesData(settingsScreen) {
     partialLettersText =  _.escapeRegExp(partialLettersText)
     
     let preferencesData = {
-        updatedIndex,
+        partOfSpeechIndex,
         startingLettersChecked,
         endingLettersChecked,
         partialLettersChecked,
@@ -498,12 +498,12 @@ function getPreferencesData(settingsScreen) {
   function getCustomUrlPart(preferencesData) {
 
     let customUrl = ''
-    const { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText } = preferencesData
+    const { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, partOfSpeechIndex, startingLettersText, endingLettersText, partialLettersText } = preferencesData
     
     if(startingLettersChecked && startingLettersText ) {
         if (endingLettersChecked && endingLettersText) {
             if(partialLettersChecked && partialLettersText) {
-                switch(updatedIndex) {
+                switch(partOfSpeechIndex) {
 
                     case 1:
                         customUrl += '?partOfSpeech=verb&'
@@ -532,7 +532,7 @@ function getPreferencesData(settingsScreen) {
                 customUrl += 'letterPattern=^' + startingLettersTextLower + '.*' + partialLettersTextLower + '.*' + endingLettersTextLower + '$&hasDetails=definitions&random=true'    
             }
             else {
-                switch(updatedIndex) {
+                switch(partOfSpeechIndex) {
 
                     case 1:
                         customUrl += '?partOfSpeech=verb&'
@@ -562,7 +562,7 @@ function getPreferencesData(settingsScreen) {
         }
         else {
 
-            switch(updatedIndex) {
+            switch(partOfSpeechIndex) {
 
                 case 1:
                     customUrl += '?partOfSpeech=verb&'
@@ -592,7 +592,7 @@ function getPreferencesData(settingsScreen) {
     else if (endingLettersChecked && endingLettersText) {
         if(partialLettersChecked && partialLettersText) {
 
-            switch(updatedIndex) {
+            switch(partOfSpeechIndex) {
 
                 case 1:
                     customUrl += '?partOfSpeech=verb&'
@@ -621,7 +621,7 @@ function getPreferencesData(settingsScreen) {
 
         }
         else {
-            switch(updatedIndex) {
+            switch(partOfSpeechIndex) {
 
                 case 1:
                     customUrl += '?partOfSpeech=verb&'
@@ -645,7 +645,7 @@ function getPreferencesData(settingsScreen) {
     }
     else if(partialLettersChecked && partialLettersText) {
 
-        switch(updatedIndex) {
+        switch(partOfSpeechIndex) {
 
             case 1:
                 customUrl += '?partOfSpeech=verb&'
@@ -671,7 +671,7 @@ function getPreferencesData(settingsScreen) {
         customUrl += 'letterPattern=^' + '.*' + partialLettersTextLower + '.*' + '$&hasDetails=definitions&random=true'
     }
     else{
-        switch(updatedIndex) {
+        switch(partOfSpeechIndex) {
 
             case 0:
                 customUrl += '?hasDetails=definitions&random=true'

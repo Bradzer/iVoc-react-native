@@ -34,11 +34,11 @@ class Settings extends React.Component {
         }      
     }
 
-    partOfSpeechAll = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_ALL_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ALL}</Text>
-    partOfSpeechVerb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_VERB_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_VERB}</Text>
-    partOfSpeechNoun = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_NOUN_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_NOUN}</Text>
-    partOfSpeechAdjective = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_ADJECTIVE_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ADJECTIVE}</Text>
-    partOfSpeechAdverb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedIndex === AppConstants.PART_OF_SPEECH_ADVERB_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ADVERB}</Text>
+    partOfSpeechAll = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedPartOfSpeechIndex === AppConstants.PART_OF_SPEECH_ALL_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ALL}</Text>
+    partOfSpeechVerb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedPartOfSpeechIndex === AppConstants.PART_OF_SPEECH_VERB_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_VERB}</Text>
+    partOfSpeechNoun = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedPartOfSpeechIndex === AppConstants.PART_OF_SPEECH_NOUN_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_NOUN}</Text>
+    partOfSpeechAdjective = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedPartOfSpeechIndex === AppConstants.PART_OF_SPEECH_ADJECTIVE_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ADJECTIVE}</Text>
+    partOfSpeechAdverb = () => <Text style={{fontWeight: 'bold', fontStyle: this.store.selectedPartOfSpeechIndex === AppConstants.PART_OF_SPEECH_ADVERB_INDEX ? 'italic' : 'normal'}}>{AppConstants.STRING_ADVERB}</Text>
 
     navigationListener = this.props.navigation.addListener('didFocus', () => {
     })
@@ -94,7 +94,7 @@ class Settings extends React.Component {
                         <ButtonGroup
                             onPress={this.changeIndex}
                             buttons={buttons}
-                            selectedIndex={this.store.selectedIndex}
+                            selectedIndex={this.store.selectedPartOfSpeechIndex}
                             containerStyle={{marginBottom: 16}}
                         />
                         <Divider />
@@ -146,7 +146,7 @@ class Settings extends React.Component {
                     this.store.updateSettingsPreferences(settingsPreferencesInRealm)
                 }
                 else{
-                    realm.create(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH, { pk: 0 , updatedIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
+                    realm.create(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH, { pk: 0 , partOfSpeechIndex: 0, startingLettersChecked: false, endingLettersChecked: false, partialLettersChecked: false, onlyPronunciationWordChecked: false, specificWordChecked: false, startingLettersText: '', endingLettersText: '', partialLettersText: '', specificWordText: '', apiUrl: AppConstants.RANDOM_URL})
                 }
             })
         })
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   });
 
   function getSettingsPreferencesInRealm(settingsScreenRealmData) {
-    let updatedIndex = (_.valuesIn(settingsScreenRealmData))[0].updatedIndex
+    let partOfSpeechIndex = (_.valuesIn(settingsScreenRealmData))[0].partOfSpeechIndex
     let startingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].startingLettersChecked
     let endingLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].endingLettersChecked
     let partialLettersChecked = (_.valuesIn(settingsScreenRealmData))[0].partialLettersChecked
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     let specificWordText = (_.valuesIn(settingsScreenRealmData))[0].specificWordText
     let apiUrl = (_.valuesIn(settingsScreenRealmData))[0].apiUrl
 
-    return { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, specificWordChecked, updatedIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
+    return { startingLettersChecked, endingLettersChecked, partialLettersChecked, onlyPronunciationWordChecked, specificWordChecked, partOfSpeechIndex, startingLettersText, endingLettersText, partialLettersText, specificWordText, apiUrl }
 }
 
 function getWidth() {
