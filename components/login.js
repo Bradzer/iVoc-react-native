@@ -22,7 +22,6 @@ const usersCollection = firebase.firestore().collection("users");
 
 export default class LoginScreen extends Component {
 	state = {
-		displayComponent: "none",
 		signUpChecked: false,
 		loginButtonTitle: AppConstants.STRING_LOG_IN,
 		paddingTop: undefined,
@@ -40,91 +39,87 @@ export default class LoginScreen extends Component {
 	};
 
 	render() {
-		return (
-			<View
-				style={[
-					screenStyles.container,
-					{ display: this.state.displayComponent }
-				]}
-			>
-				<ScrollView
-					style={{ flex: 1 }}
-					contentContainerStyle={{ paddingTop: this.state.paddingTop }}
-				>
-					<KeyboardAvoidingView
-						style={styles.containerView}
-						behavior='padding'
-						onLayout={this.onLayout}
+		if (!firebaseAuth.currentUser)
+			return (
+				<View style={screenStyles.container}>
+					<ScrollView
+						style={{ flex: 1 }}
+						contentContainerStyle={{ paddingTop: this.state.paddingTop }}
 					>
-						<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-							<View style={styles.loginScreenContainer}>
-								<Text style={styles.logoText}>{AppConstants.APP_NAME}</Text>
-								<TextInput
-									ref={component => (this._email = component)}
-									value={this.state.username}
-									placeholder='E-mail'
-									placeholderColor='#c4c3cb'
-									style={styles.loginFormTextInput}
-									returnKeyType='next'
-									onSubmitEditing={event => this.focusPasswordInput()}
-									onChangeText={this.usernameChanged}
-								/>
-								<TextInput
-									ref={component => (this._passwordInput = component)}
-									value={this.state.password}
-									placeholder='Password'
-									placeholderColor='#c4c3cb'
-									returnKeyType={this.state.signUpChecked ? "next" : "go"}
-									onSubmitEditing={event => this.onPasswordSubmitted()}
-									style={styles.loginFormTextInput}
-									secureTextEntry={true}
-									onChangeText={this.passwordChanged}
-								/>
-								<TextInput
-									ref={component => (this._confirmPasswordInput = component)}
-									value={this.state.confirmPassword}
-									placeholder='Confirm password'
-									placeholderColor='#c4c3cb'
-									returnKeyType='go'
-									onSubmitEditing={event => this.onConfirmPasswordSubmitted()}
-									style={
-										this.state.signUpChecked
-											? styles.loginFormTextInput
-											: styles.hideLoginFormTextInput
-									}
-									secureTextEntry={true}
-									onChangeText={this.confirmPasswordChanged}
-								/>
-								<Button
-									buttonStyle={styles.loginButton}
-									containerStyle={{ marginHorizontal: 8 }}
-									onPress={() => this.onLoginPress()}
-									title={
-										this.state.signUpChecked
-											? AppConstants.STRING_SIGN_UP
-											: AppConstants.STRING_LOG_IN
-									}
-								/>
-								<Button
-									containerStyle={screenStyles.anonymousLogin}
-									title={AppConstants.STRING_LOGIN_ANONYMOUSLY}
-									onPress={() => this.anonymousLoginClicked()}
-								/>
-								<CheckBox
-									title={AppConstants.STRING_SIGN_UP}
-									containerStyle={[
-										screenStyles.signUpChkBx,
-										{ borderWidth: 0 }
-									]}
-									checked={this.state.signUpChecked}
-									onPress={() => this.signUpPressed(this.state.signUpChecked)}
-								/>
-							</View>
-						</TouchableWithoutFeedback>
-					</KeyboardAvoidingView>
-				</ScrollView>
-			</View>
-		);
+						<KeyboardAvoidingView
+							style={styles.containerView}
+							behavior='padding'
+							onLayout={this.onLayout}
+						>
+							<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+								<View style={styles.loginScreenContainer}>
+									<Text style={styles.logoText}>{AppConstants.APP_NAME}</Text>
+									<TextInput
+										ref={component => (this._email = component)}
+										value={this.state.username}
+										placeholder='E-mail'
+										placeholderColor='#c4c3cb'
+										style={styles.loginFormTextInput}
+										returnKeyType='next'
+										onSubmitEditing={event => this.focusPasswordInput()}
+										onChangeText={this.usernameChanged}
+									/>
+									<TextInput
+										ref={component => (this._passwordInput = component)}
+										value={this.state.password}
+										placeholder='Password'
+										placeholderColor='#c4c3cb'
+										returnKeyType={this.state.signUpChecked ? "next" : "go"}
+										onSubmitEditing={event => this.onPasswordSubmitted()}
+										style={styles.loginFormTextInput}
+										secureTextEntry={true}
+										onChangeText={this.passwordChanged}
+									/>
+									<TextInput
+										ref={component => (this._confirmPasswordInput = component)}
+										value={this.state.confirmPassword}
+										placeholder='Confirm password'
+										placeholderColor='#c4c3cb'
+										returnKeyType='go'
+										onSubmitEditing={event => this.onConfirmPasswordSubmitted()}
+										style={
+											this.state.signUpChecked
+												? styles.loginFormTextInput
+												: styles.hideLoginFormTextInput
+										}
+										secureTextEntry={true}
+										onChangeText={this.confirmPasswordChanged}
+									/>
+									<Button
+										buttonStyle={styles.loginButton}
+										containerStyle={{ marginHorizontal: 8 }}
+										onPress={() => this.onLoginPress()}
+										title={
+											this.state.signUpChecked
+												? AppConstants.STRING_SIGN_UP
+												: AppConstants.STRING_LOG_IN
+										}
+									/>
+									<Button
+										containerStyle={screenStyles.anonymousLogin}
+										title={AppConstants.STRING_LOGIN_ANONYMOUSLY}
+										onPress={() => this.anonymousLoginClicked()}
+									/>
+									<CheckBox
+										title={AppConstants.STRING_SIGN_UP}
+										containerStyle={[
+											screenStyles.signUpChkBx,
+											{ borderWidth: 0 }
+										]}
+										checked={this.state.signUpChecked}
+										onPress={() => this.signUpPressed(this.state.signUpChecked)}
+									/>
+								</View>
+							</TouchableWithoutFeedback>
+						</KeyboardAvoidingView>
+					</ScrollView>
+				</View>
+			);
 	}
 
 	onLayout = event => {
@@ -138,7 +133,6 @@ export default class LoginScreen extends Component {
 	componentDidMount() {
 		if (firebaseAuth.currentUser)
 			this.props.navigation.navigate(AppConstants.STRING_HOME);
-		else this.setState({ displayComponent: "flex" });
 	}
 
 	signUpPressed(currentStatus) {
