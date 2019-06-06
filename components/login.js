@@ -19,17 +19,16 @@ import AppConstants from '../Constants'
 const firebaseAuth = firebase.auth()
 const usersCollection = firebase.firestore().collection('users')
 
-let username = ''
-let password = ''
-let confirmPassword = ''
-
 export default class LoginScreen extends Component {
 
   state = {
     displayComponent: 'none',
     signUpChecked: false,
     loginButtonTitle: AppConstants.STRING_LOG_IN,
-    paddingTop: undefined
+    paddingTop: undefined,
+    username: '',
+    password: '',
+    confirmPassword: ''
   }
 
   focusPasswordInput = () => {
@@ -40,6 +39,7 @@ export default class LoginScreen extends Component {
     this._confirmPasswordInput.focus()
   }
 
+
   render() {
     return (
       <View style={[screenStyles.container, {display: this.state.displayComponent}]}>
@@ -48,9 +48,9 @@ export default class LoginScreen extends Component {
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.loginScreenContainer}>
               <Text style={styles.logoText}>{AppConstants.APP_NAME}</Text>
-                <TextInput ref={component => this._email = component} placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} returnKeyType='next' onSubmitEditing={(event) => this.focusPasswordInput()} onChangeText={(usernameText) => usernameChanged(usernameText)}/>
-                <TextInput ref={component => this._passwordInput = component} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={(passwordText) => passwordChanged(passwordText)}/>
-                <TextInput ref={component => this._confirmPasswordInput = component} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={this.state.signUpChecked ? styles.loginFormTextInput : styles.hideLoginFormTextInput} secureTextEntry={true} onChangeText={(confirmPasswordText) => confirmPasswordChanged(confirmPasswordText)}/>
+                <TextInput ref={component => this._email = component} value={this.state.username} placeholder="E-mail" placeholderColor="#c4c3cb" style={styles.loginFormTextInput} returnKeyType='next' onSubmitEditing={(event) => this.focusPasswordInput()} onChangeText={this.usernameChanged}/>
+                <TextInput ref={component => this._passwordInput = component} value={this.state.password} placeholder="Password" placeholderColor="#c4c3cb" returnKeyType={this.state.signUpChecked ? 'next' : 'go'} onSubmitEditing={(event) => this.onPasswordSubmitted()}style={styles.loginFormTextInput} secureTextEntry={true} onChangeText={this.passwordChanged}/>
+                <TextInput ref={component => this._confirmPasswordInput = component} value={this.state.confirmPassword} placeholder="Confirm password" placeholderColor="#c4c3cb" returnKeyType='go' onSubmitEditing={(event) => this.onConfirmPasswordSubmitted()} style={this.state.signUpChecked ? styles.loginFormTextInput : styles.hideLoginFormTextInput} secureTextEntry={true} onChangeText={this.confirmPasswordChanged}/>
                 <Button
                   buttonStyle={styles.loginButton}
                   containerStyle={{marginHorizontal: 8}}
@@ -96,10 +96,11 @@ export default class LoginScreen extends Component {
     this._passwordInput.blur()
     this._confirmPasswordInput.blur()
   }
+
   onLoginPress() {
     if(!this.state.signUpChecked) {
-      if(username && password) {
-        firebaseAuth.signInWithEmailAndPassword(username, password)
+      if(this.state.username && this.state.password) {
+        firebaseAuth.signInWithEmailAndPassword(this.state.username, this.state.password)
         .then((credentials) => {
           onLoginSuccessful(credentials)
           this.props.navigation.navigate(AppConstants.STRING_HOME)
@@ -108,9 +109,9 @@ export default class LoginScreen extends Component {
       }  
     }
     else {
-      if(username && password && confirmPassword)
-        if(password === confirmPassword) {
-          firebaseAuth.createUserWithEmailAndPassword(username, password)
+      if(this.state.username && this.state.password && this.state.confirmPassword)
+        if(this.state.password === this.state.confirmPassword) {
+          firebaseAuth.createUserWithEmailAndPassword(this.state.username, this.state.password)
           .then(credentials => {
             ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT)
             this.props.navigation.navigate(AppConstants.STRING_HOME)    
@@ -145,9 +146,23 @@ export default class LoginScreen extends Component {
     if(this.state.signUpChecked) this.focusConfirmPasswordInput()
     else this.onLoginPress()
   }
+
   onConfirmPasswordSubmitted = (event) => {
     this.onLoginPress()
   }
+
+  usernameChanged = usernameText => {
+    this.setState({username: usernameText})
+  }
+
+  passwordChanged = passwordText => {
+    this.setState({password: passwordText})
+  }
+  
+  confirmPasswordChanged = confirmPasswordText => {
+    this.setState({confirmPassword: confirmPasswordText})
+  }
+   
 }
 
 const screenStyles = StyleSheet.create({
@@ -162,18 +177,6 @@ const screenStyles = StyleSheet.create({
     alignSelf: 'center'
   }
 })
-
-const usernameChanged = (usernameText) => {
-  username = usernameText
-}
-
-const passwordChanged = (passwordText) => {
-  password = passwordText
-}
-
-const confirmPasswordChanged = (confirmPasswordText) => {
-  confirmPassword = confirmPasswordText
-}
 
 const onLoginSuccessful = (credentials) => {
   usersCollection.add({
