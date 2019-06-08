@@ -8,7 +8,6 @@ import {
 	StyleSheet,
 	KeyboardAvoidingView,
 	ToastAndroid,
-	Dimensions,
 	ScrollView
 } from "react-native";
 import { Button, CheckBox } from "react-native-elements";
@@ -24,7 +23,6 @@ export default class LoginScreen extends Component {
 	state = {
 		signUpChecked: false,
 		loginButtonTitle: AppConstants.STRING_LOG_IN,
-		paddingTop: undefined,
 		username: "",
 		password: "",
 		confirmPassword: ""
@@ -43,14 +41,12 @@ export default class LoginScreen extends Component {
 			return (
 				<View style={screenStyles.container}>
 					<ScrollView
-						style={{ flex: 1 }}
-						contentContainerStyle={{ paddingTop: this.state.paddingTop }}
+						contentContainerStyle={{
+							flexGrow: 1,
+							justifyContent: "center"
+						}}
 					>
-						<KeyboardAvoidingView
-							style={styles.containerView}
-							behavior='padding'
-							onLayout={this.onLayout}
-						>
+						<KeyboardAvoidingView style={styles.containerView}>
 							<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 								<View style={styles.loginScreenContainer}>
 									<Text style={styles.logoText}>{AppConstants.APP_NAME}</Text>
@@ -107,10 +103,7 @@ export default class LoginScreen extends Component {
 									/>
 									<CheckBox
 										title={AppConstants.STRING_SIGN_UP}
-										containerStyle={[
-											screenStyles.signUpChkBx,
-											{ borderWidth: 0 }
-										]}
+										containerStyle={screenStyles.signUpChkBx}
 										checked={this.state.signUpChecked}
 										onPress={() => this.signUpPressed(this.state.signUpChecked)}
 									/>
@@ -121,14 +114,6 @@ export default class LoginScreen extends Component {
 				</View>
 			);
 	}
-
-	onLayout = event => {
-		if (this.state.marginTop) return;
-		let { height } = event.nativeEvent.layout;
-		let parentHeight = Dimensions.get("window").height;
-		let paddingTop = (parentHeight - height) / 2;
-		this.setState({ paddingTop });
-	};
 
 	componentDidMount() {
 		if (firebaseAuth.currentUser)
@@ -246,7 +231,8 @@ const screenStyles = StyleSheet.create({
 		marginHorizontal: 8
 	},
 	signUpChkBx: {
-		alignSelf: "center"
+		alignSelf: "center",
+		borderWidth: 0
 	}
 });
 

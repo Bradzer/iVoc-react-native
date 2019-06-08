@@ -9,6 +9,7 @@ containerView: {
 },
 loginScreenContainer: {
   flex: 1,
+  justifyContent: 'center',
 },
 logoText: {
   fontSize: 40,
