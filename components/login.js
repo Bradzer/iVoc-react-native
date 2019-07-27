@@ -117,9 +117,10 @@ export default class LoginScreen extends Component {
 	}
 
 	componentDidMount() {
-		if (firebaseAuth.currentUser)
-			this.props.navigation.navigate(AppConstants.STRING_HOME);
+		if (firebaseAuth.currentUser) this.navigateToHome()
 	}
+
+	navigateToHome = () => this.props.navigation.navigate(AppConstants.STRING_HOME)
 
 	signUpPressed(currentStatus) {
 		this.setState({ signUpChecked: !currentStatus });
@@ -137,7 +138,7 @@ export default class LoginScreen extends Component {
 					.then(
 						credentials => {
 							onLoginSuccessful(credentials);
-							this.props.navigation.navigate(AppConstants.STRING_HOME);
+							this.navigateToHome();
 						},
 						createUserError =>
 							ToastAndroid.show(createUserError.code, ToastAndroid.SHORT)
@@ -161,7 +162,7 @@ export default class LoginScreen extends Component {
 									AppConstants.TOAST_LOG_IN_SUCCESS,
 									ToastAndroid.SHORT
 								);
-								this.props.navigation.navigate(AppConstants.STRING_HOME);
+								this.navigateToHome();
 							},
 							signInError =>
 								ToastAndroid.show(signInError.code, ToastAndroid.SHORT)
@@ -195,7 +196,7 @@ export default class LoginScreen extends Component {
 					AppConstants.TOAST_LOG_IN_SUCCESS,
 					ToastAndroid.SHORT
 				);
-				this.props.navigation.navigate(AppConstants.STRING_HOME);
+				this.navigateToHome();
 			},
 			error => ToastAndroid.show(error.code, ToastAndroid.SHORT)
 		);
