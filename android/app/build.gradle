@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: 'com.google.gms.google-services' //firebase purpose
 
+def useIntlJsc = false
+
 import com.android.build.OutputFile
 
 /**
@@ -144,6 +146,11 @@ android {
 }
 
 dependencies {
+    if (useIntlJsc) {
+        implementation 'org.webkit:android-jsc-intl:+'
+    } else {
+        implementation 'org.webkit:android-jsc:+'
+    }
     implementation project(':realm')
     implementation project(':react-native-firebase')
     implementation project(':react-native-vector-icons')
