@@ -40,13 +40,14 @@ class Home extends React.Component {
                         buttonStyle={{maxWidth: 250}} 
                         containerStyle={{marginVertical: 16}} 
                         title={AppConstants.STRING_START_RANDOM_PRACTICE}
-                        onPress={() => this.props.navigation.navigate('RandomPractice')}
+                        onPress={this.navigateToRandomPractice}
                         />
                     <Button 
+                    raised
                     titleStyle={{ fontSize: 24}} 
                     buttonStyle={{maxWidth: 250}} 
                     title={AppConstants.STRING_REVIEW_MY_VOCABULARY}
-                    onPress={() => this.props.navigation.navigate('ReviewVocabulary')}
+                    onPress={this.navigateToReviewVocabulary}
                     />
                 </View>
             </View>
@@ -69,6 +70,10 @@ class Home extends React.Component {
             }
         })
     }
+
+    navigateToRandomPractice = () => this.props.navigation.navigate('RandomPractice')
+
+    navigateToReviewVocabulary = () => this.props.navigation.navigate('ReviewVocabulary')
 
     onBackButtonPressAndroid = () => {
         if (firebase.auth().currentUser) {
