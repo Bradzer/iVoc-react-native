@@ -113,6 +113,7 @@ export default class LoginScreen extends Component {
 					</ScrollView>
 				</View>
 			);
+		return null;
 	}
 
 	componentDidMount() {
