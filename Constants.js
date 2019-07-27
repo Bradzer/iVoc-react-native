@@ -26,6 +26,7 @@ const AppConstants = Object.freeze({
     STRING_REVIEW: 'Review',
     STRING_SETTINGS: 'Settings',
     STRING_HOME: 'Home',
+    TOAST_EXIT_APP: 'Tap back button again to exit',
     STRING_VOC_EMPTY: 'Your vocabulary is empty',
     STRING_REVIEW_OVER: 'The review is over',
     STRING_DEFINITION: 'Definition',

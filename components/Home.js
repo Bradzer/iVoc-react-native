@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, BackHandler, } from 'react-native';
+import { StyleSheet, View, BackHandler, ToastAndroid, } from 'react-native';
 import { Button, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
@@ -15,6 +15,7 @@ class Home extends React.Component {
     myAutorun = autorun(() => {
     })
 
+    timer = null;
 
     _didFocusSubscription = null;
     _willBlurSubscription = null;
@@ -77,11 +78,20 @@ class Home extends React.Component {
 
     onBackButtonPressAndroid = () => {
         if (firebase.auth().currentUser) {
-          return true;
-        } else {
-          return false;
-        }
+            this.onAppLeavingSequence()
+            return true;
+        } else return false;
       };
+
+      onAppLeavingSequence = () => {
+          if(!this.timer) {
+              ToastAndroid.show(AppConstants.TOAST_EXIT_APP, ToastAndroid.SHORT)
+              this.timer = setTimeout(() => {
+                  clearTimeout(this.timer)
+                  this.timer = null
+                }, 2000)
+          } else BackHandler.exitApp()  
+      }
     
     componentWillUnmount() {
         this._didFocusSubscription && this._didFocusSubscription.remove();
