@@ -113,9 +113,10 @@ class MyVocabulary extends React.Component {
             BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
           });
 
-        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () =>
+        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
             BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        );
+            multiDeletionStatus = false
+        });
   
     }
 
