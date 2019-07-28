@@ -78,6 +78,7 @@ const AppConstants = Object.freeze({
     STRING_COMMON_URL: 'https://wordsapiv1.p.mashape.com/words/',
     STRING_WORD: 'word',
     STRING_EMPTY: 'empty',
+    TOAST_WORD_ADDED_IN_VOC: 'added to vocabulary list',
     TOAST_ALREADY_IN_VOC: 'Word/expression already in vocabulary',
     TOAST_ERROR: 'Oops! An internal error occured :(',
     TOAST_NO_WORD_FOUND: 'No word/expression matching preferences found',

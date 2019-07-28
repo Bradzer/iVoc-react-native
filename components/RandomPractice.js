@@ -27,6 +27,8 @@ let dataGoingToStore = {}
 let apiResponse = {};
 let numberOfDefinitions = 0;
 
+let isSearchingWithSearchBar = false;
+
 class RandomPractice extends React.Component {
 
     _didFocusSubscription = null;
@@ -189,10 +191,12 @@ class RandomPractice extends React.Component {
     }
 
     onSearchValueChanged = (searchValue) => {
+        isSearchingWithSearchBar = false
         this.store.updatePracticeSpecificWordSearch(searchValue)
     }
 
     onSearchSubmit = () => {
+        isSearchingWithSearchBar = true
         updateApiRequest(AppConstants.STRING_COMMON_URL + this.store.practiceSpecificWordSearch)
         this.goToNextRandomWord()
     }
@@ -207,7 +211,8 @@ class RandomPractice extends React.Component {
         .then((querySnapshot) => {
             if(querySnapshot.empty) {
                 addKnownWordToCloud(wordObject)
-                this.goToNextRandomWord()
+                ToastAndroid.show(AppConstants.TOAST_WORD_ADDED_IN_VOC, ToastAndroid.SHORT)
+                if(!isSearchingWithSearchBar) this.goToNextRandomWord()
             }
             else {
                 ToastAndroid.show(AppConstants.TOAST_ALREADY_IN_VOC, ToastAndroid.SHORT)
