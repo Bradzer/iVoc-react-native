@@ -6,13 +6,11 @@ import { Icon, ListItem, Overlay, SearchBar, Divider } from 'react-native-elemen
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
-import { autorun, reaction, toJS, } from 'mobx'
+import { reaction, toJS, } from 'mobx'
 import * as Animatable from 'react-native-animatable';
 
-// import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import MyVocabularyOverflowMenu from './MyVocabularyOverflowMenu'
 import AppConstants from '../Constants'
-import reactotron from '../ReactotronConfig';
 
     let firebaseAuth = null
     let userId = null
@@ -28,9 +26,34 @@ class MyVocabulary extends React.Component {
 
     store = this.props.store
 
+    animationOnOffReactionDisposer = reaction(
+        () => this.store.multiDeletionStatus,
+        multiDeletionStatus => {
+            if(multiDeletionStatus) {
+                showMultiDeletionOnToast()
+                this.store.enableVocabularyListPulseAnimation()
+                this.store.disableMultiDeletionMenuOption()    
+            }
+            else {
+                showMultiDeletionOffToast()
+                this.store.disableVocabularyListPulseAnimation()
+                this.store.enableMultiDeletionMenuOption()    
+            }
+        })
+
+    vocabularyClearDoneReactionDisposer = reaction(
+        () => this.store.isVocabularyClearDone,
+        isVocabularyClearDone => {
+            if(isVocabularyClearDone) {
+                showClearDoneToast()
+                this.onSearchValueChanged(this.getSearchBarValue())
+            }
+        }
+    )
+
     myRef = null
 
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = () => {
         return {
             headerTitle: AppConstants.STRING_VOCABULARY,
             tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
@@ -39,7 +62,7 @@ class MyVocabulary extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <MyVocabularyOverflowMenu navigationProp={navigation} />          
+              headerRight: <MyVocabularyOverflowMenu />
         }
     }
 
@@ -103,13 +126,6 @@ class MyVocabulary extends React.Component {
 
     componentDidMount() {
         this.store.showLoadingIndicator()
-        this.props.navigation.setParams({
-            showClearDoneToast: showClearDoneToast,
-            onSearchValueChanged: this.onSearchValueChanged,
-            getSearchBarValue: this.getSearchBarValue,
-            showMultiDeletionOnToast: showMultiDeletionOnToast,
-            showMultiDeletionOffToast: showMultiDeletionOffToast,
-        })
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
@@ -122,6 +138,7 @@ class MyVocabulary extends React.Component {
         this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
             BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
             this.store.setMultiDeletionStatus(false)
+            this.store.setVocabularyClearDone(false)
             componentsRefName = []
         });
   
@@ -130,6 +147,8 @@ class MyVocabulary extends React.Component {
     componentWillUnmount() {
         this._didFocusSubscription && this._didFocusSubscription.remove();
         this._willBlurSubscription && this._willBlurSubscription.remove();
+        this.animationOnOffReactionDisposer && this.animationOnOffReactionDisposer()
+        this.vocabularyClearDoneReactionDisposer && this.vocabularyClearDoneReactionDisposer()
     }
 
     getSearchBarValue = () => {
@@ -138,22 +157,15 @@ class MyVocabulary extends React.Component {
 
     onBackButtonPressAndroid = () => {
         if (this.store.multiDeletionStatus) {
-            showMultiDeletionOffToast()
             this.store.setMultiDeletionStatus(false)
-            this.store.disableVocabularyListPulseAnimation()
-            this.store.enableMultiDeletionMenuOption()    
             return true;
-        } else {
-          return false;
-        }
+        } 
+        else return false;
       };
 
     itemPressed = (wordDetails, index) => {
-        if(!this.store.multiDeletionStatus)
-            this.store.displayVocabularyOverlay(wordDetails)
-        else {
-            this.deleteWordPressed(wordDetails, index)
-        }
+        if(!this.store.multiDeletionStatus) this.store.displayVocabularyOverlay(wordDetails)
+        else this.deleteWordPressed(wordDetails, index)
     }
 
   onBackdropPress = () => {
@@ -179,7 +191,7 @@ class MyVocabulary extends React.Component {
         if(listOfWords.length === 0) {
             ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
             ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
-        }    
+        }
     })
 }
   onSearchValueChanged = (changedText, withTimer) => {
@@ -214,19 +226,8 @@ class MyVocabulary extends React.Component {
   }
 
   itemLongPressed = () => {
-      if(this.store.multiDeletionStatus) {
-        showMultiDeletionOffToast()
-        this.store.setMultiDeletionStatus(false)
-        this.store.disableVocabularyListPulseAnimation()
-        this.store.enableMultiDeletionMenuOption()
-    }
-    else {
-        showMultiDeletionOnToast()
-        this.store.setMultiDeletionStatus(true)
-        this.store.enableVocabularyListPulseAnimation()
-        this.store.disableMultiDeletionMenuOption()
-    }
-
+    if(this.store.multiDeletionStatus) this.store.setMultiDeletionStatus(false)
+    else this.store.setMultiDeletionStatus(true)
   }
 
   renderItem = ({item, index}) => {

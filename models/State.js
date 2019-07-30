@@ -41,6 +41,7 @@ class State {
     endingLettersText= ''
     apiUrl= ''
     multiDeletionMenuOption= 'Enable multi deletion'
+    isVocabularyClearDone= false
     multiDeletionStatus= false
     vocabularyListPulseAnimation= null
     vocabularyOverlayDisplay= false
@@ -378,6 +379,9 @@ class State {
         this.specificWordText= changedText
     })
     
+    setVocabularyClearDone = action((status) => {
+        this.isVocabularyClearDone = status
+    })
     enableMultiDeletionMenuOption = action(() => {
         this.multiDeletionMenuOption = 'Enable multi deletion'
     })
@@ -456,6 +460,7 @@ decorate(State, {
     endingLettersText: observable,
     apiUrl: observable,
     multiDeletionMenuOption: observable,
+    isVocabularyClearDone: observable,
     multiDeletionStatus: observable,
     vocabularyListPulseAnimation: observable,
     vocabularyOverlayDisplay: observable,
