@@ -9,14 +9,14 @@ import { inject, observer } from 'mobx-react'
 import { autorun, reaction, toJS, } from 'mobx'
 import * as Animatable from 'react-native-animatable';
 
-import {MyVocabularyOverflowMenu} from './OverflowMenu'
+// import {MyVocabularyOverflowMenu} from './OverflowMenu'
+import MyVocabularyOverflowMenu from './MyVocabularyOverflowMenu'
 import AppConstants from '../Constants'
 import reactotron from '../ReactotronConfig';
 
     let firebaseAuth = null
     let userId = null
     let userWordsDetailsCollection = null
-    let multiDeletionStatus = false
     let timer = null
 
     let componentsRefName = []
@@ -39,7 +39,7 @@ class MyVocabulary extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <MyVocabularyOverflowMenu navigation={navigation} />          
+              headerRight: <MyVocabularyOverflowMenu navigationProp={navigation} />          
         }
     }
 
@@ -109,8 +109,6 @@ class MyVocabulary extends React.Component {
             getSearchBarValue: this.getSearchBarValue,
             showMultiDeletionOnToast: showMultiDeletionOnToast,
             showMultiDeletionOffToast: showMultiDeletionOffToast,
-            getMultiDeletionStatus: getMultiDeletionStatus,
-            setMultiDeletionStatus: this.setMultiDeletionStatus
         })
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
@@ -123,7 +121,7 @@ class MyVocabulary extends React.Component {
 
         this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
             BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-            this.setMultiDeletionStatus(false)
+            this.store.setMultiDeletionStatus(false)
             componentsRefName = []
         });
   
@@ -138,21 +136,12 @@ class MyVocabulary extends React.Component {
         return this.store.searchBarValue
     }
 
-    setMultiDeletionStatus = (status) => {
-        setMultiDeletionStatus(status)
-        if(status) {
-            this.store.enableVocabularyListPulseAnimation()
-
-        }
-        else {
-            this.store.disableVocabularyListPulseAnimation()
-        }
-    }
-
     onBackButtonPressAndroid = () => {
-        if (getMultiDeletionStatus()) {
+        if (this.store.multiDeletionStatus) {
             showMultiDeletionOffToast()
-            this.setMultiDeletionStatus(false)
+            this.store.setMultiDeletionStatus(false)
+            this.store.disableVocabularyListPulseAnimation()
+            this.store.enableMultiDeletionMenuOption()    
             return true;
         } else {
           return false;
@@ -160,7 +149,7 @@ class MyVocabulary extends React.Component {
       };
 
     itemPressed = (wordDetails, index) => {
-        if(!multiDeletionStatus)
+        if(!this.store.multiDeletionStatus)
             this.store.displayVocabularyOverlay(wordDetails)
         else {
             this.deleteWordPressed(wordDetails, index)
@@ -225,8 +214,19 @@ class MyVocabulary extends React.Component {
   }
 
   itemLongPressed = () => {
-      showMultiDeletionOnToast()
-      this.setMultiDeletionStatus(true)
+      if(this.store.multiDeletionStatus) {
+        showMultiDeletionOffToast()
+        this.store.setMultiDeletionStatus(false)
+        this.store.disableVocabularyListPulseAnimation()
+        this.store.enableMultiDeletionMenuOption()
+    }
+    else {
+        showMultiDeletionOnToast()
+        this.store.setMultiDeletionStatus(true)
+        this.store.enableVocabularyListPulseAnimation()
+        this.store.disableMultiDeletionMenuOption()
+    }
+
   }
 
   renderItem = ({item, index}) => {
@@ -283,13 +283,4 @@ const styles = StyleSheet.create({
 
   const showMultiDeletionOffToast = () => {
       ToastAndroid.show(AppConstants.TOAST_MULTI_DEL_OFF, ToastAndroid.SHORT)
-  }
-
-  const getMultiDeletionStatus = () => {
-      return multiDeletionStatus
-  }
-
-  const setMultiDeletionStatus = (status) => {
-      multiDeletionStatus = status
-  }
-  
+  }  

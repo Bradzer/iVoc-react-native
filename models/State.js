@@ -40,6 +40,8 @@ class State {
     startingLettersText= ''
     endingLettersText= ''
     apiUrl= ''
+    multiDeletionMenuOption= 'Enable multi deletion'
+    multiDeletionStatus= false
     vocabularyListPulseAnimation= null
     vocabularyOverlayDisplay= false
     vocabularyWord= ''
@@ -376,6 +378,18 @@ class State {
         this.specificWordText= changedText
     })
     
+    enableMultiDeletionMenuOption = action(() => {
+        this.multiDeletionMenuOption = 'Enable multi deletion'
+    })
+
+    disableMultiDeletionMenuOption = action(() => {
+        this.multiDeletionMenuOption = 'Disable multi deletion'
+    })
+
+    setMultiDeletionStatus = action((status) => {
+        this.multiDeletionStatus = status
+    })
+
     enableVocabularyListPulseAnimation = action(() => {
         this.vocabularyListPulseAnimation = 'pulse'
     })
@@ -441,6 +455,8 @@ decorate(State, {
     startingLettersText: observable,
     endingLettersText: observable,
     apiUrl: observable,
+    multiDeletionMenuOption: observable,
+    multiDeletionStatus: observable,
     vocabularyListPulseAnimation: observable,
     vocabularyOverlayDisplay: observable,
     vocabularyWord: observable,
