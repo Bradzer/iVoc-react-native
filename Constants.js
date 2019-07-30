@@ -68,7 +68,7 @@ const AppConstants = Object.freeze({
     TOAST_PASSES_DONT_MATCH: `Both passwords don't match`,
     TOAST_ENTER_SAME_PASS: `Please enter same the password`,
     STRING_SEARCH: 'Search...',
-    STRING_PRONUNCIATION: 'Pronunciaton :',
+    STRING_PRONUNCIATION: 'Pronunciation :',
     STRING_FREQUENCY: 'Frequency :',
     STRING_DEFINITIONS: 'Definitions',
     STRING_CHANGE_PREFS: 'CHANGE RANDOM PRACTICE PREFERENCES',
