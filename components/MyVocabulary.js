@@ -6,9 +6,12 @@ import { Icon, ListItem, Overlay, SearchBar, Divider } from 'react-native-elemen
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
+import { autorun, reaction, toJS, } from 'mobx'
+import * as Animatable from 'react-native-animatable';
 
 import {MyVocabularyOverflowMenu} from './OverflowMenu'
 import AppConstants from '../Constants'
+import reactotron from '../ReactotronConfig';
 
     let firebaseAuth = null
     let userId = null
@@ -16,13 +19,17 @@ import AppConstants from '../Constants'
     let multiDeletionStatus = false
     let timer = null
 
+    let componentsRefName = []
+
 class MyVocabulary extends React.Component {
 
     _didFocusSubscription = null;
     _willBlurSubscription = null;
 
     store = this.props.store
-    
+
+    myRef = null
+
     static navigationOptions = ({navigation}) => {
         return {
             headerTitle: AppConstants.STRING_VOCABULARY,
@@ -58,6 +65,7 @@ class MyVocabulary extends React.Component {
                         keyExtractor={keyExtractor}
                         data={this.store.listOfWords} 
                         renderItem={this.renderItem}
+                        extraData={toJS(this.store.vocabularyListPulseAnimation)}
                     />
                 }
                 <Overlay isVisible={this.store.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={this.onBackdropPress} overlayStyle={{maxHeight: 300, maxWidth: 300, minHeight: 300, minWidth: 300}}>
@@ -102,7 +110,7 @@ class MyVocabulary extends React.Component {
             showMultiDeletionOnToast: showMultiDeletionOnToast,
             showMultiDeletionOffToast: showMultiDeletionOffToast,
             getMultiDeletionStatus: getMultiDeletionStatus,
-            setMultiDeletionStatus: setMultiDeletionStatus
+            setMultiDeletionStatus: this.setMultiDeletionStatus
         })
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
@@ -115,7 +123,8 @@ class MyVocabulary extends React.Component {
 
         this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
             BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-            multiDeletionStatus = false
+            this.setMultiDeletionStatus(false)
+            componentsRefName = []
         });
   
     }
@@ -129,10 +138,21 @@ class MyVocabulary extends React.Component {
         return this.store.searchBarValue
     }
 
+    setMultiDeletionStatus = (status) => {
+        setMultiDeletionStatus(status)
+        if(status) {
+            this.store.enableVocabularyListPulseAnimation()
+
+        }
+        else {
+            this.store.disableVocabularyListPulseAnimation()
+        }
+    }
+
     onBackButtonPressAndroid = () => {
         if (getMultiDeletionStatus()) {
             showMultiDeletionOffToast()
-            setMultiDeletionStatus(false)
+            this.setMultiDeletionStatus(false)
             return true;
         } else {
           return false;
@@ -206,7 +226,7 @@ class MyVocabulary extends React.Component {
 
   itemLongPressed = () => {
       showMultiDeletionOnToast()
-      setMultiDeletionStatus(true)
+      this.setMultiDeletionStatus(true)
   }
 
   renderItem = ({item, index}) => {
@@ -215,7 +235,10 @@ class MyVocabulary extends React.Component {
     successPercentage = (successPercentage.toString()).substring(0, 5) + '%'
 
         return(
-            <View>
+            <Animatable.View ref={component => {
+                this["_wordView"+index] = component
+                componentsRefName.push("_wordView"+index)
+                }} animation={this.store.vocabularyListPulseAnimation} iterationCount="infinite">
                 <ListItem
                     title={item.word}
                     subtitle={item.partOfSpeech}
@@ -227,7 +250,8 @@ class MyVocabulary extends React.Component {
                     subtitleStyle={{display: item.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}
                 />
                 <Divider />
-            </View>
+            </Animatable.View>
+
         )
   }
 }

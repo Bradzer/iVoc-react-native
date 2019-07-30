@@ -40,6 +40,7 @@ class State {
     startingLettersText= ''
     endingLettersText= ''
     apiUrl= ''
+    vocabularyListPulseAnimation= null
     vocabularyOverlayDisplay= false
     vocabularyWord= ''
     vocabularyPartOfSpeech= ''
@@ -374,7 +375,14 @@ class State {
 
         this.specificWordText= changedText
     })
+    
+    enableVocabularyListPulseAnimation = action(() => {
+        this.vocabularyListPulseAnimation = 'pulse'
+    })
 
+    disableVocabularyListPulseAnimation = action(() => {
+        this.vocabularyListPulseAnimation = null
+    })
     displayVocabularyOverlay = action((wordDetails) => {
         this.vocabularyOverlayDisplay= true
         this.vocabularyWord= wordDetails.word
@@ -433,6 +441,7 @@ decorate(State, {
     startingLettersText: observable,
     endingLettersText: observable,
     apiUrl: observable,
+    vocabularyListPulseAnimation: observable,
     vocabularyOverlayDisplay: observable,
     vocabularyWord: observable,
     vocabularyPartOfSpeech: observable,
