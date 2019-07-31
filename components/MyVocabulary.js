@@ -8,9 +8,11 @@ import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { reaction, toJS, } from 'mobx'
 import * as Animatable from 'react-native-animatable';
+import Snackbar from 'react-native-snackbar';
 
 import MyVocabularyOverflowMenu from './MyVocabularyOverflowMenu'
 import AppConstants from '../Constants'
+import reactotron from '../ReactotronConfig';
 
     let firebaseAuth = null
     let userId = null
@@ -88,7 +90,7 @@ class MyVocabulary extends React.Component {
                         keyExtractor={keyExtractor}
                         data={this.store.listOfWords} 
                         renderItem={this.renderItem}
-                        extraData={toJS(this.store.vocabularyListPulseAnimation)}
+                        extraData={toJS([this.store.vocabularyListPulseAnimation, this.store.itemsToHide])}
                     />
                 }
                 <Overlay isVisible={this.store.vocabularyOverlayDisplay} width='auto' height='auto' onBackdropPress={this.onBackdropPress} overlayStyle={{maxHeight: 300, maxWidth: 300, minHeight: 300, minWidth: 300}}>
@@ -164,18 +166,39 @@ class MyVocabulary extends React.Component {
       };
 
     itemPressed = (wordDetails, index) => {
+        let isUndoDeletePressed = false
         if(!this.store.multiDeletionStatus) this.store.displayVocabularyOverlay(wordDetails)
-        else this.deleteWordPressed(wordDetails, index)
+        else {
+            let tempListWithoutRemoval = this.store.listOfWords
+            this.store.deleteWordInList(index)
+            Snackbar.show({
+                title: 'Delete',
+                duration: Snackbar.LENGTH_LONG,
+                action: {
+                  title: 'UNDO',
+                  color: 'green',
+                  onPress: () => {
+                      isUndoDeletePressed = true
+                      this.onUndoDeletePressed(tempListWithoutRemoval)
+                    },
+                },
+              });
+            setTimeout(() => {
+                if(!isUndoDeletePressed) this.deleteWordPressed(wordDetails)
+            }, 3000)
+        }
     }
 
   onBackdropPress = () => {
     this.store.hideVocabularyOverlay()
   }
 
-  deleteWordPressed = (item, index) => {
+  onUndoDeletePressed = (tempListWithoutRemoval) => {
+      this.store.updateListOfWords(tempListWithoutRemoval)
+  }
+
+  deleteWordPressed = (item) => {
     userWordsDetailsCollection.doc(item.id).delete()
-    this.store.deleteWordInList(index)
-    ToastAndroid.show(AppConstants.TOAST_DELETED, ToastAndroid.SHORT)
   }
 
   onSearchValueCleared = () => {
