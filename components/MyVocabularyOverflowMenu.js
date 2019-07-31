@@ -35,6 +35,7 @@ class MyVocabularyOverflowMenu extends React.Component {
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error)
           this.store.setVocabularyClearDone(true)
+          this.store.setMultiDeletionStatus(false)
         })
     }
 
