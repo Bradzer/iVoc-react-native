@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid, BackHandler, ScrollView, ViewPagerAndroid } from 'react-native';
+import { StyleSheet, View, Text, ToastAndroid, BackHandler, ScrollView, Vibration } from 'react-native';
 import { Overlay, Button, Icon, Input } from 'react-native-elements'
 import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
@@ -18,6 +18,8 @@ let userWordsDetailsCollection = null
 
 let _didFocusSubscription = null;
 let _willBlurSubscription = null;
+
+const VIBRATION_DURATION = 1000
 
 class ReviewVocabulary extends React.Component {
 
@@ -217,6 +219,7 @@ class ReviewVocabulary extends React.Component {
             this.goToNextReviewWord()
         }
         else {
+            Vibration.vibrate(VIBRATION_DURATION)
             ToastAndroid.show(AppConstants.TOAST_WRONG_ANSWER, ToastAndroid.SHORT)
             updateNumberOfAppearances(randomWordOriginalId)
             this.store.displayReviewOverlay()
