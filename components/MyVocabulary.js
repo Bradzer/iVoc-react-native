@@ -236,6 +236,9 @@ class MyVocabulary extends React.Component {
                     })
                     this.store.updateListOfWords(listOfWords)
                     this.store.updateSearchResults(changedText)
+                    if(listOfWords.length === 0) {
+                        ToastAndroid.show(AppConstants.TOAST_SEARCH_NO_RESULT, ToastAndroid.SHORT)
+                    }            
                 })    
             }, 1000)
         }

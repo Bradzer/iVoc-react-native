@@ -42,6 +42,7 @@ const AppConstants = Object.freeze({
     TOAST_WRONG_ANSWER: 'You got it wrong :(',
     TOAST_REVIEW_DONE: 'Your vocabulary review is done',
     STRING_VOCABULARY: 'Vocabulary',
+    TOAST_SEARCH_NO_RESULT: 'no result',
     TOAST_DELETED: 'deleted',
     TOAST_VOC_LIST_CLEARED: 'vocabulary list cleared',
     TOAST_MULTI_DEL_ON: 'Multi deletion is on',
