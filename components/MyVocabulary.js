@@ -21,6 +21,8 @@ import reactotron from '../ReactotronConfig';
 
     let componentsRefName = []
 
+    let isComponentAboutToBlur = false
+
 class MyVocabulary extends React.Component {
 
     _didFocusSubscription = null;
@@ -37,9 +39,11 @@ class MyVocabulary extends React.Component {
                 this.store.disableMultiDeletionMenuOption()    
             }
             else {
-                showMultiDeletionOffToast()
+                if(!isComponentAboutToBlur) showMultiDeletionOffToast()
+                else isComponentAboutToBlur = false
                 this.store.disableVocabularyListPulseAnimation()
-                this.store.enableMultiDeletionMenuOption()    
+                this.store.enableMultiDeletionMenuOption()
+
             }
         })
 
@@ -138,6 +142,7 @@ class MyVocabulary extends React.Component {
           });
 
         this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
+            isComponentAboutToBlur = true
             BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
             this.store.setMultiDeletionStatus(false)
             this.store.setVocabularyClearDone(false)
