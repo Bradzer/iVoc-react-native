@@ -118,6 +118,8 @@ const AppConstants = Object.freeze({
     STRING_REACT_NATIVE_INDICATORS_LINK: 'https://github.com/n4kz/react-native-indicators',
     STRING_REACT_NATIVE_POPUP_MENU: 'React Native Popup Menu',
     STRING_REACT_NATIVE_POPUP_MENU_LINK: 'https://github.com/instea/react-native-popup-menu',
+    STRING_REACT_NATIVE_SNACKBAR:'React Native Snackbar',
+    STRING_REACT_NATIVE_SNACKBAR_LINK:'https://github.com/cooperka/react-native-snackbar',
     STRING_REACT_NATIVE_VECTOR_ICONS: 'React Native Vector Icons',
     STRING_REACT_NATIVE_VECTOR_ICONS_LINK: 'https://github.com/oblador/react-native-vector-icons',
     STRING_REACT_NAVIGATION: 'React Navigation',

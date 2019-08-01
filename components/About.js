@@ -69,6 +69,8 @@ class About extends React.Component {
                         <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_INDICATORS_LINK)}>{AppConstants.STRING_REACT_NATIVE_INDICATORS_LINK}</Text>
                         <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_POPUP_MENU}</Text>
                         <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_POPUP_MENU_LINK)}>{AppConstants.STRING_REACT_NATIVE_POPUP_MENU_LINK}</Text>
+                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_SNACKBAR}</Text>
+                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_SNACKBAR_LINK)}>{AppConstants.STRING_REACT_NATIVE_SNACKBAR_LINK}</Text>
                         <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS}</Text>
                         <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS_LINK)}>{AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS_LINK}</Text>
                         <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NAVIGATION}</Text>
