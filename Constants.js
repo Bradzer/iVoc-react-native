@@ -108,6 +108,8 @@ const AppConstants = Object.freeze({
     STRING_AXIOS_LINK: 'https://github.com/axios/axios',
     STRING_MOBX: 'MobX',
     STRING_MOBX_LINK: 'https://mobx.js.org/',
+    STRING_REACT_NATIVE_ANIMATABLE: 'React Native Animatable',
+    STRING_REACT_NATIVE_ANIMATABLE_LINK: 'https://github.com/oblador/react-native-animatable',
     STRING_REACT_NATIVE_ELEMENTS: 'React Native Elements',
     STRING_REACT_NATIVE_ELEMENTS_LINK: 'https://react-native-training.github.io/react-native-elements/',
     STRING_REACT_NATIVE_FIREBASE: 'React Native Firebase',
