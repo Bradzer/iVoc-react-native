@@ -22,6 +22,7 @@ import reactotron from '../ReactotronConfig';
     let componentsRefName = []
 
     let isComponentAboutToBlur = false
+    let isTrashIconPressed = false
 
 class MyVocabulary extends React.Component {
 
@@ -170,6 +171,27 @@ class MyVocabulary extends React.Component {
         else return false;
       };
 
+      onTrashIconPressed = (wordDetails, index) => {
+        let isUndoDeletePressed = false
+        let tempListWithoutRemoval = this.store.listOfWords
+        this.store.deleteWordInList(index)
+        Snackbar.show({
+            title: 'Delete',
+            duration: Snackbar.LENGTH_LONG,
+            action: {
+                title: 'UNDO',
+                color: 'green',
+                onPress: () => {
+                    isUndoDeletePressed = true
+                    this.onUndoDeletePressed(tempListWithoutRemoval)
+                },
+            },
+            });
+        setTimeout(() => {
+            if(!isUndoDeletePressed) this.deleteWordPressed(wordDetails)
+        }, 3000)
+        }
+
     itemPressed = (wordDetails, index) => {
         let isUndoDeletePressed = false
         if(!this.store.multiDeletionStatus) this.store.displayVocabularyOverlay(wordDetails)
@@ -278,7 +300,7 @@ class MyVocabulary extends React.Component {
                 <ListItem
                     title={item.word}
                     subtitle={item.partOfSpeech}
-                    rightIcon= {<Icon name= 'delete' onPress={() => this.deleteWordPressed(item, index)}/>}
+                    rightIcon= {<Icon name= 'delete' onPress={() => this.onTrashIconPressed(item, index)}/>}
                     onPress= {() => this.itemPressed(item, index)}
                     rightTitle= {successPercentage}
                     rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
