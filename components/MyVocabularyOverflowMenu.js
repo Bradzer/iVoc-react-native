@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, } from 'react-native';
+import { View, ToastAndroid, } from 'react-native';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
 import { Icon, CheckBox, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
@@ -17,12 +17,12 @@ class MyVocabularyOverflowMenu extends React.Component {
     store = this.props.store
 
     closeMenuReactionDisposer = reaction(
-      () => this.store.closeMenu,
-      closeMenu => {
-          if(closeMenu) {
+      () => this.store.closeVocMenu,
+      closeVocMenu => {
+          if(closeVocMenu) {
             this.store.setIsSortBy(false)
             this.hideAllMenu()
-            this.store.setCloseMenu(false)      
+            this.store.setCloseVocMenu(false)
           }
       }
   )
@@ -30,7 +30,7 @@ class MyVocabularyOverflowMenu extends React.Component {
     render() {
         return (
           <View>
-          <Menu ref={component => this._mainMenu = component} onClose={this.onCloseMainMenu}>
+          <Menu ref={component => this._VocMenu = component} onOpen={this.onMenuOpen} onClose={this.onMenuClose}>
             <MenuTrigger>
             <Icon name='more-vert' color={AppConstants.COLOR_WHITE}/>
              </MenuTrigger>
@@ -87,17 +87,22 @@ class MyVocabularyOverflowMenu extends React.Component {
       this.openSortMenu()
     }
 
-    onCloseMainMenu = () => {
+    onMenuOpen = () => {
+      this.store.setVocMenuOpen(true)
+    }
+
+    onMenuClose = () => {
       if(this.store.isSortBy) this.store.setIsSortBy(false)
+      this.store.setVocMenuOpen(false)
     }
 
     hideAllMenu = () => {
-      this._mainMenu.close()
+      this._VocMenu.close()
       .then(() => reactotron.log("main menu closed"), () => reactotron.log("ERROR: can't close main menu"))
     }
 
     openSortMenu = () => {
-      this._mainMenu.close()
+      this._VocMenu.close()
       .then(() => {
         reactotron.log("main menu closed")
       }, () => reactotron.log("ERROR: can't close main menu"))
@@ -108,7 +113,7 @@ class MyVocabularyOverflowMenu extends React.Component {
     }
 
     openMainMenu = () => {
-      this._mainMenu.open()
+      this._VocMenu.open()
       .then(() => {
         reactotron.log("main menu open")
       }, () => reactotron.log("ERROR: can't open main menu"))
@@ -120,7 +125,7 @@ class MyVocabularyOverflowMenu extends React.Component {
     
         userWordsDetailsCollection.get()
         .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), (error) => console.log(error)
+          querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT)
           this.store.setVocabularyClearDone(true)
           this.store.setMultiDeletionStatus(false)
         })

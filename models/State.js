@@ -14,6 +14,12 @@ const commonUrlpart = AppConstants.STRING_COMMON_URL
 class State {
 
     //attributes
+    closeHomeMenu= false
+    closeVocMenu= false
+    closeSettingsMenu= false
+    isHomeMenuOpen= false
+    isVocMenuOpen= false
+    isSettingsMenuOpen= false
     practiceSpecificWordSearch= ''
     itemDef= []
     itemSynonyms= ''
@@ -77,7 +83,31 @@ class State {
     isReviewOver= false
     onlyPronunciationWordChecked= false
 
-    //actions    
+    //actions
+    setCloseHomeMenu = action((status) => {
+        this.closeHomeMenu = status
+    })
+
+    setHomeMenuOpen = action((status) => {
+        this.isHomeMenuOpen = status
+    })
+
+    setCloseVocMenu = action((status) => {
+        this.closeVocMenu = status
+    })
+
+    setVocMenuOpen = action((status) => {
+        this.isVocMenuOpen = status
+    })
+
+    setCloseSettingsMenu = action((status) => {
+        this.closeSettingsMenu = status
+    })
+
+    setSettingsMenuOpen = action((status) => {
+        this.isSettingsMenuOpen = status
+    })
+
     updateApiUrl = action((apiUrl) => {
         this.apiUrl = apiUrl
     })
@@ -443,6 +473,12 @@ class State {
 }
 
 decorate(State, {
+    closeHomeMenu: observable,
+    closeVocMenu: observable,
+    closeSettingsMenu: observable,
+    isHomeMenuOpen: observable,
+    isVocMenuOpen: observable,
+    isSettingsMenuOpen: observable,
     practiceSpecificWordSearch: observable,
     itemDef: observable,
     itemSynonyms: observable,

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* global setTimeout clearTimeout */
 
 import React from 'react';
@@ -146,7 +147,6 @@ class MyVocabulary extends React.Component {
             BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
             this.store.setMultiDeletionStatus(false)
             this.store.setVocabularyClearDone(false)
-            this.store.setCloseMenu(true)
             componentsRefName = []
         });
   
@@ -167,8 +167,13 @@ class MyVocabulary extends React.Component {
         if (this.store.multiDeletionStatus) {
             this.store.setMultiDeletionStatus(false)
             return true;
-        } 
-        else return false;
+        }
+        
+        if(this.store.isVocMenuOpen) {
+            this.store.setCloseVocMenu(true)
+            return true
+        }
+        return false;
       };
 
       onTrashIconPressed = (wordDetails, index) => {

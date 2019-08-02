@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* global require */
 
 import React from "react";
@@ -7,7 +8,8 @@ import {
 	Text,
 	ToastAndroid,
 	ScrollView,
-	Dimensions
+	Dimensions,
+	BackHandler,
 } from "react-native";
 import {
 	Icon,
@@ -20,7 +22,7 @@ import {
 import firebase from "react-native-firebase";
 import { inject, observer } from "mobx-react";
 
-import { SettingsOverflowMenu } from "./OverflowMenu";
+import SettingsOverflowMenu from "./SettingsOverflowMenu";
 import AppConstants from "../Constants";
 
 let firebaseAuth = null;
@@ -32,6 +34,10 @@ const Realm = require("realm");
 const _ = require("lodash");
 
 class Settings extends React.Component {
+
+	_didFocusSubscription = null;
+    _willBlurSubscription = null;
+
 	store = this.props.store;
 
 	static navigationOptions = ({ navigation }) => {
@@ -327,9 +333,31 @@ class Settings extends React.Component {
 					}
 				});
 			})
-			.catch(error =>
+			.catch(() =>
 				ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT)
 			);
+
+			this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
+				BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+				});
+		
+			this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
+				BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+			});
+	
+	}
+
+	componentWillUnmount() {
+		this._didFocusSubscription && this._didFocusSubscription.remove();
+        this._willBlurSubscription && this._willBlurSubscription.remove();
+	}
+
+	onBackButtonPressAndroid = () => {
+		if(this.store.isSettingsMenuOpen) {
+            this.store.setCloseSettingsMenu(true)
+            return true
+        }
+        return false;
 	}
 
 	inputDisplay = checkBoxType => {
@@ -361,7 +389,7 @@ class Settings extends React.Component {
 						.delete(doc.ref)
 						.commit()
 				),
-			error => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT)
+			() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT)
 		);
 		ToastAndroid.show(AppConstants.TOAST_VOC_LIST_CLEARED, ToastAndroid.SHORT);
 	};

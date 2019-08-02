@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+/* global setTimeout clearTimeout */
+
 import React from 'react';
 import { StyleSheet, View, BackHandler, ToastAndroid, } from 'react-native';
 import { Button, } from 'react-native-elements'
@@ -5,8 +8,9 @@ import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 
-import {HomeOverflowMenu} from './OverflowMenu'
+import HomeOverflowMenu from './HomeOverflowMenu'
 import AppConstants from '../Constants'
+import reactotron from '../ReactotronConfig';
 
 class Home extends React.Component {
 
@@ -28,7 +32,8 @@ class Home extends React.Component {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
               headerTintColor: AppConstants.COLOR_WHITE,
-              headerRight: <HomeOverflowMenu navigation={navigation} />        }
+              headerRight: <HomeOverflowMenu navigation={navigation} />
+        }
     }
 
     render() {
@@ -61,9 +66,9 @@ class Home extends React.Component {
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
         });
 
-        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () =>
+        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        );
+        });
 
         this._authStateListener = firebase.auth().onAuthStateChanged((user) => {
             if(!user) {
@@ -77,7 +82,11 @@ class Home extends React.Component {
     navigateToReviewVocabulary = () => this.props.navigation.navigate('ReviewVocabulary')
 
     onBackButtonPressAndroid = () => {
-        if (firebase.auth().currentUser) {
+        if(this.store.isHomeMenuOpen) {
+            this.store.setCloseHomeMenu(true)
+            return true
+        }
+        else if (firebase.auth().currentUser) {
             this.onAppLeavingSequence()
             return true;
         } else return false;
