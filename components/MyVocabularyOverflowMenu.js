@@ -1,30 +1,117 @@
 import React from 'react';
 import { View, } from 'react-native';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
-import { Icon, } from 'react-native-elements'
+import { Icon, CheckBox, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
+import { reaction, } from 'mobx'
 
 import AppConstants from '../Constants'
+import reactotron from '../ReactotronConfig';
 
 class MyVocabularyOverflowMenu extends React.Component {
+
+  _didFocusSubscription = null;
+  _willBlurSubscription = null;
     
     store = this.props.store
 
+    closeMenuReactionDisposer = reaction(
+      () => this.store.closeMenu,
+      closeMenu => {
+          if(closeMenu) {
+            this.store.setIsSortBy(false)
+            this.hideAllMenu()
+            this.store.setCloseMenu(false)      
+          }
+      }
+  )
+
     render() {
         return (
-            <View>
-            <Menu>
-              <MenuTrigger>
-              <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
-               </MenuTrigger>
-               <MenuOptions>
+          <View>
+          <Menu ref={component => this._mainMenu = component} onClose={this.onCloseMainMenu}>
+            <MenuTrigger>
+            <Icon name='more-vert' color={AppConstants.COLOR_WHITE}/>
+             </MenuTrigger>
+             <MenuOptions>
+               {
+                 this.store.isSortBy
+                 ?
+                 <View>
+                   <MenuOption>
+                    <CheckBox 
+                     title='Default'
+                     checked={this.store.defaultChecked}
+                    />
+                    <CheckBox 
+                     title='Alphabetical'
+                     checked={this.store.alphabeticalChecked}
+                    />
+                    <CheckBox
+                     title='Alphabetical (reverse)'
+                     checked={this.store.alphabeticalReverseChecked}
+                    />
+                    <CheckBox 
+                     title='Length'
+                     checked={this.store.lengthChecked}
+                    />
+                    <CheckBox 
+                     title='Length (descending)'
+                     checked={this.store.lengthDescendingChecked}
+                    />
+                   </MenuOption>
+                </View>
+                :
+                <View>
+                <MenuOption text='Sort type' customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={this.onSortByPressed}/> 
                 <MenuOption text={this.store.multiDeletionMenuOption} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={this.multiDeletionOptionPressed}/>
                 <MenuOption text='Clear all' customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={this.clearVocabularyList}/>
-               </MenuOptions>
-            </Menu>
-          </View>
+                </View>
+               }
+             </MenuOptions>
+          </Menu>
+        </View>
         )        
+    }
+
+    componentDidMount() {
+    }
+
+    componentWillUnmount() {
+      this.closeMenuReactionDisposer && this.closeMenuReactionDisposer()
+    }
+
+    onSortByPressed = () => {
+      if(this.store.multiDeletionStatus) this.store.setMultiDeletionStatus(false)
+      this.openSortMenu()
+    }
+
+    onCloseMainMenu = () => {
+      if(this.store.isSortBy) this.store.setIsSortBy(false)
+    }
+
+    hideAllMenu = () => {
+      this._mainMenu.close()
+      .then(() => reactotron.log("main menu closed"), () => reactotron.log("ERROR: can't close main menu"))
+    }
+
+    openSortMenu = () => {
+      this._mainMenu.close()
+      .then(() => {
+        reactotron.log("main menu closed")
+      }, () => reactotron.log("ERROR: can't close main menu"))
+      .then(() => {
+        this.store.setIsSortBy(true)
+        this.openMainMenu()
+      })
+    }
+
+    openMainMenu = () => {
+      this._mainMenu.open()
+      .then(() => {
+        reactotron.log("main menu open")
+      }, () => reactotron.log("ERROR: can't open main menu"))
     }
 
     clearVocabularyList = () => {

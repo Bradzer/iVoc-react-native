@@ -22,7 +22,6 @@ import reactotron from '../ReactotronConfig';
     let componentsRefName = []
 
     let isComponentAboutToBlur = false
-    let isTrashIconPressed = false
 
 class MyVocabulary extends React.Component {
 
@@ -147,6 +146,7 @@ class MyVocabulary extends React.Component {
             BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
             this.store.setMultiDeletionStatus(false)
             this.store.setVocabularyClearDone(false)
+            this.store.setCloseMenu(true)
             componentsRefName = []
         });
   

@@ -40,6 +40,8 @@ class State {
     startingLettersText= ''
     endingLettersText= ''
     apiUrl= ''
+    closeMenu= false
+    isSortBy= false
     multiDeletionMenuOption= 'Enable multi deletion'
     isVocabularyClearDone= false
     multiDeletionStatus= false
@@ -75,7 +77,7 @@ class State {
     isReviewOver= false
     onlyPronunciationWordChecked= false
 
-    //actions
+    //actions    
     updateApiUrl = action((apiUrl) => {
         this.apiUrl = apiUrl
     })
@@ -378,6 +380,14 @@ class State {
 
         this.specificWordText= changedText
     })
+
+    setCloseMenu = action((status) => {
+        this.closeMenu = status
+    })
+    
+    setIsSortBy = action((status) => {
+        this.isSortBy = status
+    })
     
     setVocabularyClearDone = action((status) => {
         this.isVocabularyClearDone = status
@@ -459,6 +469,8 @@ decorate(State, {
     startingLettersText: observable,
     endingLettersText: observable,
     apiUrl: observable,
+    closeMenu: observable,
+    isSortBy: observable,
     multiDeletionMenuOption: observable,
     isVocabularyClearDone: observable,
     multiDeletionStatus: observable,
