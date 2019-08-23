@@ -124,8 +124,6 @@ class Settings extends React.Component {
 		</Text>
 	);
 
-	navigationListener = this.props.navigation.addListener("didFocus", () => {});
-
 	render() {
 		const buttons = [
 			{ element: this.partOfSpeechAll },
