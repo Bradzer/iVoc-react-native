@@ -5,6 +5,7 @@ import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
+import { NavigationEvents } from 'react-navigation';
 
 import AppConstants from '../Constants';
 import reactotron from '../ReactotronConfig'
@@ -15,9 +16,6 @@ let randomWordOriginalId = ''
 let firebaseAuth = null
 let userId = null
 let userWordsDetailsCollection = null
-
-let _didFocusSubscription = null;
-let _willBlurSubscription = null;
 
 const VIBRATION_DURATION = 1000
 
@@ -37,8 +35,6 @@ class ReviewVocabulary extends React.Component {
         return {
             headerTitle: AppConstants.STRING_REVIEW,
             headerLeft: <Icon name='arrow-back' color='white' underlayColor='#367b38' onPress={() => {
-                let removeWillBlurSub = navigation.getParam('removeWillBlurSub')
-                removeWillBlurSub()
                 navigation.navigate(AppConstants.STRING_HOME)
             }}/>,
             headerLeftContainerStyle: {
@@ -52,6 +48,10 @@ class ReviewVocabulary extends React.Component {
         if(this.store.displayLoadingIndicator === true) {
             return (
                 <View style={styles.loadingIndicator}>
+                    <NavigationEvents
+                        onDidFocus={() => this.onDidFocus()}
+                        onWillBlur={() => this.onWillBlur()}
+                    />
                     <BallIndicator />
                 </View>
             )
@@ -60,6 +60,10 @@ class ReviewVocabulary extends React.Component {
         else if(this.store.isNoVocabulary === true) {
             return (
                 <View style={styles.loadingIndicator}>
+                    <NavigationEvents
+                        onDidFocus={() => this.onDidFocus()}
+                        onWillBlur={() => this.onWillBlur()}
+                    />
                     <Text style={{fontSize: 24}}>{AppConstants.STRING_VOC_EMPTY}</Text>
                 </View>
             )
@@ -68,12 +72,20 @@ class ReviewVocabulary extends React.Component {
         else if(this.store.isReviewOver === true) {
             return (
                 <View style={styles.loadingIndicator}>
+                <NavigationEvents
+                    onDidFocus={() => this.onDidFocus()}
+                    onWillBlur={() => this.onWillBlur()}
+                />
                     <Text style={{fontSize: 24}}>{AppConstants.STRING_REVIEW_OVER}</Text>
                 </View>
             )
         }
         else return (
             <View style={[styles.container, {display: this.store.displayReviewContent}]}>
+                <NavigationEvents
+                    onDidFocus={() => this.onDidFocus()}
+                    onWillBlur={() => this.onWillBlur()}
+                />
                 <ScrollView style={{flex: 1, flexGrow: 1}}>
                     <View style={styles.container}>
                         <View style={{alignItems: 'center', display: this.store.displayReviewHint}}>
@@ -152,64 +164,59 @@ class ReviewVocabulary extends React.Component {
     }
 
     componentDidMount() {
-        
         this.store.showLoadingIndicator()
-
-        this.props.navigation.setParams({
-            removeWillBlurSub: this.removeWillBlurSub
-        })
-
-        _didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
-            BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-            firebaseAuth = firebase.auth()
-            userId = firebaseAuth.currentUser.uid
-            userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
-    
-            listOfWords = []
-            userWordsDetailsCollection.get()
-            .then((queryResult) => {
-                queryResult.forEach((doc) => {
-                    listOfWords.push(doc.data())
-                })
-                if(listOfWords.length === 0) {
-                    this.store.showNoVocabulary()
-                    _willBlurSubscription.remove()
-                    ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
-                    ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
-                }
-                else {
-                    let randomIndex = Math.floor(Math.random() * listOfWords.length)
-                    let randomWord = listOfWords[randomIndex]
-                    randomWordOriginalId = randomWord.id
-                    let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
-                    if(randomWord.definition.length > 0) {
-                        this.store.updateReviewContent(randomWord, randomDefIndex)
-                        listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
-                    }
-                    else {
-                        listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
-                        this.goToNextReviewWord()
-                    }
-                }
-            }) 
-            });
-    
-        _willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
-            ToastAndroid.show(AppConstants.TOAST_UNEXPECTED_LEAVE, ToastAndroid.SHORT)
-            ToastAndroid.show(AppConstants.TOAST_WORD_NOT_REMEMBERED, ToastAndroid.SHORT)
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        updateNumberOfAppearances(randomWordOriginalId)
-        });
     }
 
     componentWillUnmount() {
 
-        _didFocusSubscription && _didFocusSubscription.remove();
-        _willBlurSubscription && _willBlurSubscription.remove();
         this.myAutorun()
 
         this.store.resetReviewLayout()
     }
+
+    onDidFocus = () => {
+        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+        firebaseAuth = firebase.auth()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+
+        listOfWords = []
+        userWordsDetailsCollection.get()
+        .then((queryResult) => {
+            queryResult.forEach((doc) => {
+                listOfWords.push(doc.data())
+            })
+            if(listOfWords.length === 0) {
+                this.store.showNoVocabulary()
+                ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
+                ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
+            }
+            else {
+                let randomIndex = Math.floor(Math.random() * listOfWords.length)
+                let randomWord = listOfWords[randomIndex]
+                randomWordOriginalId = randomWord.id
+                let randomDefIndex = Math.floor(Math.random() * randomWord.definition.length)
+                if(randomWord.definition.length > 0) {
+                    this.store.updateReviewContent(randomWord, randomDefIndex)
+                    listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
+                }
+                else {
+                    listOfWords = listOfWords.filter((value, index) => index !== randomIndex)
+                    this.goToNextReviewWord()
+                }
+            }
+        }) 
+    }
+
+    onWillBlur = () => {
+        if(!this.store.isNoVocabulary && !this.store.isReviewOver) {
+            ToastAndroid.show(AppConstants.TOAST_UNEXPECTED_LEAVE, ToastAndroid.SHORT)
+            ToastAndroid.show(AppConstants.TOAST_WORD_NOT_REMEMBERED, ToastAndroid.SHORT)
+        }
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+        updateNumberOfAppearances(randomWordOriginalId)
+}
+
 
     onConfirmAnswerPressed = (answer) => {
         if(answer === this.store.reviewWord) {
@@ -227,13 +234,8 @@ class ReviewVocabulary extends React.Component {
     }    
 
     onBackButtonPressAndroid = () => {
-        _willBlurSubscription.remove()
         return false
       };
-
-      removeWillBlurSub = () => {
-        _willBlurSubscription.remove()
-      }
 
     onBackdropPress = () => {
         this.store.hideReviewOverlay()
@@ -273,7 +275,6 @@ class ReviewVocabulary extends React.Component {
         else {
             this.store.showReviewOver()
             ToastAndroid.show(AppConstants.TOAST_REVIEW_DONE, ToastAndroid.SHORT)
-            _willBlurSubscription.remove()
         }
     }
     

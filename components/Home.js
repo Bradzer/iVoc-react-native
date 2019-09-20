@@ -7,6 +7,7 @@ import { Button, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
+import { NavigationEvents } from 'react-navigation';
 
 import HomeOverflowMenu from './HomeOverflowMenu'
 import AppConstants from '../Constants'
@@ -21,8 +22,6 @@ class Home extends React.Component {
 
     timer = null;
 
-    _didFocusSubscription = null;
-    _willBlurSubscription = null;
     _authStateListener = null;
 
     static navigationOptions = ({navigation}) => {
@@ -39,6 +38,10 @@ class Home extends React.Component {
     render() {
         return(
             <View style={styles.container}>
+                <NavigationEvents
+                    onDidFocus={() => this.onDidFocus()}
+                    onWillBlur={() => this.onWillBlur()}
+                />
                 <View style={styles.buttonGroup}>
                     <Button 
                         raised 
@@ -62,19 +65,19 @@ class Home extends React.Component {
 
     componentDidMount() {
 
-        this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
-        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        });
-
-        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        });
-
         this._authStateListener = firebase.auth().onAuthStateChanged((user) => {
             if(!user) {
                 this.props.navigation.navigate('LoginScreen')
             }
         })
+    }
+
+    onDidFocus = () => {
+        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    }
+
+    onWillBlur = () => {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
     }
 
     navigateToRandomPractice = () => this.props.navigation.navigate('RandomPractice')
@@ -103,8 +106,6 @@ class Home extends React.Component {
       }
     
     componentWillUnmount() {
-        this._didFocusSubscription && this._didFocusSubscription.remove();
-        this._willBlurSubscription && this._willBlurSubscription.remove();
         this._authStateListener()
         this.myAutorun()
     }

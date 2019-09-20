@@ -10,6 +10,8 @@ import { inject, observer } from 'mobx-react'
 import { reaction, toJS, } from 'mobx'
 import * as Animatable from 'react-native-animatable';
 import Snackbar from 'react-native-snackbar';
+import { NavigationEvents } from 'react-navigation';
+
 
 import MyVocabularyOverflowMenu from './MyVocabularyOverflowMenu'
 import AppConstants from '../Constants'
@@ -25,9 +27,6 @@ import reactotron from '../ReactotronConfig';
     let isComponentAboutToBlur = false
 
 class MyVocabulary extends React.Component {
-
-    _didFocusSubscription = null;
-    _willBlurSubscription = null;
 
     store = this.props.store
 
@@ -79,6 +78,10 @@ class MyVocabulary extends React.Component {
 
         return(
             <View style={styles.container}>
+                <NavigationEvents
+                    onDidFocus={() => this.onDidFocus()}
+                    onWillBlur={() => this.onWillBlur()}
+                />
                 <SearchBar 
                 placeholder= {AppConstants.STRING_SEARCH}
                 value= {this.store.searchBarValue}
@@ -136,28 +139,26 @@ class MyVocabulary extends React.Component {
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
-
-        this._didFocusSubscription = this.props.navigation.addListener("didFocus", () => {
-            this.onSearchValueChanged(this.store.searchBarValue, false)
-            BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-          });
-
-        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
-            isComponentAboutToBlur = true
-            BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-            this.store.setMultiDeletionStatus(false)
-            this.store.setVocabularyClearDone(false)
-            componentsRefName = []
-        });
-  
     }
 
     componentWillUnmount() {
-        this._didFocusSubscription && this._didFocusSubscription.remove();
-        this._willBlurSubscription && this._willBlurSubscription.remove();
         this.animationOnOffReactionDisposer && this.animationOnOffReactionDisposer()
         this.vocabularyClearDoneReactionDisposer && this.vocabularyClearDoneReactionDisposer()
     }
+
+    onDidFocus = () => {
+        this.onSearchValueChanged(this.store.searchBarValue, false)
+        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+}
+
+    onWillBlur = () => {
+        isComponentAboutToBlur = true
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+        this.store.setMultiDeletionStatus(false)
+        this.store.setVocabularyClearDone(false)
+        componentsRefName = []
+}
+
 
     getSearchBarValue = () => {
         return this.store.searchBarValue

@@ -7,6 +7,7 @@ import firebase, { } from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
+import { NavigationEvents } from 'react-navigation';
 
 import AppConstants from '../Constants'
 
@@ -58,6 +59,10 @@ class RandomPractice extends React.Component {
 
         return(
             <View style={styles.container}>
+                <NavigationEvents
+                    onDidFocus={() => this.onDidFocus()}
+                    onWillBlur={() => this.onWillBlur()}
+                />
                 <SearchBar 
                 placeholder= {AppConstants.STRING_SEARCH}
                 value= {this.store.practiceSpecificWordSearch}
@@ -131,26 +136,6 @@ class RandomPractice extends React.Component {
     componentDidMount() {
         
         this.hasComponentMounted = true
-
-        this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
-            Realm.open({})
-            .then((realm) => {
-                realm.write(() => {
-                    let settingsScreen = realm.objects(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH)
-                    let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
-                    if(apiUrl && apiUrl !== '') {
-                        if(this.store.apiUrl !== apiUrl) {
-                            this.store.updateApiUrl(apiUrl)
-                            updateApiRequest(this.store.apiUrl)
-                        }
-                    }
-                    if(this.store.displayChangePrefsBtn === 'flex'){
-                        this.goToNextRandomWord()
-                    }
-                    })
-                })
-            .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
-            })
     
         firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
@@ -178,9 +163,32 @@ class RandomPractice extends React.Component {
 
     componentWillUnmount() {
         this.store.resetResponseData()
-        this._didFocusSubscription.remove()
         this.myAutorun()
     }
+
+    onDidFocus = () => {
+        Realm.open({})
+        .then((realm) => {
+            realm.write(() => {
+                let settingsScreen = realm.objects(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH)
+                let apiUrl = (_.valuesIn(settingsScreen))[0].apiUrl
+                if(apiUrl && apiUrl !== '') {
+                    if(this.store.apiUrl !== apiUrl) {
+                        this.store.updateApiUrl(apiUrl)
+                        updateApiRequest(this.store.apiUrl)
+                    }
+                }
+                if(this.store.displayChangePrefsBtn === 'flex'){
+                    this.goToNextRandomWord()
+                }
+                })
+            })
+        .catch((error) => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+}
+
+    onWillBlur = () => {
+    }
+
 
     nextBtnClicked = () => {
         this.goToNextRandomWord()

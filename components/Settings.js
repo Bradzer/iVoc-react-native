@@ -21,6 +21,7 @@ import {
 } from "react-native-elements";
 import firebase from "react-native-firebase";
 import { inject, observer } from "mobx-react";
+import { NavigationEvents } from 'react-navigation';
 
 import SettingsOverflowMenu from "./SettingsOverflowMenu";
 import AppConstants from "../Constants";
@@ -34,9 +35,6 @@ const Realm = require("realm");
 const _ = require("lodash");
 
 class Settings extends React.Component {
-
-	_didFocusSubscription = null;
-    _willBlurSubscription = null;
 
 	store = this.props.store;
 
@@ -135,6 +133,10 @@ class Settings extends React.Component {
 
 		return (
 			<View style={styles.container}>
+				<NavigationEvents
+					onDidFocus={() => this.onDidFocus()}
+					onWillBlur={() => this.onWillBlur()}
+				/>
 				<ScrollView style={{ maxWidth: getWidth() }}>
 					<View style={{ padding: 8, flex: 1, alignItems: "flex-start" }}>
 						<View
@@ -333,22 +335,19 @@ class Settings extends React.Component {
 			})
 			.catch(() =>
 				ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT)
-			);
-
-			this._didFocusSubscription = this.props.navigation.addListener('didFocus', () => {
-				BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-				});
-		
-			this._willBlurSubscription = this.props.navigation.addListener('willBlur', () => {
-				BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-			});
-	
+			);	
 	}
 
 	componentWillUnmount() {
-		this._didFocusSubscription && this._didFocusSubscription.remove();
-        this._willBlurSubscription && this._willBlurSubscription.remove();
 	}
+
+    onDidFocus = () => {
+        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    }
+
+    onWillBlur = () => {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    }
 
 	onBackButtonPressAndroid = () => {
 		if(this.store.isSettingsMenuOpen) {
