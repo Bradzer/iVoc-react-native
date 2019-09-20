@@ -11,9 +11,6 @@ import AppConstants from '../Constants'
 import reactotron from '../ReactotronConfig';
 
 class HomeOverflowMenu extends React.Component {
-
-    _didFocusSubscription = null;
-    _willBlurSubscription = null;
     
     store = this.props.store
 

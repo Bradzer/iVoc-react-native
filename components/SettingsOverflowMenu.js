@@ -11,10 +11,7 @@ import reactotron from '../ReactotronConfig';
 
 class SettingsOverflowMenu extends React.Component {
 
-    _didFocusSubscription = null;
-    _willBlurSubscription = null;
-    
-    store = this.props.store
+  store = this.props.store
 
   closeMenuReactionDisposer = reaction(
     () => this.store.closeSettingsMenu,
