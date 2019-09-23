@@ -104,6 +104,7 @@ const AppConstants = Object.freeze({
     STRING_STEEVE: '- Steeve Mamavi',
     STRING_BICAS: '- Bicas Kodja',
     STRING_LEVI: '- Levi Buzolic',
+    STRING_FAISAL: '- Faisal Arshed',
     STRING_AXIOS: 'Axios',
     STRING_AXIOS_LINK: 'https://github.com/axios/axios',
     STRING_MOBX: 'MobX',
