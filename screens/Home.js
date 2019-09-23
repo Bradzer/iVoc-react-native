@@ -9,8 +9,8 @@ import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 import { NavigationEvents } from 'react-navigation';
 
-import HomeOverflowMenu from './HomeOverflowMenu'
-import AppConstants from '../Constants'
+import HomeOverflowMenu from '../fragments/HomeOverflowMenu'
+import AppConstants from '../constants/Constants'
 import reactotron from '../ReactotronConfig';
 
 class Home extends React.Component {

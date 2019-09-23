@@ -4,7 +4,7 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-
 import { Icon, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 
-import AppConstants from '../Constants'
+import AppConstants from '../constants/Constants'
 
 export const HomeOverflowMenu = (props) => {
     return (

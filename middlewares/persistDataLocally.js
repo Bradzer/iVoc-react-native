@@ -1,4 +1,4 @@
-import AppConstants from './Constants'
+import AppConstants from '../constants/Constants'
 import { 
     UPDATE_INDEX, 
     UPDATE_STARTING_LETTERS_CHKBOX, 
@@ -11,7 +11,7 @@ import {
     UPDATE_API_URL,
     UPDATE_SETTINGS_PREFERENCES,
     UPDATE_PARTIAL_LETTERS_TEXT,
-    UPDATE_PARTIAL_WORD_CHKBOX, } from './actions'
+    UPDATE_PARTIAL_WORD_CHKBOX, } from '../actions/actions'
     
 
 const Realm = require('realm');

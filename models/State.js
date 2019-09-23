@@ -3,7 +3,7 @@
 import { decorate, observable, action } from "mobx"
 import { ToastAndroid, } from 'react-native'
 
-import AppConstants from '../Constants'
+import AppConstants from '../constants/Constants'
 
 const Realm = require('realm');
 

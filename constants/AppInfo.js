@@ -2,7 +2,6 @@ import Constants from './Constants'
 
 const AppInfo = Object.freeze({
     INFO_ARRAY: [
-        Constants.STRING_POWERED_BY,
         Constants.STRING_DEVELOPER,
         Constants.STRING_DEVELOPER_NAME,
         Constants.STRING_EMAIL,

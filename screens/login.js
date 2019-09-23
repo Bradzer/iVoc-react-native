@@ -13,8 +13,8 @@ import {
 import { Button, CheckBox } from "react-native-elements";
 import firebase from "react-native-firebase";
 
-import styles from "./style";
-import AppConstants from "../Constants";
+import styles from "../styles/style";
+import AppConstants from "../constants/Constants";
 
 const firebaseAuth = firebase.auth();
 const usersCollection = firebase.firestore().collection("users");

@@ -9,7 +9,7 @@ import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 import { NavigationEvents } from 'react-navigation';
 
-import AppConstants from '../Constants'
+import AppConstants from '../constants/Constants'
 
 let firebaseAuth = null
 let userId = null

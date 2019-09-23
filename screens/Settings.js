@@ -23,8 +23,8 @@ import firebase from "react-native-firebase";
 import { inject, observer } from "mobx-react";
 import { NavigationEvents } from 'react-navigation';
 
-import SettingsOverflowMenu from "./SettingsOverflowMenu";
-import AppConstants from "../Constants";
+import SettingsOverflowMenu from "../fragments/SettingsOverflowMenu";
+import AppConstants from "../constants/Constants";
 
 let firebaseAuth = null;
 let userId = null;

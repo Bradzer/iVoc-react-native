@@ -7,7 +7,7 @@ import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
 import { reaction, } from 'mobx'
 
-import AppConstants from '../Constants'
+import AppConstants from '../constants/Constants'
 import reactotron from '../ReactotronConfig';
 
 class HomeOverflowMenu extends React.Component {

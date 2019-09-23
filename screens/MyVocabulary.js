@@ -13,8 +13,8 @@ import Snackbar from 'react-native-snackbar';
 import { NavigationEvents } from 'react-navigation';
 
 
-import MyVocabularyOverflowMenu from './MyVocabularyOverflowMenu'
-import AppConstants from '../Constants'
+import MyVocabularyOverflowMenu from '../fragments/MyVocabularyOverflowMenu'
+import AppConstants from '../constants/Constants'
 import reactotron from '../ReactotronConfig';
 
     let firebaseAuth = null

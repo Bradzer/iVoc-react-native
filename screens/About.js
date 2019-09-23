@@ -3,9 +3,9 @@ import { StyleSheet, ScrollView, View, Text, BackHandler, ToastAndroid, Linking 
 import { Button, } from 'react-native-elements'
 import { StackActions } from 'react-navigation'
 
-import AppConstants from '../Constants'
-import AppInfo from '../AppInfo'
-import ThanksList from '../ThanksList'
+import AppConstants from '../constants/Constants'
+import AppInfo from '../constants/AppInfo'
+import ThanksList from '../constants/ThanksList'
 
 class About extends React.Component {
 
@@ -36,14 +36,18 @@ class About extends React.Component {
                     <View style={{flex: 1, alignItems: 'center'}}>
                         <Text style={{marginTop: 16, fontWeight: 'bold', fontSize: 18}}>{AppConstants.APP_NAME}</Text>
                         <Text style={{fontSize: 18}}>version {AppConstants.APP_VERSION}</Text>
+                        <Text style={{fontSize: 18}}>{AppConstants.STRING_POWERED_BY}</Text>
                         { AppInfo.INFO_ARRAY.map((element, index, array) => {
                         if(index % 2 === 0)
                         return (
                             <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
                         )
-                        else return (
-                            <Text key={index} style={{fontSize: 18}}>{element}</Text>
-                        )
+                        else if(index !== 5 && index !== 7 )
+                            return (
+                                <Text key={index} style={{fontSize: 18}}>{element}</Text>
+                            )
+                            else
+                                return <Text key={index} style={{fontSize: 18}} onPress={() => this.onUrlPressed(element)}>{element}</Text>
                         })}
                         <Button title={AppConstants.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
                         <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_BIG_THANKS}</Text>
