@@ -15,6 +15,7 @@ import firebase from "react-native-firebase";
 
 import styles from "../styles/style";
 import AppConstants from "../constants/Constants";
+import FirebaseAuthErrorCode from "../constants/FirebaseAuthErrorCode"
 
 const firebaseAuth = firebase.auth();
 const usersCollection = firebase.firestore().collection("users");
@@ -137,11 +138,10 @@ export default class LoginScreen extends Component {
 					.signInWithEmailAndPassword(this.state.username, this.state.password)
 					.then(
 						credentials => {
-							onLoginSuccessful(credentials);
-							this.navigateToHome();
+							this.onLoginSuccessful(credentials);
 						},
-						createUserError =>
-							ToastAndroid.show(createUserError.code, ToastAndroid.SHORT)
+						signInError =>
+							this.onSignInError(signInError.code)
 					);
 			}
 		} else {
@@ -164,8 +164,8 @@ export default class LoginScreen extends Component {
 								);
 								this.navigateToHome();
 							},
-							signInError =>
-								ToastAndroid.show(signInError.code, ToastAndroid.SHORT)
+							signUpError =>
+								this.onSignUpError(signUpError.code)
 						);
 				} else {
 					ToastAndroid.show(
@@ -191,14 +191,16 @@ export default class LoginScreen extends Component {
 						isAnonymous: credentials.user.isAnonymous,
 						providerId: credentials.user.providerId
 					})
-					.then(docRef => docRef.update({ id: docRef.id }));
-				ToastAndroid.show(
-					AppConstants.TOAST_LOG_IN_SUCCESS,
-					ToastAndroid.SHORT
-				);
-				this.navigateToHome();
+					.then(docRef => {
+						docRef.update({ id: docRef.id })
+						this.navigateToHome();
+						ToastAndroid.show(
+							AppConstants.TOAST_LOG_IN_SUCCESS,
+							ToastAndroid.SHORT
+						);
+						});
 			},
-			error => ToastAndroid.show(error.code, ToastAndroid.SHORT)
+			error => ToastAndroid.show(AppConstants.TOAST_OPERATION_NOT_ALLOWED, ToastAndroid.SHORT)
 		);
 	};
 
@@ -222,6 +224,66 @@ export default class LoginScreen extends Component {
 	confirmPasswordChanged = confirmPasswordText => {
 		this.setState({ confirmPassword: confirmPasswordText });
 	};
+
+	onSignInError = (errorCode) => {
+		switch(errorCode) {
+			case FirebaseAuthErrorCode.USER_DISABLED:
+				ToastAndroid.show(AppConstants.TOAST_USER_DISABLED, ToastAndroid.SHORT)
+				break;
+
+			case FirebaseAuthErrorCode.INVALID_EMAIL:
+				ToastAndroid.show(AppConstants.TOAST_INVALID_EMAIL, ToastAndroid.SHORT)
+				break;
+
+			case FirebaseAuthErrorCode.USER_NOT_FOUND:
+				ToastAndroid.show(AppConstants.TOAST_USER_NOT_FOUND, ToastAndroid.SHORT)
+				ToastAndroid.show(AppConstants.TOAST_PLEASE_SIGNUP, ToastAndroid.SHORT)
+				break;
+
+			case FirebaseAuthErrorCode.WRONG_PASSWORD:
+				ToastAndroid.show(AppConstants.TOAST_WRONG_PASSWORD, ToastAndroid.SHORT)
+				break;
+		}
+	}
+
+	onSignUpError = (errorCode) => {
+		switch(errorCode) {
+			case FirebaseAuthErrorCode.EMAIL_ALREADY_IN_USE:
+				ToastAndroid.show(AppConstants.TOAST_EMAIL_ALREADY_IN_USE, ToastAndroid.SHORT)
+				ToastAndroid.show(AppConstants.TOAST_LOGIN_INSTEAD, ToastAndroid.SHORT)
+				break;
+
+			case FirebaseAuthErrorCode.INVALID_EMAIL:
+				ToastAndroid.show(AppConstants.TOAST_INVALID_EMAIL, ToastAndroid.SHORT)
+				break;
+
+			case FirebaseAuthErrorCode.OPERATION_NOT_ALLOWED:
+				ToastAndroid.show(AppConstants.TOAST_OPERATION_NOT_ALLOWED, ToastAndroid.SHORT)
+				break;
+
+			case FirebaseAuthErrorCode.WEAK_PASSWORD:
+				ToastAndroid.show(AppConstants.TOAST_WEAK_PASSWORD, ToastAndroid.SHORT)
+				ToastAndroid.show(AppConstants.TOAST_DIFFICULT_PASSWORD, ToastAndroid.SHORT)
+				break;
+		}
+	}
+
+	onLoginSuccessful = credentials => {
+		usersCollection
+			.add({
+				uid: credentials.user.uid,
+				email: credentials.user.email,
+				isAnonymous: credentials.user.isAnonymous,
+				providerId: credentials.user.providerId
+			})
+			.then(
+				docRef => {
+				docRef.update({ id: docRef.id })
+				this.navigateToHome();
+				ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT);
+				})
+			.catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+	};
 }
 
 const screenStyles = StyleSheet.create({
@@ -237,15 +299,3 @@ const screenStyles = StyleSheet.create({
 		borderWidth: 0
 	}
 });
-
-const onLoginSuccessful = credentials => {
-	usersCollection
-		.add({
-			uid: credentials.user.uid,
-			email: credentials.user.email,
-			isAnonymous: credentials.user.isAnonymous,
-			providerId: credentials.user.providerId
-		})
-		.then(docRef => docRef.update({ id: docRef.id }));
-	ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT);
-};
