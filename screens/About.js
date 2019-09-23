@@ -6,6 +6,7 @@ import { StackActions } from 'react-navigation'
 import AppConstants from '../constants/Constants'
 import AppInfo from '../constants/AppInfo'
 import ThanksList from '../constants/ThanksList'
+import UsedLibrariesList from '../constants/UsedLibrariesList'
 
 class About extends React.Component {
 
@@ -59,28 +60,12 @@ class About extends React.Component {
                     :
                     (
                     <View style={{flex: 1, alignItems: 'center'}}>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_AXIOS}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_AXIOS_LINK)}>{AppConstants.STRING_AXIOS_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_MOBX}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_MOBX_LINK)}>{AppConstants.STRING_MOBX_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_ANIMATABLE}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_ANIMATABLE_LINK)}>{AppConstants.STRING_REACT_NATIVE_ANIMATABLE_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_ELEMENTS}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_ELEMENTS_LINK)}>{AppConstants.STRING_REACT_NATIVE_ELEMENTS_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_FIREBASE}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_FIREBASE_LINK)}>{AppConstants.STRING_REACT_NATIVE_FIREBASE_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_INDICATORS}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_INDICATORS_LINK)}>{AppConstants.STRING_REACT_NATIVE_INDICATORS_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_POPUP_MENU}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_POPUP_MENU_LINK)}>{AppConstants.STRING_REACT_NATIVE_POPUP_MENU_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_SNACKBAR}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_SNACKBAR_LINK)}>{AppConstants.STRING_REACT_NATIVE_SNACKBAR_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS_LINK)}>{AppConstants.STRING_REACT_NATIVE_VECTOR_ICONS_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REACT_NAVIGATION}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REACT_NAVIGATION_LINK)}>{AppConstants.STRING_REACT_NAVIGATION_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_REALM}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_REALM_LINK)}>{AppConstants.STRING_REALM_LINK}</Text>
+                        {UsedLibrariesList.LIBRARIES_ARRAY.map((element, index, array) => {
+                            if(index % 2 === 0)
+                                return <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
+                            else
+                                return <Text key={index} style={{fontSize: 18}} onPress={() => this.onUrlPressed(element)}>{element}</Text>
+                        })}
                     </View>
                     )}
                 </ScrollView>
