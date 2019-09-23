@@ -4,6 +4,8 @@ import { Button, } from 'react-native-elements'
 import { StackActions } from 'react-navigation'
 
 import AppConstants from '../Constants'
+import AppInfo from '../AppInfo'
+import ThanksList from '../ThanksList'
 
 class About extends React.Component {
 
@@ -34,22 +36,20 @@ class About extends React.Component {
                     <View style={{flex: 1, alignItems: 'center'}}>
                         <Text style={{marginTop: 16, fontWeight: 'bold', fontSize: 18}}>{AppConstants.APP_NAME}</Text>
                         <Text style={{fontSize: 18}}>version {AppConstants.APP_VERSION}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_DEVELOPER}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_DEVELOPER_NAME}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_EMAIL}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_EMAIL_VALUE}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_PROJECT_REPO}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_PROJECT_REPO_LINK)}>{AppConstants.STRING_PROJECT_REPO_LINK}</Text>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_DEVELOPER_GITHUB}</Text>
-                        <Text style={{fontSize: 18}} onPress={() => this.onUrlPressed(AppConstants.STRING_DEVELOPER_GITHUB_LINK)}>{AppConstants.STRING_DEVELOPER_GITHUB_LINK}</Text>
+                        { AppInfo.INFO_ARRAY.map((element, index, array) => {
+                        if(index % 2 === 0)
+                        return (
+                            <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
+                        )
+                        else return (
+                            <Text key={index} style={{fontSize: 18}}>{element}</Text>
+                        )
+                        })}
                         <Button title={AppConstants.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
                         <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_BIG_THANKS}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_AMIROL}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_KONRAD}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_ROLAND}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_STEEVE}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_BICAS}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_LEVI}</Text>
+                        {ThanksList.THANKSLIST_ARRAY.map((element, index, array) => {
+                            return <Text key={index} style={{fontSize: 18}}>{element}</Text>
+                        })}
                     </View>
                     )
                     :
