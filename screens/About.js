@@ -1,17 +1,20 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, BackHandler, ToastAndroid, Linking } from 'react-native';
 import { Button, } from 'react-native-elements'
-import { StackActions } from 'react-navigation'
+import { StackActions, NavigationEvents } from 'react-navigation'
+
+import firebase from 'react-native-firebase'
 
 import AppConstants from '../constants/Constants'
 import AppInfo from '../constants/AppInfo'
 import ThanksList from '../constants/ThanksList'
 import UsedLibrariesList from '../constants/UsedLibrariesList'
 
-class About extends React.Component {
+const firebaseAuth = firebase.auth()
+let userId = null
+const blackListCollection = firebase.firestore().collection('blacklist')
 
-    _didFocusSubscription = null;
-    _willBlurSubscription = null;
+class About extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
@@ -35,6 +38,10 @@ class About extends React.Component {
                     ?
                     (
                     <View style={{flex: 1, alignItems: 'center'}}>
+                        <NavigationEvents
+                            onDidFocus={() => this.onDidFocus()}
+                            onWillBlur={() => this.onWillBlur()}
+                        />
                         <Text style={{marginTop: 16, fontWeight: 'bold', fontSize: 18}}>{AppConstants.APP_NAME}</Text>
                         <Text style={{fontSize: 18}}>version {AppConstants.APP_VERSION}</Text>
                         <Text style={{fontSize: 18}}>{AppConstants.STRING_POWERED_BY}</Text>
@@ -60,6 +67,10 @@ class About extends React.Component {
                     :
                     (
                     <View style={{flex: 1, alignItems: 'center'}}>
+                        <NavigationEvents
+                            onDidFocus={() => this.onDidFocus()}
+                            onWillBlur={() => this.onWillBlur()}
+                        />
                         {UsedLibrariesList.LIBRARIES_ARRAY.map((element, index, array) => {
                             if(index % 2 === 0)
                                 return <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
@@ -74,18 +85,26 @@ class About extends React.Component {
     }
 
     componentDidMount() {
-        this._didFocusSubscription = this.props.navigation.addListener("didFocus", () => {
-            BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-          });
-
-        this._willBlurSubscription = this.props.navigation.addListener('willBlur', () =>
-            BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        );
     }
 
     componentWillUnmount() {
-        this._didFocusSubscription && this._didFocusSubscription.remove();
-        this._willBlurSubscription && this._willBlurSubscription.remove();
+    }
+
+	onDidFocus = () => {
+        this.manageAccountStatus()
+        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    }
+
+    onWillBlur = () => {
+        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    }
+
+    manageAccountStatus = () => {
+        blackListCollection.where('id', '==', userId).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.docs.length !== 0) signOut()
+        },
+        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     onBackButtonPressAndroid = () => {
@@ -124,3 +143,6 @@ const styles = StyleSheet.create({
     },
 })
 
+function signOut() {
+    firebaseAuth.signOut()
+}

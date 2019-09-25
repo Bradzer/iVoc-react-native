@@ -12,13 +12,16 @@ import {
 } from "react-native";
 import { Button, CheckBox } from "react-native-elements";
 import firebase from "react-native-firebase";
+import { NavigationEvents } from 'react-navigation';
 
 import styles from "../styles/style";
 import AppConstants from "../constants/Constants";
 import FirebaseAuthErrorCode from "../constants/FirebaseAuthErrorCode"
+import reactotron from "../ReactotronConfig";
 
 const firebaseAuth = firebase.auth();
 const usersCollection = firebase.firestore().collection("users");
+const blackListCollection = firebase.firestore().collection('blacklist')
 
 export default class LoginScreen extends Component {
 	state = {
@@ -26,7 +29,8 @@ export default class LoginScreen extends Component {
 		loginButtonTitle: AppConstants.STRING_LOG_IN,
 		username: "",
 		password: "",
-		confirmPassword: ""
+		confirmPassword: "",
+		banState: true,
 	};
 
 	focusPasswordInput = () => {
@@ -38,9 +42,13 @@ export default class LoginScreen extends Component {
 	};
 
 	render() {
-		if (!firebaseAuth.currentUser)
+		if (!firebaseAuth.currentUser || this.state.banState)
 			return (
 				<View style={screenStyles.container}>
+					<NavigationEvents
+						onDidFocus={() => this.onDidFocus()}
+						onWillBlur={() => this.onWillBlur()}
+					/>
 					<ScrollView
 						contentContainerStyle={{
 							flexGrow: 1,
@@ -114,14 +122,41 @@ export default class LoginScreen extends Component {
 					</ScrollView>
 				</View>
 			);
-		return null;
-	}
+		return (
+			<NavigationEvents
+				onDidFocus={() => this.onDidFocus()}
+				onWillBlur={() => this.onWillBlur()}
+			/>
+		)
+}
 
 	componentDidMount() {
-		if (firebaseAuth.currentUser) this.navigateToHome()
 	}
 
+	onDidFocus = () => {
+		this.manageAccountStatus()
+    }
+
+    onWillBlur = () => {
+    }
+
+
 	navigateToHome = () => this.props.navigation.navigate(AppConstants.STRING_HOME)
+
+	manageAccountStatus = () => {
+		if(firebaseAuth.currentUser) {
+			blackListCollection.where('id', '==', firebaseAuth.currentUser.uid).get().then(
+				(querySnapshot) => {
+					if(querySnapshot.docs.length === 0) {
+						this.setState({banState: false})
+						this.navigateToHome()
+					}
+					else this.setState({banState: true})
+				})
+				.catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+		}
+		else this.setState({banState: true})
+	}
 
 	signUpPressed(currentStatus) {
 		this.setState({ signUpChecked: !currentStatus });
@@ -162,6 +197,7 @@ export default class LoginScreen extends Component {
 									AppConstants.TOAST_LOG_IN_SUCCESS,
 									ToastAndroid.SHORT
 								);
+								this.setState({banState: false})
 								this.navigateToHome();
 							},
 							signUpError =>
@@ -193,6 +229,7 @@ export default class LoginScreen extends Component {
 					})
 					.then(docRef => {
 						docRef.update({ id: docRef.id })
+						this.setState({banState: false})
 						this.navigateToHome();
 						ToastAndroid.show(
 							AppConstants.TOAST_LOG_IN_SUCCESS,
@@ -279,6 +316,7 @@ export default class LoginScreen extends Component {
 			.then(
 				docRef => {
 				docRef.update({ id: docRef.id })
+				this.setState({banState: false})
 				this.navigateToHome();
 				ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT);
 				})

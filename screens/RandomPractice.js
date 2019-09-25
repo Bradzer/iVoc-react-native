@@ -3,7 +3,7 @@
 import React from 'react';
 import { StyleSheet, ScrollView, View, Text, ToastAndroid, } from 'react-native';
 import {  Button, SearchBar } from 'react-native-elements'
-import firebase, { } from 'react-native-firebase'
+import firebase from 'react-native-firebase'
 import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
@@ -11,9 +11,10 @@ import { NavigationEvents } from 'react-navigation';
 
 import AppConstants from '../constants/Constants'
 
-let firebaseAuth = null
+const firebaseAuth = firebase.auth()
 let userId = null
 let userWordsDetailsCollection = null
+const blackListCollection = firebase.firestore().collection('blacklist')
 
 const axios = require('axios');
 
@@ -31,8 +32,6 @@ let numberOfDefinitions = 0;
 let isSearchingWithSearchBar = false;
 
 class RandomPractice extends React.Component {
-
-    _didFocusSubscription = null;
 
     hasComponentMounted = false;
 
@@ -137,7 +136,6 @@ class RandomPractice extends React.Component {
         
         this.hasComponentMounted = true
     
-        firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
         userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + userId + AppConstants.STRING_USER_WORDS_DETAILS)
 
@@ -167,6 +165,7 @@ class RandomPractice extends React.Component {
     }
 
     onDidFocus = () => {
+        this.manageAccountStatus()
         Realm.open({})
         .then((realm) => {
             realm.write(() => {
@@ -189,6 +188,13 @@ class RandomPractice extends React.Component {
     onWillBlur = () => {
     }
 
+    manageAccountStatus = () => {
+        blackListCollection.where('id', '==', userId).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.docs.length !== 0) signOut()
+        },
+        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+    }
 
     nextBtnClicked = () => {
         this.goToNextRandomWord()
@@ -357,4 +363,8 @@ const getAllDefinitions = (apiResponse, numberOfDefinitions) => {
         definitions.push({partOfSpeech, definition})
     }
     return definitions
+}
+
+function signOut() {
+    firebaseAuth.signOut()
 }

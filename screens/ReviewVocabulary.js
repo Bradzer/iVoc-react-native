@@ -13,9 +13,10 @@ import reactotron from '../ReactotronConfig'
 let listOfWords = []
 let randomWordOriginalId = ''
 
-let firebaseAuth = null
+const firebaseAuth = firebase.auth()
 let userId = null
 let userWordsDetailsCollection = null
+const blackListCollection = firebase.firestore().collection('blacklist')
 
 const VIBRATION_DURATION = 1000
 
@@ -28,7 +29,7 @@ class ReviewVocabulary extends React.Component {
         //     this.store.reviewDefinition[element]
         // })
         // reactotron.logImportant(reviewDefinition)
-        reactotron.logImportant(this.store.reviewDefinition)
+        // reactotron.logImportant(this.store.reviewDefinition)
     })
 
     static navigationOptions = ({navigation}) => {
@@ -165,6 +166,8 @@ class ReviewVocabulary extends React.Component {
 
     componentDidMount() {
         this.store.showLoadingIndicator()
+        userId = firebaseAuth.currentUser.uid
+        userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + + userId + AppConstants.STRING_USER_WORDS_DETAILS)
     }
 
     componentWillUnmount() {
@@ -175,10 +178,8 @@ class ReviewVocabulary extends React.Component {
     }
 
     onDidFocus = () => {
+        this.manageAccountStatus()
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-        firebaseAuth = firebase.auth()
-        userId = firebaseAuth.currentUser.uid
-        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
 
         listOfWords = []
         userWordsDetailsCollection.get()
@@ -215,8 +216,15 @@ class ReviewVocabulary extends React.Component {
         }
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
         updateNumberOfAppearances(randomWordOriginalId)
-}
+    }
 
+    manageAccountStatus = () => {
+        blackListCollection.where('id', '==', userId).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.docs.length !== 0) signOut()
+        },
+        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+    }
 
     onConfirmAnswerPressed = (answer) => {
         if(answer === this.store.reviewWord) {
@@ -319,4 +327,8 @@ const updateNumberOfRemembrances = (originalId) => {
         numberOfRemembrances = docRef.get('numberOfRemembrances') +1
         userWordsDetailsCollection.doc(originalId).update({numberOfRemembrances: numberOfRemembrances})
     })
+}
+
+function signOut() {
+    firebaseAuth.signOut()
 }

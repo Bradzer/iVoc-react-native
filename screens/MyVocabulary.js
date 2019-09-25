@@ -17,9 +17,10 @@ import MyVocabularyOverflowMenu from '../fragments/MyVocabularyOverflowMenu'
 import AppConstants from '../constants/Constants'
 import reactotron from '../ReactotronConfig';
 
-    let firebaseAuth = null
+    const firebaseAuth = firebase.auth()
     let userId = null
     let userWordsDetailsCollection = null
+    const blackListCollection = firebase.firestore().collection('blacklist')
     let timer = null
 
     let componentsRefName = []
@@ -136,9 +137,8 @@ class MyVocabulary extends React.Component {
 
     componentDidMount() {
         this.store.showLoadingIndicator()
-        firebaseAuth = firebase.auth()
         userId = firebaseAuth.currentUser.uid
-        userWordsDetailsCollection = firebase.firestore().collection('wordsDetails/' + userId + '/userWordsDetails')
+        userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + + userId + AppConstants.STRING_USER_WORDS_DETAILS)
     }
 
     componentWillUnmount() {
@@ -149,7 +149,8 @@ class MyVocabulary extends React.Component {
     onDidFocus = () => {
         this.onSearchValueChanged(this.store.searchBarValue, false)
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
-}
+        this.manageAccountStatus()
+    }
 
     onWillBlur = () => {
         isComponentAboutToBlur = true
@@ -157,8 +158,16 @@ class MyVocabulary extends React.Component {
         this.store.setMultiDeletionStatus(false)
         this.store.setVocabularyClearDone(false)
         componentsRefName = []
-}
+    }
 
+
+    manageAccountStatus = () => {
+        blackListCollection.where('id', '==', userId).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.docs.length !== 0) signOut()
+        },
+        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+    }
 
     getSearchBarValue = () => {
         return this.store.searchBarValue
@@ -348,3 +357,7 @@ const styles = StyleSheet.create({
   const showMultiDeletionOffToast = () => {
       ToastAndroid.show(AppConstants.TOAST_MULTI_DEL_OFF, ToastAndroid.SHORT)
   }  
+
+  function signOut() {
+    firebaseAuth.signOut()
+}

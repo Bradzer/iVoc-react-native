@@ -26,9 +26,10 @@ import { NavigationEvents } from 'react-navigation';
 import SettingsOverflowMenu from "../fragments/SettingsOverflowMenu";
 import AppConstants from "../constants/Constants";
 
-let firebaseAuth = null;
-let userId = null;
-let userWordsDetailsCollection = null;
+const firebaseAuth = firebase.auth()
+let userId = null
+let userWordsDetailsCollection = null
+const blackListCollection = firebase.firestore().collection('blacklist')
 
 const Realm = require("realm");
 
@@ -290,7 +291,6 @@ class Settings extends React.Component {
 	}
 
 	componentDidMount() {
-		firebaseAuth = firebase.auth();
 		userId = firebaseAuth.currentUser.uid;
 		userWordsDetailsCollection = firebase
 			.firestore()
@@ -342,11 +342,20 @@ class Settings extends React.Component {
 	}
 
     onDidFocus = () => {
-        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+		this.manageAccountStatus()
     }
 
     onWillBlur = () => {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+	}
+	
+    manageAccountStatus = () => {
+        blackListCollection.where('id', '==', userId).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.docs.length !== 0) signOut()
+        },
+        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
 	onBackButtonPressAndroid = () => {
@@ -479,4 +488,8 @@ function getSettingsPreferencesInRealm(settingsScreenRealmData) {
 
 function getWidth() {
 	return Dimensions.get("window").width;
+}
+
+function signOut() {
+    firebaseAuth.signOut()
 }

@@ -13,6 +13,10 @@ import HomeOverflowMenu from '../fragments/HomeOverflowMenu'
 import AppConstants from '../constants/Constants'
 import reactotron from '../ReactotronConfig';
 
+const firebaseAuth = firebase.auth()
+let userId = null
+const blackListCollection = firebase.firestore().collection('blacklist')
+
 class Home extends React.Component {
 
     store = this.props.store
@@ -70,14 +74,25 @@ class Home extends React.Component {
                 this.props.navigation.navigate('LoginScreen')
             }
         })
+        userId = firebaseAuth.currentUser.uid
+
     }
 
     onDidFocus = () => {
         BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+        this.manageAccountStatus()
     }
 
     onWillBlur = () => {
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
+    }
+
+    manageAccountStatus = () => {
+        blackListCollection.where('id', '==', userId).get()
+        .then((querySnapshot) => {
+            if(querySnapshot.docs.length !== 0) signOut()
+        },
+        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     navigateToRandomPractice = () => this.props.navigation.navigate('RandomPractice')
@@ -124,3 +139,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 })
+
+function signOut() {
+    firebaseAuth.signOut()
+}
