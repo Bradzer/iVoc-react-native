@@ -30,7 +30,6 @@ export default class LoginScreen extends Component {
 		username: "",
 		password: "",
 		confirmPassword: "",
-		banState: true,
 	};
 
 	focusPasswordInput = () => {
@@ -42,7 +41,7 @@ export default class LoginScreen extends Component {
 	};
 
 	render() {
-		if (!firebaseAuth.currentUser || this.state.banState)
+		if (!firebaseAuth.currentUser)
 			return (
 				<View style={screenStyles.container}>
 					<NavigationEvents
@@ -148,14 +147,11 @@ export default class LoginScreen extends Component {
 			blackListCollection.where('id', '==', firebaseAuth.currentUser.uid).get().then(
 				(querySnapshot) => {
 					if(querySnapshot.docs.length === 0) {
-						this.setState({banState: false})
 						this.navigateToHome()
 					}
-					else this.setState({banState: true})
 				})
 				.catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
 		}
-		else this.setState({banState: true})
 	}
 
 	signUpPressed(currentStatus) {
@@ -197,7 +193,6 @@ export default class LoginScreen extends Component {
 									AppConstants.TOAST_LOG_IN_SUCCESS,
 									ToastAndroid.SHORT
 								);
-								this.setState({banState: false})
 								this.navigateToHome();
 							},
 							signUpError =>
@@ -229,7 +224,6 @@ export default class LoginScreen extends Component {
 					})
 					.then(docRef => {
 						docRef.update({ id: docRef.id })
-						this.setState({banState: false})
 						this.navigateToHome();
 						ToastAndroid.show(
 							AppConstants.TOAST_LOG_IN_SUCCESS,
@@ -316,7 +310,6 @@ export default class LoginScreen extends Component {
 			.then(
 				docRef => {
 				docRef.update({ id: docRef.id })
-				this.setState({banState: false})
 				this.navigateToHome();
 				ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT);
 				})
