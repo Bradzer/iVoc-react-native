@@ -94,6 +94,8 @@ const AppConstants = Object.freeze({
     TOAST_USER_NOT_FOUND: 'Account not found',
     TOAST_PLEASE_SIGNUP: 'Please sign up if this is your first use',
     TOAST_WRONG_PASSWORD: 'wrong password',
+    TOAST_ACCOUNT_DELETED: 'Your account has been deleted',
+    TOAST_ACCOUNT_DISABLED: 'Account temporarily disabled',
     WORDS_API_KEY: '32512cd1d1mshde2d7da235d7be7p1507d7jsnfe3304948c7b',
     RANDOM_URL: 'https://wordsapiv1.p.mashape.com/words/?&hasDetails=definitions&random=true',
     APP_VERSION: '0.9.3 beta',

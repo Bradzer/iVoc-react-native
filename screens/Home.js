@@ -11,6 +11,7 @@ import { NavigationEvents } from 'react-navigation';
 
 import HomeOverflowMenu from '../fragments/HomeOverflowMenu'
 import AppConstants from '../constants/Constants'
+import BanTypes from '../constants/BanTypes'
 import reactotron from '../ReactotronConfig';
 
 const firebaseAuth = firebase.auth()
@@ -90,7 +91,20 @@ class Home extends React.Component {
     manageAccountStatus = () => {
         blackListCollection.where('id', '==', userId).get()
         .then((querySnapshot) => {
-            if(!querySnapshot.empty) signOut()
+            if(!querySnapshot.empty) {
+                signOut()
+                querySnapshot.forEach((docSnapshot) => {
+                    switch(docSnapshot.data().banType) {
+                        case BanTypes.DELETED:
+                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
+                            break;
+
+                        case BanTypes.DISABLED:
+                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
+                            break;
+                    }
+                })
+            }
         },
         () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
