@@ -86,6 +86,7 @@ class About extends React.Component {
     }
 
     componentDidMount() {
+        userId = firebaseAuth.currentUser.uid
     }
 
     componentWillUnmount() {
