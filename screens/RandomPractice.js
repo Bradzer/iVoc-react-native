@@ -191,7 +191,7 @@ class RandomPractice extends React.Component {
     manageAccountStatus = () => {
         blackListCollection.where('id', '==', userId).get()
         .then((querySnapshot) => {
-            if(querySnapshot.docs.length !== 0) signOut()
+            if(!querySnapshot.empty) signOut()
         },
         () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }

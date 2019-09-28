@@ -146,7 +146,7 @@ export default class LoginScreen extends Component {
 		if(firebaseAuth.currentUser) {
 			blackListCollection.where('id', '==', firebaseAuth.currentUser.uid).get().then(
 				(querySnapshot) => {
-					if(querySnapshot.docs.length === 0) {
+					if(querySnapshot.empty) {
 						this.navigateToHome()
 					}
 				})
