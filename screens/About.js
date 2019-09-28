@@ -9,6 +9,7 @@ import AppConstants from '../constants/Constants'
 import AppInfo from '../constants/AppInfo'
 import ThanksList from '../constants/ThanksList'
 import UsedLibrariesList from '../constants/UsedLibrariesList'
+import BanTypes from '../constants/BanTypes'
 
 const firebaseAuth = firebase.auth()
 let userId = null
@@ -102,7 +103,20 @@ class About extends React.Component {
     manageAccountStatus = () => {
         blackListCollection.where('id', '==', userId).get()
         .then((querySnapshot) => {
-            if(!querySnapshot.empty) signOut()
+            if(!querySnapshot.empty) {
+                signOut()
+                querySnapshot.forEach((docSnapshot) => {
+                    switch(docSnapshot.data().banType) {
+                        case BanTypes.DELETED:
+                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
+                            break;
+
+                        case BanTypes.DISABLED:
+                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
+                            break;
+                    }
+                })
+            }
         },
         () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
