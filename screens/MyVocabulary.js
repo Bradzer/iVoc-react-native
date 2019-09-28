@@ -138,7 +138,7 @@ class MyVocabulary extends React.Component {
     componentDidMount() {
         this.store.showLoadingIndicator()
         userId = firebaseAuth.currentUser.uid
-        userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + + userId + AppConstants.STRING_USER_WORDS_DETAILS)
+        userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + userId + AppConstants.STRING_USER_WORDS_DETAILS)
     }
 
     componentWillUnmount() {
