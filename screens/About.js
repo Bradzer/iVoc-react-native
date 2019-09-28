@@ -1,15 +1,14 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, BackHandler, ToastAndroid, Linking } from 'react-native';
-import { Button, } from 'react-native-elements'
+import { StyleSheet, ScrollView, View, Text, BackHandler, ToastAndroid } from 'react-native';
 import { StackActions, NavigationEvents } from 'react-navigation'
 
 import firebase from 'react-native-firebase'
 
+import AboutFragment from '../fragments/AboutFragment'
 import AppConstants from '../constants/Constants'
-import AppInfo from '../constants/AppInfo'
-import ThanksList from '../constants/ThanksList'
 import UsedLibrariesList from '../constants/UsedLibrariesList'
 import BanTypes from '../constants/BanTypes'
+import reactotron from '../ReactotronConfig';
 
 const firebaseAuth = firebase.auth()
 let userId = null
@@ -43,26 +42,7 @@ class About extends React.Component {
                             onDidFocus={() => this.onDidFocus()}
                             onWillBlur={() => this.onWillBlur()}
                         />
-                        <Text style={{marginTop: 16, fontWeight: 'bold', fontSize: 18}}>{AppConstants.APP_NAME}</Text>
-                        <Text style={{fontSize: 18}}>version {AppConstants.APP_VERSION}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_POWERED_BY}</Text>
-                        { AppInfo.INFO_ARRAY.map((element, index, array) => {
-                        if(index % 2 === 0)
-                        return (
-                            <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
-                        )
-                        else if(index !== 5 && index !== 7 )
-                            return (
-                                <Text key={index} style={{fontSize: 18}}>{element}</Text>
-                            )
-                            else
-                                return <Text key={index} style={{fontSize: 18}} onPress={() => this.onUrlPressed(element)}>{element}</Text>
-                        })}
-                        <Button title={AppConstants.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_BIG_THANKS}</Text>
-                        {ThanksList.THANKSLIST_ARRAY.map((element, index, array) => {
-                            return <Text key={index} style={{fontSize: 18}}>{element}</Text>
-                        })}
+                        <AboutFragment onShowLibrariesPressed={this.showLibrariesPressed}/>
                     </View>
                     )
                     :
@@ -102,6 +82,7 @@ class About extends React.Component {
     }
 
     manageAccountStatus = () => {
+        reactotron.log('manageAccountStatus')
         blackListCollection.where('id', '==', userId).get()
         .then((querySnapshot) => {
             if(!querySnapshot.empty) {
@@ -127,24 +108,12 @@ class About extends React.Component {
             this.setState({displayLibraries: false})
             return true;
         } else {
-        StackActions.pop()
+            StackActions.pop()
         }
       };
 
     showLibrariesPressed = () => {
         this.setState({displayLibraries: true})
-    }
-
-    onUrlPressed = (url) => {
-        Linking.canOpenURL(url)
-            .then((supported) => {
-                if (!supported) {
-                    ToastAndroid.show("No app installed to handle url", ToastAndroid.SHORT)
-                } else {
-                return Linking.openURL(url);
-                }
-            })
-            .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT));
     }
 }
 
