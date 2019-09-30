@@ -1,13 +1,22 @@
 import { createStackNavigator } from 'react-navigation';
 
 import Settings from '../screens/Settings'
-import About from '../screens/About'
+import AboutStack from './AboutStack'
+import AppConstants from '../constants/Constants'
 
 const SettingsStackAppNavigator = createStackNavigator({
     Settings,
-    About
+    AboutStack: {
+      screen: AboutStack
+    }
   },
   {
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: AppConstants.APP_PRIMARY_COLOR
+      },
+      headerTintColor: AppConstants.COLOR_WHITE,
+    },
     initialRouteName: 'Settings'
   })
 
