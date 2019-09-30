@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, BackHandler, ToastAndroid } from 'react-native';
-import { StackActions, NavigationEvents } from 'react-navigation'
+import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
+import { Button, } from 'react-native-elements'
+import { NavigationEvents } from 'react-navigation'
 
 import firebase from 'react-native-firebase'
 
-import AboutFragment from '../fragments/AboutFragment'
 import AppConstants from '../constants/Constants'
-import UsedLibrariesList from '../constants/UsedLibrariesList'
+import AppInfo from '../constants/AppInfo'
+import ThanksList from '../constants/ThanksList'
 import BanTypes from '../constants/BanTypes'
 import reactotron from '../ReactotronConfig';
 
@@ -26,40 +27,40 @@ class About extends React.Component {
             }
     }
 
-    state = {
-        displayLibraries: false
-    }
-
     render() {
         return (
             <View style={styles.container}>
+                <NavigationEvents
+                    onDidFocus={() => this.onDidFocus()}
+                    onWillBlur={() => this.onWillBlur()}
+                />
                 <ScrollView style={{flex: 1}}>
-                    {this.state.displayLibraries === false
-                    ?
-                    (
                     <View style={{flex: 1, alignItems: 'center'}}>
                         <NavigationEvents
                             onDidFocus={() => this.onDidFocus()}
                             onWillBlur={() => this.onWillBlur()}
                         />
-                        <AboutFragment onShowLibrariesPressed={this.showLibrariesPressed}/>
-                    </View>
-                    )
-                    :
-                    (
-                    <View style={{flex: 1, alignItems: 'center'}}>
-                        <NavigationEvents
-                            onDidFocus={() => this.onDidFocus()}
-                            onWillBlur={() => this.onWillBlur()}
-                        />
-                        {UsedLibrariesList.LIBRARIES_ARRAY.map((element, index, array) => {
-                            if(index % 2 === 0)
-                                return <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
+                        <Text style={{marginTop: 16, fontWeight: 'bold', fontSize: 18}}>{AppConstants.APP_NAME}</Text>
+                        <Text style={{fontSize: 18}}>version {AppConstants.APP_VERSION}</Text>
+                        <Text style={{fontSize: 18}}>{AppConstants.STRING_POWERED_BY}</Text>
+                        { AppInfo.INFO_ARRAY.map((element, index, array) => {
+                        if(index % 2 === 0)
+                        return (
+                            <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
+                        )
+                        else if(index !== 5 && index !== 7 )
+                            return (
+                                <Text key={index} style={{fontSize: 18}}>{element}</Text>
+                            )
                             else
                                 return <Text key={index} style={{fontSize: 18}} onPress={() => this.onUrlPressed(element)}>{element}</Text>
                         })}
+                        <Button title={AppConstants.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
+                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_BIG_THANKS}</Text>
+                        {ThanksList.THANKSLIST_ARRAY.map((element, index, array) => {
+                            return <Text key={index} style={{fontSize: 18}}>{element}</Text>
+                        })}
                     </View>
-                    )}
                 </ScrollView>
             </View>
         )
@@ -74,11 +75,9 @@ class About extends React.Component {
 
 	onDidFocus = () => {
         this.manageAccountStatus()
-        BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
     }
 
     onWillBlur = () => {
-        BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
     }
 
     manageAccountStatus = () => {
@@ -103,17 +102,8 @@ class About extends React.Component {
         () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
-    onBackButtonPressAndroid = () => {
-        if (this.state.displayLibraries) {
-            this.setState({displayLibraries: false})
-            return true;
-        } else {
-            StackActions.pop()
-        }
-      };
-
     showLibrariesPressed = () => {
-        this.setState({displayLibraries: true})
+        this.props.navigation.navigate('UsedLibraries')
     }
 }
 
