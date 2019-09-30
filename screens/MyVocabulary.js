@@ -251,6 +251,14 @@ class MyVocabulary extends React.Component {
 
   onUndoDeletePressed = (tempListWithoutRemoval) => {
       this.store.updateListOfWords(tempListWithoutRemoval)
+      this.syncPulseAnimation()
+  }
+
+  syncPulseAnimation = () => {
+    if(this.store.multiDeletionStatus) {
+        this.store.disableVocabularyListPulseAnimation()
+        this.store.enableVocabularyListPulseAnimation()
+    }
   }
 
   deleteWordPressed = (item) => {
