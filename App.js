@@ -1,19 +1,14 @@
 import React from 'react';
-import { createStackNavigator, createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import { createAppContainer } from 'react-navigation';
 import { MenuProvider, } from 'react-native-popup-menu';
-import { Icon } from 'react-native-elements'
 // import { Provider } from 'react-redux'
 import { Provider } from 'mobx-react'
 
-import LoginScreen from './screens/login'
-import Home from './screens/Home'
-import MyVocabulary from './screens/MyVocabulary'
-import Settings from './screens/Settings'
-import RandomPractice from './screens/RandomPractice'
-import ReviewVocabulary from './screens/ReviewVocabulary'
-import About from './screens/About'
-import AppConstants from './constants/Constants'
+import HomeTabStack from './navigators/HomeTabStack'
+import MyVocabularyStack from './navigators/MyVocabularyTabStack'
+import SettingsStack from './navigators/SettingsTabStack'
+import BottomTab from './navigators/BottomTab'
+import Switch from './navigators/Switch'
 // import store from './reducers'
 import State from './models/State'
 
@@ -55,79 +50,14 @@ export default class App extends React.Component {
   }
 }
 
-const HomeTabStackNavigator = createStackNavigator({
-  Home: Home,
-  RandomPractice: {
-    screen: RandomPractice
-  },
-  ReviewVocabulary: {
-    screen: ReviewVocabulary
-  },
-  About,
-},
-{
-  defaultNavigationOptions: {
-    headerStyle: {
-      backgroundColor: AppConstants.APP_PRIMARY_COLOR
-    },
-    headerTintColor: AppConstants.COLOR_WHITE,
-  },
-  initialRouteName: 'Home'
-})
+const HomeTabStackNavigator = HomeTabStack
 
-const MyVocabularyStackAppNavigator = createStackNavigator({
-  MyVocabulary
-},
-{
-  initialRouteName: 'MyVocabulary'
-})
+const MyVocabularyStackAppNavigator = MyVocabularyStack
 
-const SettingsStackAppNavigator = createStackNavigator({
-  Settings,
-  About
-},
-{
-  initialRouteName: 'Settings'
-})
+const SettingsStackAppNavigator = SettingsStack
 
-const TabAppNavigator = createMaterialBottomTabNavigator({
-  HomeTabStackNavigator: {
-    screen: HomeTabStackNavigator,
-    navigationOptions: {
-      tabBarLabel: AppConstants.STRING_TAB_HOME,
-      tabBarIcon: <Icon name= 'home' />
-    }
-  },
-  MyVocabularyStackAppNavigator: {
-    screen: MyVocabularyStackAppNavigator,
-    navigationOptions: {
-      tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
-      tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>
-  },
-},
-  SettingsStackAppNavigator: {
-    screen: SettingsStackAppNavigator,
-    navigationOptions: {
-      tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
-      tabBarIcon: <Icon name= 'settings' />
-    },
-  },
-},
-{
-  activeTintColor: 'white',
-  barStyle: {backgroundColor: AppConstants.APP_PRIMARY_COLOR},
-  initialRouteName: 'HomeTabStackNavigator',
-})
+const TabAppNavigator = BottomTab
 
-  const SwitchAppNavigator = createSwitchNavigator({
-    LoginScreen,
-    TabAppNavigator: {
-      screen: TabAppNavigator,
-    }  
-  },
-  {
-    backBehavior: 'initialRoute',
-    initialRouteName: 'LoginScreen',  
-  })
+const SwitchAppNavigator = Switch
 
 const AppContainer = createAppContainer(SwitchAppNavigator);
