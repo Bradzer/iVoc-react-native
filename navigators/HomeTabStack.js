@@ -3,7 +3,7 @@ import { createStackNavigator } from 'react-navigation';
 import Home from '../screens/Home'
 import RandomPractice from '../screens/RandomPractice'
 import ReviewVocabulary from '../screens/ReviewVocabulary'
-import About from '../screens/About'
+import AboutStack from './AboutStack'
 import AppConstants from '../constants/Constants'
 
 const HomeTabStackNavigator = createStackNavigator({
@@ -14,7 +14,9 @@ const HomeTabStackNavigator = createStackNavigator({
     ReviewVocabulary: {
       screen: ReviewVocabulary
     },
-    About,
+    AboutStack: {
+      screen: AboutStack
+    }
   },
   {
     defaultNavigationOptions: {
