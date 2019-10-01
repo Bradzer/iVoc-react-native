@@ -32,6 +32,8 @@ const ToastConstants = Object.freeze({
     TOAST_WRONG_PASSWORD: 'wrong password',
     TOAST_ACCOUNT_DELETED: 'Your account has been deleted',
     TOAST_ACCOUNT_DISABLED: 'Account temporarily disabled',
+    TOAST_NO_DEFINITION: 'No definition found',
+    TOAST_NO_APP_FOR_URL: 'No app installed to handle url'
 
 })
 
