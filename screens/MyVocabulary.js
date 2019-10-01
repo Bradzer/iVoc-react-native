@@ -15,6 +15,8 @@ import { NavigationEvents } from 'react-navigation';
 
 import MyVocabularyOverflowMenu from '../fragments/MyVocabularyOverflowMenu'
 import AppConstants from '../constants/Constants'
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 import BanTypes from '../constants/BanTypes'
 import reactotron from '../ReactotronConfig';
 
@@ -63,8 +65,8 @@ class MyVocabulary extends React.Component {
 
     static navigationOptions = () => {
         return {
-            headerTitle: AppConstants.STRING_VOCABULARY,
-            tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
+            headerTitle: Strings.STRING_VOCABULARY,
+            tabBarLabel: Strings.STRING_TAB_MY_VOCABULARY,
             tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>,
             headerStyle: {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
@@ -85,7 +87,7 @@ class MyVocabulary extends React.Component {
                     onWillBlur={() => this.onWillBlur()}
                 />
                 <SearchBar 
-                placeholder= {AppConstants.STRING_SEARCH}
+                placeholder= {Strings.STRING_SEARCH}
                 value= {this.store.searchBarValue}
                 onChangeText= {(changedText) => this.onSearchValueChanged(changedText, true)}
                 onClear= {this.onSearchValueCleared}
@@ -107,15 +109,15 @@ class MyVocabulary extends React.Component {
                     <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
                         <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.vocabularyWord}</Text>
-                        <Text style={{color: 'black', display: this.store.vocabularyPronunciation === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.vocabularyPronunciation}</Text>
-                        <Text style={{color: 'black', display: this.store.vocabularyFrequency === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.vocabularyFrequency}</Text>
-                        <Text style={{color: 'black', textDecorationLine: 'underline', display: this.store.vocabularyDefinition.length > 0 ? 'flex' : 'none'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
+                        <Text style={{color: 'black', display: this.store.vocabularyPronunciation === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{Strings.STRING_PRONUNCIATION} {this.store.vocabularyPronunciation}</Text>
+                        <Text style={{color: 'black', display: this.store.vocabularyFrequency === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{Strings.STRING_FREQUENCY} {this.store.vocabularyFrequency}</Text>
+                        <Text style={{color: 'black', textDecorationLine: 'underline', display: this.store.vocabularyDefinition.length > 0 ? 'flex' : 'none'}}>{'\n'}{Strings.STRING_DEFINITIONS}{'\n'}</Text>
                         { this.store.vocabularyDefinition.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
                                 <Text style={{fontWeight: 'bold'}}>{index + 1}.</Text>
-                                <Text style={{color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{color: 'black', display: element.partOfSpeech === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
@@ -123,7 +125,7 @@ class MyVocabulary extends React.Component {
                         else
                         return (
                             <View key={index}>
-                                <Text style={{color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{color: 'black', display: element.partOfSpeech === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )
@@ -139,7 +141,7 @@ class MyVocabulary extends React.Component {
     componentDidMount() {
         this.store.showLoadingIndicator()
         userId = firebaseAuth.currentUser.uid
-        userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + userId + AppConstants.STRING_USER_WORDS_DETAILS)
+        userWordsDetailsCollection = firebase.firestore().collection(Strings.STRING_WORDS_DETAILS + userId + Strings.STRING_USER_WORDS_DETAILS)
     }
 
     componentWillUnmount() {
@@ -170,17 +172,17 @@ class MyVocabulary extends React.Component {
                 querySnapshot.forEach((docSnapshot) => {
                     switch(docSnapshot.data().banType) {
                         case BanTypes.DELETED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
                             break;
 
                         case BanTypes.DISABLED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
                             break;
                     }
                 })
             }
         },
-        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        () => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     getSearchBarValue = () => {
@@ -276,8 +278,8 @@ class MyVocabulary extends React.Component {
         })
         this.store.updateListOfWords(listOfWords)
         if(listOfWords.length === 0) {
-            ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
-            ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
+            ToastAndroid.show(Toasts.TOAST_NO_VOC, ToastAndroid.SHORT)
+            ToastAndroid.show(Toasts.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
         }
     })
 }
@@ -296,7 +298,7 @@ class MyVocabulary extends React.Component {
                     this.store.updateListOfWords(listOfWords)
                     this.store.updateSearchResults(changedText)
                     if(listOfWords.length === 0) {
-                        ToastAndroid.show(AppConstants.TOAST_SEARCH_NO_RESULT, ToastAndroid.SHORT)
+                        ToastAndroid.show(Toasts.TOAST_SEARCH_NO_RESULT, ToastAndroid.SHORT)
                     }            
                 })    
             }, 1000)
@@ -312,8 +314,8 @@ class MyVocabulary extends React.Component {
                 this.store.updateListOfWords(listOfWords)
                 this.store.updateSearchResults(changedText)
                 if(listOfWords.length === 0) {
-                    ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
-                    ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
+                    ToastAndroid.show(Toasts.TOAST_NO_VOC, ToastAndroid.SHORT)
+                    ToastAndroid.show(Toasts.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
                 }        
             })    
         }
@@ -342,7 +344,7 @@ class MyVocabulary extends React.Component {
                     rightTitle= {successPercentage}
                     rightTitleStyle= {{display: (item.numberOfAppearances >= 11 ? 'flex' : 'none')}}
                     onLongPress={() => this.itemLongPressed()}
-                    subtitleStyle={{display: item.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}
+                    subtitleStyle={{display: item.partOfSpeech === Strings.STRING_EMPTY ? 'none' : 'flex'}}
                 />
                 <Divider />
             </Animatable.View>
@@ -369,15 +371,15 @@ const styles = StyleSheet.create({
   const keyExtractor = (item, index) => index.toString();
 
   const showClearDoneToast = () => {
-          ToastAndroid.show(AppConstants.TOAST_VOC_LIST_CLEARED, ToastAndroid.SHORT)
+          ToastAndroid.show(Toasts.TOAST_VOC_LIST_CLEARED, ToastAndroid.SHORT)
   }
 
   const showMultiDeletionOnToast = () => {
-      ToastAndroid.show(AppConstants.TOAST_MULTI_DEL_ON, ToastAndroid.SHORT)
+      ToastAndroid.show(Toasts.TOAST_MULTI_DEL_ON, ToastAndroid.SHORT)
   }
 
   const showMultiDeletionOffToast = () => {
-      ToastAndroid.show(AppConstants.TOAST_MULTI_DEL_OFF, ToastAndroid.SHORT)
+      ToastAndroid.show(Toasts.TOAST_MULTI_DEL_OFF, ToastAndroid.SHORT)
   }  
 
   function signOut() {

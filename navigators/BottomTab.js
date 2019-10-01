@@ -6,26 +6,27 @@ import HomeTabStack from './HomeTabStack'
 import MyVocabularyStack from './MyVocabularyTabStack'
 import SettingsStack from './SettingsTabStack'
 import AppConstants from '../constants/Constants'
+import Strings from '../constants/Strings'
 
 const TabAppNavigator = createMaterialBottomTabNavigator({
     HomeTabStackNavigator: {
       screen: HomeTabStack,
       navigationOptions: {
-        tabBarLabel: AppConstants.STRING_TAB_HOME,
+        tabBarLabel: Strings.STRING_TAB_HOME,
         tabBarIcon: <Icon name= 'home' />
       }
     },
     MyVocabularyStackAppNavigator: {
       screen: MyVocabularyStack,
       navigationOptions: {
-        tabBarLabel: AppConstants.STRING_TAB_MY_VOCABULARY,
+        tabBarLabel: Strings.STRING_TAB_MY_VOCABULARY,
         tabBarIcon: <Icon name= 'file-document' type= 'material-community'/>
     },
   },
     SettingsStackAppNavigator: {
       screen: SettingsStack,
       navigationOptions: {
-        tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
+        tabBarLabel: Strings.STRING_TAB_SETTINGS,
         tabBarIcon: <Icon name= 'settings' />
       },
     },

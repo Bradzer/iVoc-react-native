@@ -8,6 +8,8 @@ import { autorun } from 'mobx'
 import { NavigationEvents } from 'react-navigation';
 
 import AppConstants from '../constants/Constants';
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 import BanTypes from '../constants/BanTypes'
 import reactotron from '../ReactotronConfig'
 
@@ -35,9 +37,9 @@ class ReviewVocabulary extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: AppConstants.STRING_REVIEW,
+            headerTitle: Strings.STRING_REVIEW,
             headerLeft: <Icon name='arrow-back' color='white' underlayColor='#367b38' onPress={() => {
-                navigation.navigate(AppConstants.STRING_HOME)
+                navigation.navigate(Strings.STRING_HOME)
             }}/>,
             headerLeftContainerStyle: {
                 marginLeft: 16
@@ -66,7 +68,7 @@ class ReviewVocabulary extends React.Component {
                         onDidFocus={() => this.onDidFocus()}
                         onWillBlur={() => this.onWillBlur()}
                     />
-                    <Text style={{fontSize: 24}}>{AppConstants.STRING_VOC_EMPTY}</Text>
+                    <Text style={{fontSize: 24}}>{Strings.STRING_VOC_EMPTY}</Text>
                 </View>
             )
         }
@@ -78,7 +80,7 @@ class ReviewVocabulary extends React.Component {
                     onDidFocus={() => this.onDidFocus()}
                     onWillBlur={() => this.onWillBlur()}
                 />
-                    <Text style={{fontSize: 24}}>{AppConstants.STRING_REVIEW_OVER}</Text>
+                    <Text style={{fontSize: 24}}>{Strings.STRING_REVIEW_OVER}</Text>
                 </View>
             )
         }
@@ -91,32 +93,32 @@ class ReviewVocabulary extends React.Component {
                 <ScrollView style={{flex: 1, flexGrow: 1}}>
                     <View style={styles.container}>
                         <View style={{alignItems: 'center', display: this.store.displayReviewHint}}>
-                            <Text style={{fontSize: 24, color: 'black'}}>{AppConstants.STRING_WORD_STARTS_WITH_LETTERS}</Text>
+                            <Text style={{fontSize: 24, color: 'black'}}>{Strings.STRING_WORD_STARTS_WITH_LETTERS}</Text>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewStartingLetter}{'\''}{'\n'}</Text>
-                            <Text style={{fontSize: 24, color: 'black'}}>{AppConstants.STRING_WORD_ENDS_WITH_LETTERS}</Text>
+                            <Text style={{fontSize: 24, color: 'black'}}>{Strings.STRING_WORD_ENDS_WITH_LETTERS}</Text>
                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'\''}{this.store.reviewEndingLetter}{'\''}</Text>
                         </View>
-                        <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}</Text>
+                        <Text style={{fontSize: 24, color: 'black', textDecorationLine: 'underline'}}>{'\n'}{Strings.STRING_DEFINITIONS}</Text>
                         <View style={{alignSelf: 'flex-start'}}>
                             {this.store.reviewDefinition.map((element, index, array) => {
                                 if(array.length !== 1)
                                     return(
                                         <View  key={index}>
                                             <Text style={{fontSize: 18, fontWeight: 'bold'}}>{index + 1}.</Text>
-                                            <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                            <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                             <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                                         </View>        
                                     )
                                 return(
                                     <View key={index}>
-                                        <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                        <Text style={{fontSize: 18, color: 'black', display: element.partOfSpeech === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                         <Text style={{fontSize: 18, fontStyle: 'italic'}}>{element.definition}</Text>
                                     </View>
                                 )
                             })}
                         </View>
                         <Input
-                            placeholder= {AppConstants.STRING_WHATS_THE_WORD}
+                            placeholder= {Strings.STRING_WHATS_THE_WORD}
                             onChangeText= {this.onReviewAnswerTextChanged}
                             value={this.store.reviewAnswerText}
                             containerStyle={{marginBottom: 16,}}
@@ -124,7 +126,7 @@ class ReviewVocabulary extends React.Component {
                             onSubmitEditing={() => this.onConfirmAnswerPressed(this.store.reviewAnswerText)}
                         />
                         <Button 
-                            title={AppConstants.STRING_CONFIRM}
+                            title={Strings.STRING_CONFIRM}
                             icon={<Icon name='check-circle' type='font-awesome'/>}
                             onPress={() => this.onConfirmAnswerPressed(this.store.reviewAnswerText)}
                             titleStyle={{paddingLeft: 4}}
@@ -136,15 +138,15 @@ class ReviewVocabulary extends React.Component {
                 <ScrollView style={{flex: 1}} contentContainerStyle={{flex: 0}}>
                     <View>
                         <Text style={{fontSize: 18, fontWeight: 'bold', color: 'black'}}>{this.store.reviewWord}</Text>
-                        <Text style={{color: 'black', display: this.store.reviewPronunciation === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_PRONUNCIATION} {this.store.reviewPronunciation}</Text>
-                        <Text style={{color: 'black', display: this.store.reviewFrequency === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{AppConstants.STRING_FREQUENCY} {this.store.reviewFrequency}</Text>
-                        <Text style={{color: 'black', textDecorationLine: 'underline', display: this.store.reviewDefinition.length > 0 ? 'flex' : 'none'}}>{'\n'}{AppConstants.STRING_DEFINITIONS}{'\n'}</Text>
+                        <Text style={{color: 'black', display: this.store.reviewPronunciation === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{Strings.STRING_PRONUNCIATION} {this.store.reviewPronunciation}</Text>
+                        <Text style={{color: 'black', display: this.store.reviewFrequency === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{Strings.STRING_FREQUENCY} {this.store.reviewFrequency}</Text>
+                        <Text style={{color: 'black', textDecorationLine: 'underline', display: this.store.reviewDefinition.length > 0 ? 'flex' : 'none'}}>{'\n'}{Strings.STRING_DEFINITIONS}{'\n'}</Text>
                         {this.store.reviewDefinition.map((element, index, array) => {
                         if(array.length !== 1)
                         return (
                             <View key={index}>
                                 <Text style={{fontWeight: 'bold'}}>{index + 1}.</Text>
-                                <Text style={{color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{color: 'black', display: element.partOfSpeech === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontStyle: 'italic'}}>{element.definition}{'\n'}</Text>
                             </View>
 
@@ -152,7 +154,7 @@ class ReviewVocabulary extends React.Component {
                         else
                         return (
                             <View key={index}>
-                                <Text style={{color: 'black', display: element.partOfSpeech === AppConstants.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
+                                <Text style={{color: 'black', display: element.partOfSpeech === Strings.STRING_EMPTY ? 'none' : 'flex'}}>{element.partOfSpeech}</Text>
                                 <Text style={{fontStyle: 'italic'}}>{element.definition}</Text>
                             </View>
                         )
@@ -168,7 +170,7 @@ class ReviewVocabulary extends React.Component {
     componentDidMount() {
         this.store.showLoadingIndicator()
         userId = firebaseAuth.currentUser.uid
-        userWordsDetailsCollection = firebase.firestore().collection(AppConstants.STRING_WORDS_DETAILS + userId + AppConstants.STRING_USER_WORDS_DETAILS)
+        userWordsDetailsCollection = firebase.firestore().collection(Strings.STRING_WORDS_DETAILS + userId + Strings.STRING_USER_WORDS_DETAILS)
     }
 
     componentWillUnmount() {
@@ -190,8 +192,8 @@ class ReviewVocabulary extends React.Component {
             })
             if(listOfWords.length === 0) {
                 this.store.showNoVocabulary()
-                ToastAndroid.show(AppConstants.TOAST_NO_VOC, ToastAndroid.SHORT)
-                ToastAndroid.show(AppConstants.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
+                ToastAndroid.show(Toasts.TOAST_NO_VOC, ToastAndroid.SHORT)
+                ToastAndroid.show(Toasts.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
             }
             else {
                 let randomIndex = Math.floor(Math.random() * listOfWords.length)
@@ -212,8 +214,8 @@ class ReviewVocabulary extends React.Component {
 
     onWillBlur = () => {
         if(!this.store.isNoVocabulary && !this.store.isReviewOver) {
-            ToastAndroid.show(AppConstants.TOAST_UNEXPECTED_LEAVE, ToastAndroid.SHORT)
-            ToastAndroid.show(AppConstants.TOAST_WORD_NOT_REMEMBERED, ToastAndroid.SHORT)
+            ToastAndroid.show(Toasts.TOAST_UNEXPECTED_LEAVE, ToastAndroid.SHORT)
+            ToastAndroid.show(Toasts.TOAST_WORD_NOT_REMEMBERED, ToastAndroid.SHORT)
         }
         BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
         updateNumberOfAppearances(randomWordOriginalId)
@@ -227,29 +229,29 @@ class ReviewVocabulary extends React.Component {
                 querySnapshot.forEach((docSnapshot) => {
                     switch(docSnapshot.data().banType) {
                         case BanTypes.DELETED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
                             break;
 
                         case BanTypes.DISABLED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
                             break;
                     }
                 })
             }
         },
-        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        () => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     onConfirmAnswerPressed = (answer) => {
         if(answer === this.store.reviewWord) {
-            ToastAndroid.show(AppConstants.TOAST_RIGHT_ANSWER, ToastAndroid.SHORT)
+            ToastAndroid.show(Toasts.TOAST_RIGHT_ANSWER, ToastAndroid.SHORT)
             updateNumberOfAppearances(randomWordOriginalId)
             updateNumberOfRemembrances(randomWordOriginalId)        
             this.goToNextReviewWord()
         }
         else {
             Vibration.vibrate(VIBRATION_DURATION)
-            ToastAndroid.show(AppConstants.TOAST_WRONG_ANSWER, ToastAndroid.SHORT)
+            ToastAndroid.show(Toasts.TOAST_WRONG_ANSWER, ToastAndroid.SHORT)
             updateNumberOfAppearances(randomWordOriginalId)
             this.store.displayReviewOverlay()
         }
@@ -296,7 +298,7 @@ class ReviewVocabulary extends React.Component {
         }
         else {
             this.store.showReviewOver()
-            ToastAndroid.show(AppConstants.TOAST_REVIEW_DONE, ToastAndroid.SHORT)
+            ToastAndroid.show(Toasts.TOAST_REVIEW_DONE, ToastAndroid.SHORT)
         }
     }
     

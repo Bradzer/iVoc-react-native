@@ -16,6 +16,8 @@ import { NavigationEvents } from 'react-navigation';
 
 import styles from "../styles/style";
 import AppConstants from "../constants/Constants";
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 import FirebaseAuthErrorCode from "../constants/FirebaseAuthErrorCode"
 import reactotron from "../ReactotronConfig";
 
@@ -26,7 +28,7 @@ const blackListCollection = firebase.firestore().collection('blacklist')
 export default class LoginScreen extends Component {
 	state = {
 		signUpChecked: false,
-		loginButtonTitle: AppConstants.STRING_LOG_IN,
+		loginButtonTitle: Strings.STRING_LOG_IN,
 		username: "",
 		password: "",
 		confirmPassword: "",
@@ -100,17 +102,17 @@ export default class LoginScreen extends Component {
 										onPress={() => this.onLoginPress()}
 										title={
 											this.state.signUpChecked
-												? AppConstants.STRING_SIGN_UP
-												: AppConstants.STRING_LOG_IN
+												? Strings.STRING_SIGN_UP
+												: Strings.STRING_LOG_IN
 										}
 									/>
 									<Button
 										containerStyle={screenStyles.anonymousLogin}
-										title={AppConstants.STRING_LOGIN_ANONYMOUSLY}
+										title={Strings.STRING_LOGIN_ANONYMOUSLY}
 										onPress={() => this.anonymousLoginClicked()}
 									/>
 									<CheckBox
-										title={AppConstants.STRING_SIGN_UP}
+										title={Strings.STRING_SIGN_UP}
 										containerStyle={screenStyles.signUpChkBx}
 										checked={this.state.signUpChecked}
 										onPress={() => this.signUpPressed(this.state.signUpChecked)}
@@ -140,7 +142,7 @@ export default class LoginScreen extends Component {
     }
 
 
-	navigateToHome = () => this.props.navigation.navigate(AppConstants.STRING_HOME)
+	navigateToHome = () => this.props.navigation.navigate(Strings.STRING_HOME)
 
 	manageAccountStatus = () => {
 		if(firebaseAuth.currentUser) {
@@ -150,7 +152,7 @@ export default class LoginScreen extends Component {
 						this.navigateToHome()
 					}
 				})
-				.catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+				.catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 		}
 	}
 
@@ -190,7 +192,7 @@ export default class LoginScreen extends Component {
 						.then(
 							credentials => {
 								ToastAndroid.show(
-									AppConstants.TOAST_LOG_IN_SUCCESS,
+									Toasts.TOAST_LOG_IN_SUCCESS,
 									ToastAndroid.SHORT
 								);
 								this.navigateToHome();
@@ -200,11 +202,11 @@ export default class LoginScreen extends Component {
 						);
 				} else {
 					ToastAndroid.show(
-						AppConstants.TOAST_PASSES_DONT_MATCH,
+						Toasts.TOAST_PASSES_DONT_MATCH,
 						ToastAndroid.SHORT
 					);
 					ToastAndroid.show(
-						AppConstants.TOAST_ENTER_SAME_PASS,
+						Toasts.TOAST_ENTER_SAME_PASS,
 						ToastAndroid.SHORT
 					);
 				}
@@ -226,12 +228,12 @@ export default class LoginScreen extends Component {
 						docRef.update({ id: docRef.id })
 						this.navigateToHome();
 						ToastAndroid.show(
-							AppConstants.TOAST_LOG_IN_SUCCESS,
+							Toasts.TOAST_LOG_IN_SUCCESS,
 							ToastAndroid.SHORT
 						);
 						});
 			},
-			error => ToastAndroid.show(AppConstants.TOAST_OPERATION_NOT_ALLOWED, ToastAndroid.SHORT)
+			error => ToastAndroid.show(Toasts.TOAST_OPERATION_NOT_ALLOWED, ToastAndroid.SHORT)
 		);
 	};
 
@@ -259,20 +261,20 @@ export default class LoginScreen extends Component {
 	onSignInError = (errorCode) => {
 		switch(errorCode) {
 			case FirebaseAuthErrorCode.USER_DISABLED:
-				ToastAndroid.show(AppConstants.TOAST_USER_DISABLED, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_USER_DISABLED, ToastAndroid.SHORT)
 				break;
 
 			case FirebaseAuthErrorCode.INVALID_EMAIL:
-				ToastAndroid.show(AppConstants.TOAST_INVALID_EMAIL, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_INVALID_EMAIL, ToastAndroid.SHORT)
 				break;
 
 			case FirebaseAuthErrorCode.USER_NOT_FOUND:
-				ToastAndroid.show(AppConstants.TOAST_USER_NOT_FOUND, ToastAndroid.SHORT)
-				ToastAndroid.show(AppConstants.TOAST_PLEASE_SIGNUP, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_USER_NOT_FOUND, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_PLEASE_SIGNUP, ToastAndroid.SHORT)
 				break;
 
 			case FirebaseAuthErrorCode.WRONG_PASSWORD:
-				ToastAndroid.show(AppConstants.TOAST_WRONG_PASSWORD, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_WRONG_PASSWORD, ToastAndroid.SHORT)
 				break;
 		}
 	}
@@ -280,21 +282,21 @@ export default class LoginScreen extends Component {
 	onSignUpError = (errorCode) => {
 		switch(errorCode) {
 			case FirebaseAuthErrorCode.EMAIL_ALREADY_IN_USE:
-				ToastAndroid.show(AppConstants.TOAST_EMAIL_ALREADY_IN_USE, ToastAndroid.SHORT)
-				ToastAndroid.show(AppConstants.TOAST_LOGIN_INSTEAD, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_EMAIL_ALREADY_IN_USE, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_LOGIN_INSTEAD, ToastAndroid.SHORT)
 				break;
 
 			case FirebaseAuthErrorCode.INVALID_EMAIL:
-				ToastAndroid.show(AppConstants.TOAST_INVALID_EMAIL, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_INVALID_EMAIL, ToastAndroid.SHORT)
 				break;
 
 			case FirebaseAuthErrorCode.OPERATION_NOT_ALLOWED:
-				ToastAndroid.show(AppConstants.TOAST_OPERATION_NOT_ALLOWED, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_OPERATION_NOT_ALLOWED, ToastAndroid.SHORT)
 				break;
 
 			case FirebaseAuthErrorCode.WEAK_PASSWORD:
-				ToastAndroid.show(AppConstants.TOAST_WEAK_PASSWORD, ToastAndroid.SHORT)
-				ToastAndroid.show(AppConstants.TOAST_DIFFICULT_PASSWORD, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_WEAK_PASSWORD, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_DIFFICULT_PASSWORD, ToastAndroid.SHORT)
 				break;
 		}
 	}
@@ -311,9 +313,9 @@ export default class LoginScreen extends Component {
 				docRef => {
 				docRef.update({ id: docRef.id })
 				this.navigateToHome();
-				ToastAndroid.show(AppConstants.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT);
+				ToastAndroid.show(Toasts.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT);
 				})
-			.catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+			.catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 	};
 }
 

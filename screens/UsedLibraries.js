@@ -4,6 +4,8 @@ import { StackActions, NavigationEvents } from 'react-navigation'
 import firebase from 'react-native-firebase'
 
 import AppConstants from '../constants/Constants'
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 import UsedLibrariesList from '../constants/UsedLibrariesList'
 import BanTypes from '../constants/BanTypes'
 import reactotron from '../ReactotronConfig';
@@ -16,7 +18,7 @@ class UsedLibraries extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: AppConstants.STRING_ABOUT,
+            headerTitle: Strings.STRING_ABOUT,
             headerStyle: {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
@@ -66,29 +68,29 @@ class UsedLibraries extends React.Component {
                 querySnapshot.forEach((docSnapshot) => {
                     switch(docSnapshot.data().banType) {
                         case BanTypes.DELETED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
                             break;
 
                         case BanTypes.DISABLED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
                             break;
                     }
                 })
             }
         },
-        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        () => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     onUrlPressed = (url) => {
         Linking.canOpenURL(url)
             .then((supported) => {
                 if (!supported) {
-                    ToastAndroid.show("No app installed to handle url", ToastAndroid.SHORT)
+                    ToastAndroid.show(Toasts.TOAST_NO_APP_FOR_URL, ToastAndroid.SHORT)
                 } else {
                 return Linking.openURL(url);
                 }
             })
-            .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT));
+            .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT));
     }
 }
 

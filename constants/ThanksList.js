@@ -1,14 +1,14 @@
-import Constants from './Constants'
+import Strings from './Strings'
 
 const ThanksList = Object.freeze({
     THANKSLIST_ARRAY: [
-        Constants.STRING_AMIROL,
-        Constants.STRING_KONRAD,
-        Constants.STRING_ROLAND,
-        Constants.STRING_STEEVE,
-        Constants.STRING_BICAS,
-        Constants.STRING_LEVI,
-        Constants.STRING_FAISAL,
+        Strings.STRING_AMIROL,
+        Strings.STRING_KONRAD,
+        Strings.STRING_ROLAND,
+        Strings.STRING_STEEVE,
+        Strings.STRING_BICAS,
+        Strings.STRING_LEVI,
+        Strings.STRING_FAISAL,
     ]
 })
 

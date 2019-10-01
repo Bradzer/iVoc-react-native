@@ -25,6 +25,8 @@ import { NavigationEvents } from 'react-navigation';
 
 import SettingsOverflowMenu from "../fragments/SettingsOverflowMenu";
 import AppConstants from "../constants/Constants";
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 import BanTypes from '../constants/BanTypes'
 
 const firebaseAuth = firebase.auth()
@@ -42,8 +44,8 @@ class Settings extends React.Component {
 
 	static navigationOptions = ({ navigation }) => {
 		return {
-			headerTitle: AppConstants.STRING_SETTINGS,
-			tabBarLabel: AppConstants.STRING_TAB_SETTINGS,
+			headerTitle: Strings.STRING_SETTINGS,
+			tabBarLabel: Strings.STRING_TAB_SETTINGS,
 			tabBarIcon: <Icon name='settings' />,
 			headerStyle: {
 				backgroundColor: AppConstants.APP_PRIMARY_COLOR
@@ -64,7 +66,7 @@ class Settings extends React.Component {
 						: "normal"
 			}}
 		>
-			{AppConstants.STRING_ALL}
+			{Strings.STRING_ALL}
 		</Text>
 	);
 	partOfSpeechVerb = () => (
@@ -78,7 +80,7 @@ class Settings extends React.Component {
 						: "normal"
 			}}
 		>
-			{AppConstants.STRING_VERB}
+			{Strings.STRING_VERB}
 		</Text>
 	);
 	partOfSpeechNoun = () => (
@@ -92,7 +94,7 @@ class Settings extends React.Component {
 						: "normal"
 			}}
 		>
-			{AppConstants.STRING_NOUN}
+			{Strings.STRING_NOUN}
 		</Text>
 	);
 	partOfSpeechAdjective = () => (
@@ -106,7 +108,7 @@ class Settings extends React.Component {
 						: "normal"
 			}}
 		>
-			{AppConstants.STRING_ADJECTIVE}
+			{Strings.STRING_ADJECTIVE}
 		</Text>
 	);
 	partOfSpeechAdverb = () => (
@@ -120,7 +122,7 @@ class Settings extends React.Component {
 						: "normal"
 			}}
 		>
-			{AppConstants.STRING_ADVERB}
+			{Strings.STRING_ADVERB}
 		</Text>
 	);
 
@@ -148,7 +150,7 @@ class Settings extends React.Component {
 							}}
 						>
 							<CheckBox
-								title={AppConstants.STRING_STARTING_LETTERS}
+								title={Strings.STRING_STARTING_LETTERS}
 								checked={this.store.startingLettersChecked}
 								containerStyle={{
 									alignSelf: "flex-start",
@@ -160,19 +162,19 @@ class Settings extends React.Component {
 								}
 							/>
 							<Input
-								placeholder={AppConstants.STRING_ENTER_STARTING_LETTERS}
+								placeholder={Strings.STRING_ENTER_STARTING_LETTERS}
 								onChangeText={this.onStartingLettersTextChanged}
 								value={this.store.startingLettersText}
 								containerStyle={{
 									marginBottom: 8,
 									display: this.inputDisplay(
-										AppConstants.STRING_STARTING_LETTERS
+										Strings.STRING_STARTING_LETTERS
 									)
 								}}
 							/>
 							<Divider />
 							<CheckBox
-								title={AppConstants.STRING_ENDING_LETTERS}
+								title={Strings.STRING_ENDING_LETTERS}
 								checked={this.store.endingLettersChecked}
 								containerStyle={{
 									alignSelf: "flex-start",
@@ -184,17 +186,17 @@ class Settings extends React.Component {
 								}
 							/>
 							<Input
-								placeholder={AppConstants.STRING_ENTER_ENDING_LETTERS}
+								placeholder={Strings.STRING_ENTER_ENDING_LETTERS}
 								onChangeText={this.onEndingLettersTextChanged}
 								value={this.store.endingLettersText}
 								containerStyle={{
 									marginBottom: 8,
-									display: this.inputDisplay(AppConstants.STRING_ENDING_LETTERS)
+									display: this.inputDisplay(Strings.STRING_ENDING_LETTERS)
 								}}
 							/>
 							<Divider />
 							<CheckBox
-								title={AppConstants.STRING_CONTAINING_LETTERS}
+								title={Strings.STRING_CONTAINING_LETTERS}
 								checked={this.store.partialLettersChecked}
 								containerStyle={{
 									alignSelf: "flex-start",
@@ -206,13 +208,13 @@ class Settings extends React.Component {
 								}
 							/>
 							<Input
-								placeholder={AppConstants.STRING_ENTER_CONTAINING_LETTERS}
+								placeholder={Strings.STRING_ENTER_CONTAINING_LETTERS}
 								onChangeText={this.onPartialLettersTextChanged}
 								value={this.store.partialLettersText}
 								containerStyle={{
 									marginBottom: 8,
 									display: this.inputDisplay(
-										AppConstants.STRING_CONTAINING_LETTERS
+										Strings.STRING_CONTAINING_LETTERS
 									)
 								}}
 							/>
@@ -234,7 +236,7 @@ class Settings extends React.Component {
 							/>
 							<Divider />
 							<CheckBox
-								title={AppConstants.STRING_ONLY_PRONUNCIATION}
+								title={Strings.STRING_ONLY_PRONUNCIATION}
 								checked={this.store.onlyPronunciationWordChecked}
 								containerStyle={{
 									alignSelf: "flex-start",
@@ -251,7 +253,7 @@ class Settings extends React.Component {
 							<Divider />
 						</View>
 						<CheckBox
-							title={AppConstants.STRING_SPECIFIC_WORD}
+							title={Strings.STRING_SPECIFIC_WORD}
 							checked={this.store.specificWordChecked}
 							containerStyle={{
 								alignSelf: "flex-start",
@@ -263,17 +265,17 @@ class Settings extends React.Component {
 							}
 						/>
 						<Input
-							placeholder={AppConstants.STRING_ENTER_SPECIFIC_WORD}
+							placeholder={Strings.STRING_ENTER_SPECIFIC_WORD}
 							onChangeText={this.onSpecificWordTextChanged}
 							value={this.store.specificWordText}
 							containerStyle={{
 								marginBottom: 8,
-								display: this.inputDisplay(AppConstants.STRING_SPECIFIC_WORD)
+								display: this.inputDisplay(Strings.STRING_SPECIFIC_WORD)
 							}}
 						/>
 						<Divider style={{ alignSelf: "stretch" }} />
 						<Button
-							title={AppConstants.STRING_CLEAR_VOC}
+							title={Strings.STRING_CLEAR_VOC}
 							containerStyle={{ marginTop: 8, alignSelf: "center" }}
 							icon={
 								<Icon
@@ -296,9 +298,9 @@ class Settings extends React.Component {
 		userWordsDetailsCollection = firebase
 			.firestore()
 			.collection(
-				AppConstants.STRING_WORDS_DETAILS +
+				Strings.STRING_WORDS_DETAILS +
 				userId +
-				AppConstants.STRING_USER_WORDS_DETAILS
+				Strings.STRING_USER_WORDS_DETAILS
 			);
 
 		Realm.open({})
@@ -306,18 +308,18 @@ class Settings extends React.Component {
 				realm.write(() => {
 					if (
 						!realm
-							.objects(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH)
+							.objects(Strings.STRING_SETTINGS_SCREEN_REALM_PATH)
 							.isEmpty()
 					) {
 						let settingsScreen = realm.objects(
-							AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH
+							Strings.STRING_SETTINGS_SCREEN_REALM_PATH
 						);
 						let settingsPreferencesInRealm = getSettingsPreferencesInRealm(
 							settingsScreen
 						);
 						this.store.updateSettingsPreferences(settingsPreferencesInRealm);
 					} else {
-						realm.create(AppConstants.STRING_SETTINGS_SCREEN_REALM_PATH, {
+						realm.create(Strings.STRING_SETTINGS_SCREEN_REALM_PATH, {
 							pk: 0,
 							partOfSpeechIndex: 0,
 							startingLettersChecked: false,
@@ -335,7 +337,7 @@ class Settings extends React.Component {
 				});
 			})
 			.catch(() =>
-				ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT)
+				ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT)
 			);	
 	}
 
@@ -359,17 +361,17 @@ class Settings extends React.Component {
                 querySnapshot.forEach((docSnapshot) => {
                     switch(docSnapshot.data().banType) {
                         case BanTypes.DELETED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
                             break;
 
                         case BanTypes.DISABLED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
                             break;
                     }
                 })
 			}
         },
-        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        () => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
 	onBackButtonPressAndroid = () => {
@@ -382,16 +384,16 @@ class Settings extends React.Component {
 
 	inputDisplay = checkBoxType => {
 		switch (checkBoxType) {
-			case AppConstants.STRING_STARTING_LETTERS:
+			case Strings.STRING_STARTING_LETTERS:
 				return this.store.startingLettersChecked ? "flex" : "none";
 
-			case AppConstants.STRING_ENDING_LETTERS:
+			case Strings.STRING_ENDING_LETTERS:
 				return this.store.endingLettersChecked ? "flex" : "none";
 
-			case AppConstants.STRING_CONTAINING_LETTERS:
+			case Strings.STRING_CONTAINING_LETTERS:
 				return this.store.partialLettersChecked ? "flex" : "none";
 
-			case AppConstants.STRING_SPECIFIC_WORD:
+			case Strings.STRING_SPECIFIC_WORD:
 				return this.store.specificWordChecked ? "flex" : "none";
 
 			default:
@@ -409,9 +411,9 @@ class Settings extends React.Component {
 						.delete(doc.ref)
 						.commit()
 				),
-			() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT)
+			() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT)
 		);
-		ToastAndroid.show(AppConstants.TOAST_VOC_LIST_CLEARED, ToastAndroid.SHORT);
+		ToastAndroid.show(Toasts.TOAST_VOC_LIST_CLEARED, ToastAndroid.SHORT);
 	};
 
 	changeIndex = selectedPartOfSpeechIndex => {

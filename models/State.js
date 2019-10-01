@@ -4,12 +4,14 @@ import { decorate, observable, action } from "mobx"
 import { ToastAndroid, } from 'react-native'
 
 import AppConstants from '../constants/Constants'
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 
 const Realm = require('realm');
 
 const _ = require('lodash');
 
-const commonUrlpart = AppConstants.STRING_COMMON_URL
+const commonUrlpart = Strings.STRING_COMMON_URL
 
 class State {
 
@@ -220,7 +222,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', settingsPreferencesInRealm.apiUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.selectedPartOfSpeechIndex= settingsPreferencesInRealm.partOfSpeechIndex
         this.startingLettersChecked= settingsPreferencesInRealm.startingLettersChecked
@@ -248,7 +250,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
     
         this.selectedPartOfSpeechIndex= selectedPartOfSpeechIndex
     })
@@ -266,7 +268,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.startingLettersChecked= !currentStatus
         this.specificWordChecked= false
@@ -284,7 +286,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.endingLettersChecked= !currentStatus
         this.specificWordChecked= false
@@ -306,7 +308,7 @@ class State {
                 }
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.specificWordChecked= !currentStatus
         this.randomWordPrefDisplay= (currentStatus ? 'flex' : 'none')
@@ -324,7 +326,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.partialLettersChecked= !currentStatus
         this.specificWordChecked= false
@@ -342,7 +344,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.onlyPronunciationWordChecked= !currentStatus
     })
@@ -359,7 +361,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.startingLettersText= changedText
     })
@@ -376,7 +378,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.endingLettersText= changedText
     })
@@ -393,7 +395,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + customUrl)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.partialLettersText= changedText
     })
@@ -406,7 +408,7 @@ class State {
                 realm.objects('settingsScreen').filtered('pk = 0').update('apiUrl', commonUrlpart + changedText)
             })
         })
-        .catch(() => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
 
         this.specificWordText= changedText
     })

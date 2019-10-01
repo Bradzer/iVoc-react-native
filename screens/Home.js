@@ -11,6 +11,8 @@ import { NavigationEvents } from 'react-navigation';
 
 import HomeOverflowMenu from '../fragments/HomeOverflowMenu'
 import AppConstants from '../constants/Constants'
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 import BanTypes from '../constants/BanTypes'
 import reactotron from '../ReactotronConfig';
 
@@ -53,14 +55,14 @@ class Home extends React.Component {
                         titleStyle={{ fontSize: 24}} 
                         buttonStyle={{maxWidth: 250}} 
                         containerStyle={{marginVertical: 16}} 
-                        title={AppConstants.STRING_START_RANDOM_PRACTICE}
+                        title={Strings.STRING_START_RANDOM_PRACTICE}
                         onPress={this.navigateToRandomPractice}
                         />
                     <Button 
                     raised
                     titleStyle={{ fontSize: 24}} 
                     buttonStyle={{maxWidth: 250}} 
-                    title={AppConstants.STRING_REVIEW_MY_VOCABULARY}
+                    title={Strings.STRING_REVIEW_MY_VOCABULARY}
                     onPress={this.navigateToReviewVocabulary}
                     />
                 </View>
@@ -96,17 +98,17 @@ class Home extends React.Component {
                 querySnapshot.forEach((docSnapshot) => {
                     switch(docSnapshot.data().banType) {
                         case BanTypes.DELETED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
                             break;
 
                         case BanTypes.DISABLED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
                             break;
                     }
                 })
             }
         },
-        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        () => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     navigateToRandomPractice = () => this.props.navigation.navigate('RandomPractice')
@@ -126,7 +128,7 @@ class Home extends React.Component {
 
       onAppLeavingSequence = () => {
           if(!this.timer) {
-              ToastAndroid.show(AppConstants.TOAST_EXIT_APP, ToastAndroid.SHORT)
+              ToastAndroid.show(Toasts.TOAST_EXIT_APP, ToastAndroid.SHORT)
               this.timer = setTimeout(() => {
                   clearTimeout(this.timer)
                   this.timer = null

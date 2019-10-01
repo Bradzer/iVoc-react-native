@@ -6,6 +6,8 @@ import { NavigationEvents } from 'react-navigation'
 import firebase from 'react-native-firebase'
 
 import AppConstants from '../constants/Constants'
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 import AppInfo from '../constants/AppInfo'
 import ThanksList from '../constants/ThanksList'
 import BanTypes from '../constants/BanTypes'
@@ -19,7 +21,7 @@ class About extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: AppConstants.STRING_ABOUT,
+            headerTitle: Strings.STRING_ABOUT,
             headerStyle: {
                 backgroundColor: AppConstants.APP_PRIMARY_COLOR
               },
@@ -42,7 +44,7 @@ class About extends React.Component {
                         />
                         <Text style={{marginTop: 16, fontWeight: 'bold', fontSize: 18}}>{AppConstants.APP_NAME}</Text>
                         <Text style={{fontSize: 18}}>version {AppConstants.APP_VERSION}</Text>
-                        <Text style={{fontSize: 18}}>{AppConstants.STRING_POWERED_BY}</Text>
+                        <Text style={{fontSize: 18}}>{Strings.STRING_POWERED_BY}</Text>
                         { AppInfo.INFO_ARRAY.map((element, index, array) => {
                         if(index % 2 === 0)
                         return (
@@ -55,8 +57,8 @@ class About extends React.Component {
                             else
                                 return <Text key={index} style={{fontSize: 18}} onPress={() => this.onUrlPressed(element)}>{element}</Text>
                         })}
-                        <Button title={AppConstants.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
-                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{AppConstants.STRING_BIG_THANKS}</Text>
+                        <Button title={Strings.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
+                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{Strings.STRING_BIG_THANKS}</Text>
                         {ThanksList.THANKSLIST_ARRAY.map((element, index, array) => {
                             return <Text key={index} style={{fontSize: 18}}>{element}</Text>
                         })}
@@ -89,17 +91,17 @@ class About extends React.Component {
                 querySnapshot.forEach((docSnapshot) => {
                     switch(docSnapshot.data().banType) {
                         case BanTypes.DELETED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DELETED, ToastAndroid.SHORT)
                             break;
 
                         case BanTypes.DISABLED:
-                            ToastAndroid.show(AppConstants.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
+                            ToastAndroid.show(Toasts.TOAST_ACCOUNT_DISABLED, ToastAndroid.SHORT)
                             break;
                     }
                 })
             }
         },
-        () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT))
+        () => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
     showLibrariesPressed = () => {
