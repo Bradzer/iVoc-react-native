@@ -7,6 +7,8 @@ import { inject, observer } from 'mobx-react'
 import { reaction, } from 'mobx'
 
 import AppConstants from '../constants/Constants'
+import Strings from '../constants/Strings'
+import Toasts from '../constants/Toasts'
 import reactotron from '../ReactotronConfig';
 
 class SettingsOverflowMenu extends React.Component {
@@ -31,8 +33,8 @@ class SettingsOverflowMenu extends React.Component {
               <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
                </MenuTrigger>
                <MenuOptions>
-                <MenuOption text={AppConstants.STRING_ABOUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('About')}/>
-                <MenuOption text={AppConstants.STRING_SIGN_OUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => onSignOutSelected()} />
+                <MenuOption text={Strings.STRING_ABOUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('About')}/>
+                <MenuOption text={Strings.STRING_SIGN_OUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => onSignOutSelected()} />
                </MenuOptions>
             </Menu>
           </View>

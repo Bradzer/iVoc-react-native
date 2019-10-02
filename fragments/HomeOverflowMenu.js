@@ -8,6 +8,7 @@ import { inject, observer } from 'mobx-react'
 import { reaction, } from 'mobx'
 
 import AppConstants from '../constants/Constants'
+import Strings from '../constants/Strings'
 import reactotron from '../ReactotronConfig';
 
 class HomeOverflowMenu extends React.Component {
@@ -32,10 +33,10 @@ class HomeOverflowMenu extends React.Component {
               <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
                </MenuTrigger>
                <MenuOptions>
-                <MenuOption text={AppConstants.STRING_TAB_MY_VOCABULARY} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('MyVocabulary')}/>
-                <MenuOption text={AppConstants.STRING_TAB_SETTINGS} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('Settings')}/>
-                <MenuOption text={AppConstants.STRING_ABOUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('About')}/>
-                <MenuOption text={AppConstants.STRING_SIGN_OUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => onSignOutSelected()} />
+                <MenuOption text={Strings.STRING_TAB_MY_VOCABULARY} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('MyVocabulary')}/>
+                <MenuOption text={Strings.STRING_TAB_SETTINGS} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('Settings')}/>
+                <MenuOption text={Strings.STRING_ABOUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('About')}/>
+                <MenuOption text={Strings.STRING_SIGN_OUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => onSignOutSelected()} />
                </MenuOptions>
             </Menu>
           </View>

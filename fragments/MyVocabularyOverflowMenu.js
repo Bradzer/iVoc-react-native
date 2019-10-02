@@ -7,6 +7,7 @@ import { inject, observer } from 'mobx-react'
 import { reaction, } from 'mobx'
 
 import AppConstants from '../constants/Constants'
+import Toasts from '../constants/Toasts'
 import reactotron from '../ReactotronConfig';
 
 class MyVocabularyOverflowMenu extends React.Component {
@@ -122,7 +123,7 @@ class MyVocabularyOverflowMenu extends React.Component {
     
         userWordsDetailsCollection.get()
         .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), () => ToastAndroid.show(AppConstants.TOAST_ERROR, ToastAndroid.SHORT)
+          querySnapshot.forEach((doc) => firebase.firestore().batch().delete(doc.ref).commit()), () => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT)
           this.store.setVocabularyClearDone(true)
           this.store.setMultiDeletionStatus(false)
         })
