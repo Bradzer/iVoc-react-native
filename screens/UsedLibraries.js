@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ToastAndroid, Linking } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, ToastAndroid, Linking } from 'react-native';
 import { StackActions, NavigationEvents } from 'react-navigation'
 import firebase from 'react-native-firebase'
 
@@ -28,17 +28,21 @@ class UsedLibraries extends React.Component {
 
     render() {
         return (
-            <View style={{flex: 1, alignItems: 'center'}}>
+            <View style={styles.container}>
                 <NavigationEvents
                     onDidFocus={() => this.onDidFocus()}
                     onWillBlur={() => this.onWillBlur()}
                 />
-                {UsedLibrariesList.LIBRARIES_ARRAY.map((element, index, array) => {
-                    if(index % 2 === 0)
-                        return <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
-                    else
-                        return <Text key={index} style={{fontSize: 18}} onPress={() => this.onUrlPressed(element)}>{element}</Text>
-                })}
+                <ScrollView style={{flex: 1}}>
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        {UsedLibrariesList.LIBRARIES_ARRAY.map((element, index, array) => {
+                            if(index % 2 === 0)
+                                return <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
+                            else
+                                return <Text key={index} style={{fontSize: 18}} onPress={() => this.onUrlPressed(element)}>{element}</Text>
+                        })}
+                    </View>
+                </ScrollView>
             </View>
         )
     }
@@ -95,6 +99,14 @@ class UsedLibraries extends React.Component {
 }
 
 export default UsedLibraries
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 8,
+    },
+})
 
 function signOut() {
     firebaseAuth.signOut()
