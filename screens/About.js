@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
 import { Button, } from 'react-native-elements'
 import { NavigationEvents } from 'react-navigation'
+import PropTypes from 'prop-types';
 
 import firebase from 'react-native-firebase'
 
@@ -118,6 +119,10 @@ const styles = StyleSheet.create({
         padding: 8,
     },
 })
+
+About.propTypes = {
+    navigation: PropTypes.object.isRequired,
+}
 
 function signOut() {
     firebaseAuth.signOut()

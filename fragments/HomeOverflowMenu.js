@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+// /* eslint-disable react/prop-types */
 import React from 'react';
 import { View, } from 'react-native';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
@@ -6,6 +6,7 @@ import { Icon, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
 import { reaction, } from 'mobx'
+import PropTypes from 'prop-types';
 
 import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
@@ -65,6 +66,11 @@ class HomeOverflowMenu extends React.Component {
 }
 
 export default inject('store')(observer(HomeOverflowMenu))
+
+HomeOverflowMenu.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired,
+}
 
 function onSignOutSelected() {
     firebase.auth().signOut()

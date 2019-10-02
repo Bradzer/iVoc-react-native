@@ -5,6 +5,7 @@ import { Icon, CheckBox, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
 import { reaction, } from 'mobx'
+import PropTypes from 'prop-types';
 
 import AppConstants from '../constants/Constants'
 import Toasts from '../constants/Toasts'
@@ -136,3 +137,7 @@ class MyVocabularyOverflowMenu extends React.Component {
 }
 
 export default inject('store')(observer(MyVocabularyOverflowMenu))
+
+MyVocabularyOverflowMenu.propTypes = {
+  store: PropTypes.object.isRequired,
+}

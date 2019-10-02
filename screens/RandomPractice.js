@@ -8,6 +8,7 @@ import { BallIndicator } from 'react-native-indicators'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 import { NavigationEvents } from 'react-navigation';
+import PropTypes from 'prop-types';
 
 import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
@@ -309,6 +310,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }
 })
+
+RandomPractice.propTypes = {
+    navigation: PropTypes.object.isRequired,
+}
 
 const addKnownWordToCloud = (word) => {
     userWordsDetailsCollection.add(word)

@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+// /* eslint-disable react/prop-types */
 /* global setTimeout clearTimeout */
 
 import React from 'react';
@@ -11,7 +11,6 @@ import { reaction, toJS, } from 'mobx'
 import * as Animatable from 'react-native-animatable';
 import Snackbar from 'react-native-snackbar';
 import { NavigationEvents } from 'react-navigation';
-
 
 import MyVocabularyOverflowMenu from '../fragments/MyVocabularyOverflowMenu'
 import AppConstants from '../constants/Constants'

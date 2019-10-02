@@ -13,6 +13,7 @@ import {
 import { Button, CheckBox } from "react-native-elements";
 import firebase from "react-native-firebase";
 import { NavigationEvents } from 'react-navigation';
+import PropTypes from 'prop-types';
 
 import styles from "../styles/style";
 import AppConstants from "../constants/Constants";
@@ -332,3 +333,7 @@ const screenStyles = StyleSheet.create({
 		borderWidth: 0
 	}
 });
+
+LoginScreen.propTypes = {
+    navigation: PropTypes.object.isRequired,
+}

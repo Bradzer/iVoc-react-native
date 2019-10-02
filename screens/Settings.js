@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+// /* eslint-disable react/prop-types */
 /* global require */
 
 import React from "react";
@@ -22,6 +22,7 @@ import {
 import firebase from "react-native-firebase";
 import { inject, observer } from "mobx-react";
 import { NavigationEvents } from 'react-navigation';
+import PropTypes from 'prop-types';
 
 import SettingsOverflowMenu from "../fragments/SettingsOverflowMenu";
 import AppConstants from "../constants/Constants";
@@ -467,6 +468,11 @@ const styles = StyleSheet.create({
 		justifyContent: "flex-start"
 	}
 });
+
+Settings.propTypes = {
+    navigation: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired,
+}
 
 function getRealmData(realm) {
 	return _.valuesIn(realm)[0];

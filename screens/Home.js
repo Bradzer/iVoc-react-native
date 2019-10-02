@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+// /* eslint-disable react/prop-types */
 /* global setTimeout clearTimeout */
 
 import React from 'react';
@@ -8,6 +8,7 @@ import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
 import { autorun } from 'mobx'
 import { NavigationEvents } from 'react-navigation';
+import PropTypes from 'prop-types';
 
 import HomeOverflowMenu from '../fragments/HomeOverflowMenu'
 import AppConstants from '../constants/Constants'
@@ -155,6 +156,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     }
 })
+
+Home.propTypes = {
+    navigation: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired,
+}
 
 function signOut() {
     firebaseAuth.signOut()

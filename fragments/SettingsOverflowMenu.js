@@ -5,6 +5,7 @@ import { Icon, } from 'react-native-elements'
 import firebase from 'react-native-firebase'
 import { inject, observer } from 'mobx-react'
 import { reaction, } from 'mobx'
+import PropTypes from 'prop-types';
 
 import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
@@ -68,6 +69,11 @@ class SettingsOverflowMenu extends React.Component {
 }
 
 export default inject('store')(observer(SettingsOverflowMenu))
+
+SettingsOverflowMenu.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired,
+}
 
 function onSignOutSelected() {
     firebase.auth().signOut()
