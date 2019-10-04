@@ -17,6 +17,7 @@ import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
 import Toasts from '../constants/Toasts'
 import BanTypes from '../constants/BanTypes'
+import SortTypes from '../constants/SortTypes'
 import reactotron from '../ReactotronConfig';
 
     const firebaseAuth = firebase.auth()
@@ -296,6 +297,8 @@ class MyVocabulary extends React.Component {
                     })
                     this.store.updateListOfWords(listOfWords)
                     this.store.updateSearchResults(changedText)
+                    this.store.updateDefaultListOfWords()
+                    this.applySort()
                     if(listOfWords.length === 0) {
                         ToastAndroid.show(Toasts.TOAST_SEARCH_NO_RESULT, ToastAndroid.SHORT)
                     }            
@@ -312,12 +315,37 @@ class MyVocabulary extends React.Component {
                 })
                 this.store.updateListOfWords(listOfWords)
                 this.store.updateSearchResults(changedText)
+                this.store.updateDefaultListOfWords()
+                this.applySort()
                 if(listOfWords.length === 0) {
                     ToastAndroid.show(Toasts.TOAST_NO_VOC, ToastAndroid.SHORT)
                     ToastAndroid.show(Toasts.TOAST_ADD_WORDS_TO_VOC, ToastAndroid.SHORT)
                 }        
             })    
         }
+  }
+
+  applySort = () => {
+    switch(this.store.sortType) {
+        case SortTypes.DEFAULT:
+            break;
+
+        case SortTypes.ALPHABETICAL:
+            this.store.sortAlphabetical()
+            break;
+
+        case SortTypes.ALPHABETICAL_REVERSE:
+            this.store.sortAlphabeticalReverse();
+            break;
+
+        case SortTypes.LENGTH:
+            this.store.sortLength()
+            break;
+
+        case SortTypes.LENGTH_DESCENDING:
+            this.store.sortLengthDescending()
+            break;
+    }
   }
 
   itemLongPressed = () => {

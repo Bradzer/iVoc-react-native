@@ -6,6 +6,7 @@ import { ToastAndroid, } from 'react-native'
 import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
 import Toasts from '../constants/Toasts'
+import SortTypes from '../constants/SortTypes'
 
 const Realm = require('realm');
 
@@ -64,6 +65,7 @@ class State {
     specificWordText= ''
     randomWordPrefDisplay= 'flex'
     listOfWords= []
+    defaultListOfWords= []
     searchBarValue= ''
     reviewIntroTextDisplay= 'none'
     displayReviewContent= 'none'
@@ -84,6 +86,12 @@ class State {
     isNoVocabulary= false
     isReviewOver= false
     onlyPronunciationWordChecked= false
+    defaultChecked= true
+    alphabeticalChecked= false
+    alphabeticalReverseChecked= false
+    lengthChecked= false
+    lengthDescendingChecked= false
+    sortType= SortTypes.DEFAULT
 
     //actions
     setCloseHomeMenu = action((status) => {
@@ -469,8 +477,83 @@ class State {
         this.displayLoadingIndicator= false
     })
 
+    updateDefaultListOfWords = action(() => {
+        this.defaultListOfWords = this.listOfWords
+    })
+
     updateSearchResults = action((changedText) => {
         this.listOfWords= this.listOfWords.filter((value) => value.word.includes(changedText))
+    })
+
+    enableDefaultSort = action(() => {
+        this.defaultChecked= true
+        this.alphabeticalChecked= false
+        this.alphabeticalReverseChecked= false
+        this.lengthChecked= false
+        this.lengthDescendingChecked= false
+        this.sortType= SortTypes.DEFAULT       
+
+        this.listOfWords= this.defaultListOfWords
+    })
+
+    enableAlphabeticalSort = action(() => {
+        this.defaultChecked= false
+        this.alphabeticalChecked= true
+        this.alphabeticalReverseChecked= false
+        this.lengthChecked= false
+        this.lengthDescendingChecked= false
+        this.sortType= SortTypes.ALPHABETICAL
+        
+        this.sortAlphabetical()
+    })
+
+    enableAlphabeticalReverseSort = action(() => {
+        this.defaultChecked= false
+        this.alphabeticalChecked= false
+        this.alphabeticalReverseChecked= true
+        this.lengthChecked= false
+        this.lengthDescendingChecked= false
+        this.sortType= SortTypes.ALPHABETICAL_REVERSE   
+        
+        this.sortAlphabeticalReverse()
+    })
+
+    enableLengthSort = action(() => {
+        this.defaultChecked= false
+        this.alphabeticalChecked= false
+        this.alphabeticalReverseChecked= false
+        this.lengthChecked= true
+        this.lengthDescendingChecked= false  
+        this.sortType= SortTypes.LENGTH  
+
+        this.sortLength()
+    })
+
+    enableLengthDescendingSort = action(() => {
+        this.defaultChecked= false
+        this.alphabeticalChecked= false
+        this.alphabeticalReverseChecked= false
+        this.lengthChecked= false
+        this.lengthDescendingChecked= true
+        this.sortType= SortTypes.LENGTH_DESCENDING  
+        
+        this.sortLengthDescending()
+    })
+
+    sortAlphabetical = action(() => {
+        this.listOfWords = sortAlphabetical(this.listOfWords)
+    })
+
+    sortAlphabeticalReverse = action (() => {
+        this.listOfWords = sortAlphabeticalReverse(this.listOfWords)
+    })
+
+    sortLength = action(() => {
+        this.listOfWords = sortLength(this.listOfWords)
+    })
+
+    sortLengthDescending = action(() => {
+        this.listOfWords = sortLengthDescending(this.listOfWords)
     })
 }
 
@@ -523,6 +606,7 @@ decorate(State, {
     specificWordText: observable,
     randomWordPrefDisplay: observable,
     listOfWords: observable,
+    defaultListOfWords: observable,
     searchBarValue: observable,
     reviewIntroTextDisplay: observable,
     displayReviewContent: observable,
@@ -542,6 +626,12 @@ decorate(State, {
     isNoVocabulary: observable,
     isReviewOver: observable,
     onlyPronunciationWordChecked: observable,
+    defaultChecked: observable,
+    alphabeticalChecked: observable,
+    alphabeticalReverseChecked: observable,
+    lengthChecked: observable,
+    lengthDescendingChecked: observable,
+    sortType: observable,
 })
 const store = new State()
 
@@ -793,4 +883,20 @@ function getPreferencesData(settingsScreen) {
   function getPreviousEvenNumber(number) {
       if(number%2 === 0) return (number-2)
       else return (number-1)
+  }
+
+  function sortAlphabetical(listOfWords) {
+    return _.orderBy(listOfWords, 'word', 'asc')
+  }
+
+  function sortAlphabeticalReverse(listOfWords) {
+      return _.orderBy(listOfWords, 'word', 'desc')
+  }
+
+  function sortLength(listOfWords) {
+      return _.orderBy(listOfWords, 'word.length', 'asc')
+  }
+
+  function sortLengthDescending(listOfWords) {
+      return _.orderBy(listOfWords, 'word.length', 'desc')
   }

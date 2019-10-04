@@ -42,22 +42,27 @@ class MyVocabularyOverflowMenu extends React.Component {
                     <CheckBox 
                      title='Default'
                      checked={this.store.defaultChecked}
+                     onPress={this.onDefaultSortPressed}
                     />
                     <CheckBox 
                      title='Alphabetical'
                      checked={this.store.alphabeticalChecked}
+                     onPress={this.onAlphabeticalSortPressed}
                     />
                     <CheckBox
                      title='Alphabetical (reverse)'
                      checked={this.store.alphabeticalReverseChecked}
+                     onPress={this.onAlphabeticalReverseSortPressed}
                     />
                     <CheckBox 
                      title='Length'
                      checked={this.store.lengthChecked}
+                     onPress={this.onLengthSortPressed}
                     />
                     <CheckBox 
                      title='Length (descending)'
                      checked={this.store.lengthDescendingChecked}
+                     onPress={this.onLengthDescendingSortPressed}
                     />
                    </MenuOption>
                 </View>
@@ -133,6 +138,26 @@ class MyVocabularyOverflowMenu extends React.Component {
     multiDeletionOptionPressed = () => {
         if(this.store.multiDeletionStatus) this.store.setMultiDeletionStatus(false)
         else this.store.setMultiDeletionStatus(true)
+    }
+
+    onDefaultSortPressed = () => {
+      this.store.enableDefaultSort()
+    }
+
+    onAlphabeticalSortPressed = () => {
+      this.store.enableAlphabeticalSort()
+    }
+
+    onAlphabeticalReverseSortPressed = () => {
+      this.store.enableAlphabeticalReverseSort()
+    }
+
+    onLengthSortPressed = () => {
+      this.store.enableLengthSort()
+    }
+
+    onLengthDescendingSortPressed = () => {
+      this.store.enableLengthDescendingSort()
     }
 }
 
