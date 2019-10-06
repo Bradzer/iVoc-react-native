@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import About from '../screens/About'
 import UsedLibraries from '../screens/UsedLibraries'
