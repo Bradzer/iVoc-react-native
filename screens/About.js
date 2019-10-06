@@ -23,10 +23,6 @@ class About extends React.Component {
     static navigationOptions = ({navigation}) => {
         return {
             headerTitle: Strings.STRING_ABOUT,
-            headerStyle: {
-                backgroundColor: AppConstants.APP_PRIMARY_COLOR
-              },
-              headerTintColor: AppConstants.COLOR_WHITE,
             }
     }
 

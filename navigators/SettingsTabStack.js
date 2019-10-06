@@ -1,14 +1,14 @@
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Settings from '../screens/Settings'
-import AboutStack from './AboutStack'
+import About from '../screens/About'
+import UsedLibraries from '../screens/UsedLibraries'
 import AppConstants from '../constants/Constants'
 
 const SettingsStackAppNavigator = createStackNavigator({
     Settings,
-    AboutStack: {
-      screen: AboutStack
-    }
+    About: About,
+    UsedLibraries: UsedLibraries
   },
   {
     defaultNavigationOptions: {

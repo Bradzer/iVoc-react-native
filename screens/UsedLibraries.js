@@ -1,9 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Text, ScrollView, ToastAndroid, Linking } from 'react-native';
-import { StackActions, NavigationEvents } from 'react-navigation'
+import { NavigationEvents } from 'react-navigation'
 import firebase from 'react-native-firebase'
 
-import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
 import Toasts from '../constants/Toasts'
 import UsedLibrariesList from '../constants/UsedLibrariesList'
@@ -18,11 +17,7 @@ class UsedLibraries extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: Strings.STRING_ABOUT,
-            headerStyle: {
-                backgroundColor: AppConstants.APP_PRIMARY_COLOR
-              },
-              headerTintColor: AppConstants.COLOR_WHITE,
+            headerTitle: Strings.STRING_LIBRARIES,
             }
     }
 
@@ -56,11 +51,9 @@ class UsedLibraries extends React.Component {
 
 	onDidFocus = () => {
         this.manageAccountStatus()
-        // BackHandler.addEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
     }
 
     onWillBlur = () => {
-        // BackHandler.removeEventListener('hardwareBackPress', this.onBackButtonPressAndroid)
     }
 
     manageAccountStatus = () => {
