@@ -20,7 +20,7 @@ import AppConstants from "../constants/Constants";
 import Strings from '../constants/Strings'
 import Toasts from '../constants/Toasts'
 import FirebaseAuthErrorCode from "../constants/FirebaseAuthErrorCode"
-import reactotron from "../ReactotronConfig";
+import reactotron from "../../ReactotronConfig";
 
 const firebaseAuth = firebase.auth();
 const usersCollection = firebase.firestore().collection("users");

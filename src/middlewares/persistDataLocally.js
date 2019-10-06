@@ -11,7 +11,7 @@ import {
     UPDATE_API_URL,
     UPDATE_SETTINGS_PREFERENCES,
     UPDATE_PARTIAL_LETTERS_TEXT,
-    UPDATE_PARTIAL_WORD_CHKBOX, } from '../actions/actions'
+    UPDATE_PARTIAL_WORD_CHKBOX, } from '../../actions/actions'
     
 
 const Realm = require('realm');

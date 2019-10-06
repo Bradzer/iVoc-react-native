@@ -4,13 +4,13 @@ import { MenuProvider, } from 'react-native-popup-menu';
 // import { Provider } from 'react-redux'
 import { Provider } from 'mobx-react'
 
-import HomeTabStack from './navigators/HomeTabStack'
-import MyVocabularyStack from './navigators/MyVocabularyTabStack'
-import SettingsStack from './navigators/SettingsTabStack'
-import BottomTab from './navigators/BottomTab'
-import Switch from './navigators/Switch'
+import HomeTabStack from './src/navigators/HomeTabStack'
+import MyVocabularyStack from './src/navigators/MyVocabularyTabStack'
+import SettingsStack from './src/navigators/SettingsTabStack'
+import BottomTab from './src/navigators/BottomTab'
+import Switch from './src/navigators/Switch'
 // import store from './reducers'
-import State from './models/State'
+import State from './src/models/State'
 
 const Realm = require('realm');
 const realm = new Realm()

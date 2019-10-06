@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 import AppConstants from '../constants/Constants'
 import Toasts from '../constants/Toasts'
-import reactotron from '../ReactotronConfig';
+import reactotron from '../../ReactotronConfig';
 
 class MyVocabularyOverflowMenu extends React.Component {
     

@@ -11,7 +11,7 @@ import AppConstants from '../constants/Constants';
 import Strings from '../constants/Strings'
 import Toasts from '../constants/Toasts'
 import BanTypes from '../constants/BanTypes'
-import reactotron from '../ReactotronConfig'
+import reactotron from '../../ReactotronConfig'
 
 let listOfWords = []
 let randomWordOriginalId = ''

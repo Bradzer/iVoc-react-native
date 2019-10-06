@@ -1,3 +1,4 @@
+// /* eslint-disable react/prop-types */
 import React from 'react';
 import { View, } from 'react-native';
 import { Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
@@ -9,31 +10,32 @@ import PropTypes from 'prop-types';
 
 import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
-import Toasts from '../constants/Toasts'
-import reactotron from '../ReactotronConfig';
+import reactotron from '../../ReactotronConfig';
 
-class SettingsOverflowMenu extends React.Component {
+class HomeOverflowMenu extends React.Component {
+    
+    store = this.props.store
 
-  store = this.props.store
-
-  closeMenuReactionDisposer = reaction(
-    () => this.store.closeSettingsMenu,
-    closeSettingsMenu => {
-        if(closeSettingsMenu) {
-          this.hideAllMenu()
-          this.store.setCloseSettingsMenu(false)      
+    closeMenuReactionDisposer = reaction(
+        () => this.store.closeHomeMenu,
+        closeHomeMenu => {
+            if(closeHomeMenu) {
+            this.hideAllMenu()
+            this.store.setCloseHomeMenu(false)
+            }
         }
-    }
-)
+    )
 
     render() {
         return (
             <View>
-            <Menu ref={component => this._settingsMenu = component} onOpen={this.onMenuOpen} onClose={this.onMenuClose}>
+            <Menu ref={component => this._homeMenu = component} onOpen={this.onMenuOpen} onClose={this.onMenuClose}>
               <MenuTrigger>
               <Icon name='more-vert' color={AppConstants.COLOR_WHITE} />
                </MenuTrigger>
                <MenuOptions>
+                <MenuOption text={Strings.STRING_TAB_MY_VOCABULARY} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('MyVocabulary')}/>
+                <MenuOption text={Strings.STRING_TAB_SETTINGS} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('Settings')}/>
                 <MenuOption text={Strings.STRING_ABOUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => this.props.navigation.navigate('About')}/>
                 <MenuOption text={Strings.STRING_SIGN_OUT} customStyles={{optionText: {fontSize: 18, color: 'black'}}} onSelect={() => onSignOutSelected()} />
                </MenuOptions>
@@ -50,27 +52,22 @@ class SettingsOverflowMenu extends React.Component {
     }
 
     onMenuOpen = () => {
-        this.store.setSettingsMenuOpen(true)
+        this.store.setHomeMenuOpen(true)
     }
 
     onMenuClose = () => {
-        this.store.setSettingsMenuOpen(false)
+        this.store.setHomeMenuOpen(false)
     }
 
     hideAllMenu = () => {
-      this._settingsMenu.close()
-      .then(() => reactotron.log("main menu SETTINGS closed"), () => reactotron.log("ERROR: can't close main menu SETTINGS"))
+      this._homeMenu.close()
+      .then(() => reactotron.log("main menu HOME closed"), () => reactotron.log("ERROR: can't close main menu HOME"))
     }
-
-    onSignOutSelected = () => {
-        this.store.setCloseMenu(true)
-        firebase.auth().signOut()
-      }
 }
 
-export default inject('store')(observer(SettingsOverflowMenu))
+export default inject('store')(observer(HomeOverflowMenu))
 
-SettingsOverflowMenu.propTypes = {
+HomeOverflowMenu.propTypes = {
   navigation: PropTypes.object.isRequired,
   store: PropTypes.object.isRequired,
 }

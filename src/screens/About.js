@@ -1,23 +1,28 @@
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView, ToastAndroid, Linking } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, ToastAndroid } from 'react-native';
+import { Button, } from 'react-native-elements'
 import { NavigationEvents } from 'react-navigation'
+import PropTypes from 'prop-types';
+
 import firebase from 'react-native-firebase'
 
+import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
 import Toasts from '../constants/Toasts'
-import UsedLibrariesList from '../constants/UsedLibrariesList'
+import AppInfo from '../constants/AppInfo'
+import ThanksList from '../constants/ThanksList'
 import BanTypes from '../constants/BanTypes'
-import reactotron from '../ReactotronConfig';
+import reactotron from '../../ReactotronConfig';
 
 const firebaseAuth = firebase.auth()
 let userId = null
 const blackListCollection = firebase.firestore().collection('blacklist')
 
-class UsedLibraries extends React.Component {
+class About extends React.Component {
 
     static navigationOptions = ({navigation}) => {
         return {
-            headerTitle: Strings.STRING_LIBRARIES,
+            headerTitle: Strings.STRING_ABOUT,
             }
     }
 
@@ -30,11 +35,29 @@ class UsedLibraries extends React.Component {
                 />
                 <ScrollView style={{flex: 1}}>
                     <View style={{flex: 1, alignItems: 'center'}}>
-                        {UsedLibrariesList.LIBRARIES_ARRAY.map((element, index, array) => {
-                            if(index % 2 === 0)
-                                return <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
+                        <NavigationEvents
+                            onDidFocus={() => this.onDidFocus()}
+                            onWillBlur={() => this.onWillBlur()}
+                        />
+                        <Text style={{marginTop: 16, fontWeight: 'bold', fontSize: 18}}>{AppConstants.APP_NAME}</Text>
+                        <Text style={{fontSize: 18}}>version {AppConstants.APP_VERSION}</Text>
+                        <Text style={{fontSize: 18}}>{Strings.STRING_POWERED_BY}</Text>
+                        { AppInfo.INFO_ARRAY.map((element, index, array) => {
+                        if(index % 2 === 0)
+                        return (
+                            <Text key={index} style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{element}</Text>
+                        )
+                        else if(index !== 5 && index !== 7 )
+                            return (
+                                <Text key={index} style={{fontSize: 18}}>{element}</Text>
+                            )
                             else
                                 return <Text key={index} style={{fontSize: 18}} onPress={() => this.onUrlPressed(element)}>{element}</Text>
+                        })}
+                        <Button title={Strings.STRING_USED_LIBRARIES} containerStyle={{marginTop: 16}} onPress={this.showLibrariesPressed}/>
+                        <Text style={{marginTop: 16, fontWeight: 'bold', textDecorationLine: 'underline', fontSize: 18}}>{Strings.STRING_BIG_THANKS}</Text>
+                        {ThanksList.THANKSLIST_ARRAY.map((element, index, array) => {
+                            return <Text key={index} style={{fontSize: 18}}>{element}</Text>
                         })}
                     </View>
                 </ScrollView>
@@ -78,20 +101,12 @@ class UsedLibraries extends React.Component {
         () => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
     }
 
-    onUrlPressed = (url) => {
-        Linking.canOpenURL(url)
-            .then((supported) => {
-                if (!supported) {
-                    ToastAndroid.show(Toasts.TOAST_NO_APP_FOR_URL, ToastAndroid.SHORT)
-                } else {
-                return Linking.openURL(url);
-                }
-            })
-            .catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT));
+    showLibrariesPressed = () => {
+        this.props.navigation.navigate('UsedLibraries')
     }
 }
 
-export default UsedLibraries
+export default About
 
 const styles = StyleSheet.create({
     container: {
@@ -100,6 +115,10 @@ const styles = StyleSheet.create({
         padding: 8,
     },
 })
+
+About.propTypes = {
+    navigation: PropTypes.object.isRequired,
+}
 
 function signOut() {
     firebaseAuth.signOut()
