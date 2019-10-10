@@ -15,6 +15,7 @@ import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
 import io.realm.react.RealmReactPackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 import io.invertase.firebase.links.RNFirebaseLinksPackage;
+import com.rnfs.RNFSPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +39,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RealmReactPackage(),
             new RNFirebaseAuthPackage(),
             new RNFirebaseLinksPackage(),
-            new SnackbarPackage()
+            new SnackbarPackage(),
+            new RNFSPackage()
       );
     }
 
