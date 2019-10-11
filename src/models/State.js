@@ -138,6 +138,10 @@ class State {
         this.displayLoadingIndicator = true
     })
 
+    hideLoadingIndicator = action(() => {
+        this.displayLoadingIndicator = false
+    })
+
     updatePracticeSpecificWordSearch = action((searchValue) => {
         this.practiceSpecificWordSearch = searchValue
     })
@@ -153,19 +157,19 @@ class State {
         this.displayWordDefinition= 'none'
         this.displayScrollView= 'flex'
         this.displayChangePrefsBtn= 'none'
-        this.displayLoadingIndicator= false
+        this.hideLoadingIndicator()
     })
 
     displayUpdateChangePrefsBtn = action(() => {
         this.displayChangePrefsBtn= 'flex'
         this.displayButtons= 'none'
         this.displayScrollView= 'none'
-        this.displayLoadingIndicator= false
+        this.hideLoadingIndicator()
     })
 
     showNoVocabulary = action(() => {
         this.isNoVocabulary= true
-        this.displayLoadingIndicator= false
+        this.hideLoadingIndicator()
     })
 
     resetReviewLayout = action(() => {
@@ -474,7 +478,7 @@ class State {
 
     updateListOfWords = action((listOfWords) => {
         this.listOfWords= listOfWords
-        this.displayLoadingIndicator= false
+        this.hideLoadingIndicator()
     })
 
     updateDefaultListOfWords = action(() => {
