@@ -234,7 +234,7 @@ class RandomPractice extends React.Component {
 
     onSearchValueCleared = () => {
         updateApiRequest(this.store.apiUrl)
-        // this.goToNextRandomWord()
+        if(this.store.displayChangePrefsBtn !== 'none') this.goToNextRandomWord()
     }
     
     checkWordAlreadyInVocabulary = (wordObject) => {
