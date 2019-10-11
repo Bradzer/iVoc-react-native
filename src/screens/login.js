@@ -172,7 +172,7 @@ export default class LoginScreen extends Component {
 					.signInWithEmailAndPassword(this.state.username, this.state.password)
 					.then(
 						credentials => {
-							this.onLoginSuccessful(credentials);
+							this.goToHome();
 						},
 						signInError =>
 							this.onSignInError(signInError.code)
@@ -192,11 +192,7 @@ export default class LoginScreen extends Component {
 						)
 						.then(
 							credentials => {
-								ToastAndroid.show(
-									Toasts.TOAST_LOG_IN_SUCCESS,
-									ToastAndroid.SHORT
-								);
-								this.navigateToHome();
+								this.onSignUpSuccessful(credentials)
 							},
 							signUpError =>
 								this.onSignUpError(signUpError.code)
@@ -214,28 +210,20 @@ export default class LoginScreen extends Component {
 		}
 	}
 
-	anonymousLoginClicked = () => {
-		firebaseAuth.signInAnonymously().then(
-			credentials => {
-				usersCollection
-					.add({
-						uid: credentials.user.uid,
-						email: credentials.user.email,
-						password: null,
-						isAnonymous: credentials.user.isAnonymous,
-						providerId: credentials.user.providerId
-					})
-					.then(docRef => {
-						docRef.update({ id: docRef.id })
-						this.navigateToHome();
-						ToastAndroid.show(
-							Toasts.TOAST_LOG_IN_SUCCESS,
-							ToastAndroid.SHORT
-						);
-						});
-			},
-			error => ToastAndroid.show(Toasts.TOAST_OPERATION_NOT_ALLOWED, ToastAndroid.SHORT)
-		);
+	anonymousLoginClicked = async () => {
+		try {
+			const credentials = await firebaseAuth.signInAnonymously()
+			const userInfo = {
+				uid: credentials.user.uid,
+				email: credentials.user.email,
+				isAnonymous: credentials.user.isAnonymous,
+				providerId: credentials.user.providerId
+			}
+			await usersCollection.doc(credentials.user.uid).set(userInfo)
+			this.goToHome()
+		} catch (error) {
+			ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT)
+		}
 	};
 
 	onPasswordSubmitted = event => {
@@ -302,22 +290,25 @@ export default class LoginScreen extends Component {
 		}
 	}
 
-	onLoginSuccessful = credentials => {
-		usersCollection
-			.add({
+	goToHome = () => {
+		this.navigateToHome();
+		ToastAndroid.show(Toasts.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT);
+	};
+
+	onSignUpSuccessful = async credentials => {
+		try {
+			const userInfo = {
 				uid: credentials.user.uid,
 				email: credentials.user.email,
 				isAnonymous: credentials.user.isAnonymous,
 				providerId: credentials.user.providerId
-			})
-			.then(
-				docRef => {
-				docRef.update({ id: docRef.id })
-				this.navigateToHome();
-				ToastAndroid.show(Toasts.TOAST_LOG_IN_SUCCESS, ToastAndroid.SHORT);
-				})
-			.catch(() => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
-	};
+			}
+			await usersCollection.doc(credentials.user.uid).set(userInfo)
+			this.goToHome()
+		} catch (error) {
+			ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT)
+		}
+	}
 }
 
 const screenStyles = StyleSheet.create({
