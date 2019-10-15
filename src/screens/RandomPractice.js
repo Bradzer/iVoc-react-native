@@ -14,13 +14,31 @@ import AppConstants from '../constants/Constants'
 import Strings from '../constants/Strings'
 import Toasts from '../constants/Toasts'
 import BanTypes from '../constants/BanTypes'
+import reactotron from '../../ReactotronConfig'
 
 const firebaseAuth = firebase.auth()
 let userId = null
 let userWordsDetailsCollection = null
 const blackListCollection = firebase.firestore().collection('blacklist')
 
-const axios = require('axios');
+const axios = require('axios').default;
+
+const RNFS = require('react-native-fs');
+
+const ttsApiKey = 'bsPEi2xsVtm4e2yihmbfGXuRX7787lbg5UQm1qVYNBdB'
+const ttsUrl = 'https://gateway-lon.watsonplatform.net/text-to-speech/api'
+// const ttsRequest = axios.create({
+//     baseURL: ttsUrl,
+//     headers: {
+//         'Accept': 'audio/wav',
+//         // 'Content-Type': 'application/json'
+//     },
+//     auth: {
+//         username: 'apikey',
+//         password: ttsApiKey
+//     },
+//     params: {text: 'hello'}
+// })
 
 let apiRequest = null
 
@@ -32,6 +50,8 @@ let dataGoingToStore = {}
 
 let apiResponse = {};
 let numberOfDefinitions = 0;
+
+let path = RNFS.DocumentDirectoryPath + '/test.txt';
 
 let isSearchingWithSearchBar = false;
 
@@ -161,6 +181,18 @@ class RandomPractice extends React.Component {
             this.goToNextRandomWord();
         })
         .catch((error) => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
+
+        axios.get('https://gateway-lon.watsonplatform.net/text-to-speech/api/v1/synthesize?accept=audio%2Fwav&text=hola%20mundo&voice=es-ES_EnriqueVoice', {
+            auth: {
+                username: 'apikey',
+                password: ttsApiKey
+            },
+            responseType: "stream",
+        })
+        .then(
+            (response) => reactotron.logImportant('RESPONSE', response),
+            (error) => reactotron.logImportant('ERROR', error)
+        )
     }
 
     componentWillUnmount() {
