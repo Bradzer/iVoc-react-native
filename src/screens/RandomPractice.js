@@ -48,6 +48,8 @@ const _ = require('lodash')
 
 let dataGoingToStore = {}
 
+let isWordInQueueToVoc = false
+
 let apiResponse = {};
 let numberOfDefinitions = 0;
 
@@ -250,7 +252,10 @@ class RandomPractice extends React.Component {
     }
     
     addToVocabularyBtnClicked = () => {
-        this.checkWordAlreadyInVocabulary(dataGoingToStore)
+        if(!isWordInQueueToVoc) {
+            isWordInQueueToVoc = true
+            this.checkWordAlreadyInVocabulary(dataGoingToStore)
+        }
     }
 
     onSearchValueChanged = (searchValue) => {
@@ -274,10 +279,12 @@ class RandomPractice extends React.Component {
         .then((querySnapshot) => {
             if(querySnapshot.empty) {
                 addKnownWordToCloud(wordObject)
+                isWordInQueueToVoc = false
                 ToastAndroid.show(Toasts.TOAST_WORD_ADDED_IN_VOC, ToastAndroid.SHORT)
                 if(!isSearchingWithSearchBar) this.goToNextRandomWord()
             }
             else {
+                isWordInQueueToVoc = false
                 ToastAndroid.show(Toasts.TOAST_ALREADY_IN_VOC, ToastAndroid.SHORT)
             }
         }, (error) => ToastAndroid.show(Toasts.TOAST_ERROR, ToastAndroid.SHORT))
